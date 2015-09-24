@@ -34,7 +34,7 @@ init:
   - ps: echo $env:TOXENV
   - ps: ls C:\Python*
   - echo [build]>%userprofile%\pydistutils.cfg
-  - echo compiler=cygwin>>%userprofile%\pydistutils.cfg
+  - echo compiler=msvc>>%userprofile%\pydistutils.cfg
 install:
   - python -u ci\appveyor-bootstrap.py
   - '%PYTHON_HOME%\Scripts\virtualenv --version'
