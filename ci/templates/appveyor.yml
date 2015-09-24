@@ -19,8 +19,8 @@ environment:
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '32'
-      PYTHON_DLL: {{config.python.replace('.', '')}}.dll
-      PYTHON_DEF: {{config.python.replace('.', '')}}.def
+      PYTHON_DLL: C:\Windows\SysWOW64\{{config.python.replace('.', '')}}.dll
+      PYTHON_DEF: C:\Windows\SysWOW64\{{config.python.replace('.', '')}}.def
       LIBPYTHON: libs/lib{{config.python.replace('.', '')}}.a
     - TOXENV: '{{ env }}{% if config.cover %},codecov{% endif %}'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}-x64\python.exe
@@ -41,8 +41,6 @@ init:
   - ps: ls C:\Python*
   - echo [build]>%userprofile%\pydistutils.cfg
   - echo compiler=mingw32>>%userprofile%\pydistutils.cfg
-  - dir C:\Windows\System32\python*.dll
-  - dir C:\Windows\SysWOW64\python*.dll
   - set PATH=C:\MinGW\bin;%PATH%;C:\MinGW\bin
   - C:\mingw\bin\mingw-get.exe install gendef
   - C:\MinGW\bin\gendef.exe %PYTHON_DLL%
