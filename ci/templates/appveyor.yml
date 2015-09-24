@@ -48,6 +48,9 @@ init:
   - C:\MinGW\bin\dlltool.exe --dllname python.dll --def python.def --output-lib libpython.a
   - cp libpython.a %PYTHON_HOME\libs\%LIBPYTHON%
   - del python.dll python.def libpython.a
+  - chdir
+  - dir C:\projects
+  - dir C:\projects\aacgmv2
 install:
   - python -u ci\appveyor-bootstrap.py
   - '%PYTHON_HOME%\Scripts\virtualenv --version'
