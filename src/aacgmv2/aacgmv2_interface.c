@@ -52,16 +52,23 @@ static PyMethodDef aacgmv2_interface_methods[] = {
 
 
 
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef aacgmv2_interfacemodule = {
+   PyModuleDef_HEAD_INIT,
+   "aacgmv2_interface",   /* name of module */
+   "FIXME doc here", /* module documentation, may be NULL */
+   -1,       /* size of per-interpreter state of the module,
+                or -1 if the module keeps state in global variables. */
+   aacgmv2_interface_methods
+};
 
-
-
-
-
-
-void initaacgmv2_interface(void)
+PyMODINIT_FUNC PyInit_aacgmv2_interface(void)
 {
-
-    Py_InitModule("aacgmv2_interface", aacgmv2_interface_methods);
+    return PyModule_Create(&aacgmv2_interfacemodule);
 }
-
-
+#else
+PyMODINIT_FUNC initaacgmv2_interface(void)
+{
+    (void) Py_InitModule("aacgmv2_interface", aacgmv2_interface_methods);
+}
+#endif
