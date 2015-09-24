@@ -6,6 +6,10 @@
 #include "igrflib.h"
 #include "genmag.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 //#define DEBUG 1
 /* TO DO: should these stuff go in igrflib.h? */
 
@@ -457,7 +461,7 @@ int IGRF_compute(const double rtp[], double brtp[]) {
 
 //	aor  = RE/r;			/* a/r, where RE = a */
 //	aor  = RE/rtp[0];			/* a/r, where RE = a */
-	aor = 1.d/rtp[0];		/* r is in units of RE to be consistent with geopack, */
+	aor = 1./rtp[0];		/* r is in units of RE to be consistent with geopack, */
 											/* we want RE/r */
 
 	//printf("aor = %lf\n", aor);
@@ -1122,12 +1126,12 @@ int geod2geoc(double lat, double lon, double alt, double rtp[]) {
 	double a,b,f,a2,b2,st,ct,one,two,three,rho,cd,sd;
 	double r,theta,phi;
 
-	a = 6378.1370d;							/* semi-major axis */
-	f = 1.d/298.257223563d;			/* flattening */
-	b = a*(1.d -f);							/* semi-minor axis */
+	a = 6378.1370;							/* semi-major axis */
+	f = 1./298.257223563;			/* flattening */
+	b = a*(1. -f);							/* semi-minor axis */
 	a2 = a*a;
 	b2 = b*b;
-	theta = (90.d -lat)*DTOR;	/* colatitude in radians   */
+	theta = (90. -lat)*DTOR;	/* colatitude in radians   */
 	st = sin(theta);
 	ct = cos(theta);
 	one = a2*st*st;
@@ -1175,22 +1179,22 @@ int plh2xyz(double lat, double lon, double alt, double rtp[])
 {
 	double a,b,f,ee,st,ct,sp,cp,N,Nac,x,y,z,r,t;
 
-	a = 6378.1370d;							/* semi-major axis */
-	f = 1.d/298.257223563d;			/* flattening */
-	b = a*(1.d -f);							/* semi-minor axis */
-  ee = (2.d - f) * f;
+	a = 6378.1370;							/* semi-major axis */
+	f = 1./298.257223563;			/* flattening */
+	b = a*(1. -f);							/* semi-minor axis */
+  ee = (2. - f) * f;
 
   st = sin(lat*DTOR);
   ct = cos(lat*DTOR);
   sp = sin(lon*DTOR);
   cp = cos(lon*DTOR);
 
-  N = a / sqrt(1.d - ee*st*st);
+  N = a / sqrt(1. - ee*st*st);
   Nac = (N + alt) * ct;
 
   x = Nac * cp;
   y = Nac * sp;
-  z = (N*(1.d - ee)+alt) * st;
+  z = (N*(1. - ee)+alt) * st;
 
   r = sqrt(Nac*Nac + z*z);
   t = acos(z/r);
@@ -1232,14 +1236,14 @@ int geoc2geod(double lat, double lon, double r, double llh[])
 	double a,f,b,ee,e4,aa, theta,phi, st,ct,sp,cp, x,y,z;
 	double k0i,pp,zeta,rho,s,rho3,t,u,v,w,kappa;
 
-  a = 6378.1370d;             /* semi-major axis */
-  f = 1.d/298.257223563d;     /* flattening */
-  b = a*(1.d -f);             /* semi-minor axis */
-  ee = (2.d - f) * f;
+  a = 6378.1370;             /* semi-major axis */
+  f = 1./298.257223563;     /* flattening */
+  b = a*(1. -f);             /* semi-minor axis */
+  ee = (2. - f) * f;
   e4 = ee*ee;
   aa = a*a;
 
-  theta = (90.d - lat)*DTOR;
+  theta = (90. - lat)*DTOR;
   phi   = lon * DTOR;
 
   st = sin(theta);
@@ -1251,21 +1255,21 @@ int geoc2geod(double lat, double lon, double r, double llh[])
   y = r*RE * st * sp;
   z = r*RE * ct;
 
-  k0i   = 1.d - ee;
+  k0i   = 1. - ee;
   pp    = x*x + y*y;
   zeta  = k0i*z*z/aa;
-  rho   = (pp/aa + zeta - e4)/6.d;
-  s     = e4*zeta*pp/(4.d*aa);
+  rho   = (pp/aa + zeta - e4)/6.;
+  s     = e4*zeta*pp/(4.*aa);
   rho3  = rho*rho*rho;
-  t     = pow(rho3 + s + sqrt(s*(s+2*rho3)), 1.d/3.d);
+  t     = pow(rho3 + s + sqrt(s*(s+2*rho3)), 1./3.);
   u     = rho + t + rho*rho/t;
   v     = sqrt(u*u + e4*zeta);
-  w     = ee*(u + v - zeta)/(2.d*v);
-  kappa = 1.d + ee*(sqrt(u+v+w*w) + w)/(u + v);
+  w     = ee*(u + v - zeta)/(2.*v);
+  kappa = 1. + ee*(sqrt(u+v+w*w) + w)/(u + v);
 
   llh[0] = atan2(z*kappa,sqrt(pp))/DTOR;
 	llh[1] = lon;
-	llh[2] = sqrt(pp + z*z*kappa*kappa)/ee * (1.d/kappa - k0i);
+	llh[2] = sqrt(pp + z*z*kappa*kappa)/ee * (1./kappa - k0i);
 
   return (0);
 }
@@ -1397,35 +1401,35 @@ int AACGM_v2_RK45(double xyz[], int idir, double *ds, double eps, int code) {
 		rr = eps+1;	/* just to get into the loop */
 		while (rr > eps) {
 			for (k=0;k<3;k++) k1[k] = (*ds)*idir*bxyz[k]/bmag;
-			for (k=0;k<3;k++) xyztmp[k] = xyz[k] + k1[k]/4.d;
+			for (k=0;k<3;k++) xyztmp[k] = xyz[k] + k1[k]/4.;
 			AACGM_v2_Newval(xyztmp,idir,*ds, k2);
-			for (k=0;k<3;k++) xyztmp[k] = xyz[k] + (3.d*k1[k] + 9.d*k2[k])/32.d;
+			for (k=0;k<3;k++) xyztmp[k] = xyz[k] + (3.*k1[k] + 9.*k2[k])/32.;
 			AACGM_v2_Newval(xyztmp,idir,*ds, k3);
-			for (k=0;k<3;k++) xyztmp[k] = xyz[k] + (1932.d*k1[k] - 7200.d*k2[k] +
-																							7296.d*k3[k])/2197.d;
+			for (k=0;k<3;k++) xyztmp[k] = xyz[k] + (1932.*k1[k] - 7200.*k2[k] +
+																							7296.*k3[k])/2197.;
 			AACGM_v2_Newval(xyztmp,idir,*ds, k4);
 			for (k=0;k<3;k++)
-				xyztmp[k] = xyz[k] + 439.d*k1[k]/216.d - 8.d*k2[k] +
-														3680.d*k3[k]/513.d - 845.d*k4[k]/4104.d;
+				xyztmp[k] = xyz[k] + 439.*k1[k]/216. - 8.*k2[k] +
+														3680.*k3[k]/513. - 845.*k4[k]/4104.;
 			AACGM_v2_Newval(xyztmp,idir,*ds, k5);
 			for (k=0;k<3;k++)
-				xyztmp[k] = xyz[k] - 8.d*k1[k]/27.d + 2.d*k2[k] - 3544.d*k3[k]/2565.d +
-														1859.d*k4[k]/4104.d - 11.d*k5[k]/40.d;
+				xyztmp[k] = xyz[k] - 8.*k1[k]/27. + 2.*k2[k] - 3544.*k3[k]/2565. +
+														1859.*k4[k]/4104. - 11.*k5[k]/40.;
 			AACGM_v2_Newval(xyztmp,idir,*ds, k6);
 
 			rr = 0.;
 			for (k=0;k<3;k++) {
-				w1[k] = xyz[k] + 25.d*k1[k]/216.d + 1408.d*k3[k]/2565.d +
-													2197.d*k4[k]/4104.d - k5[k]/5.d;
-				w2[k] = xyz[k] + 16.d*k1[k]/135.d + 6656.d*k3[k]/12825.d +
-													28561.d*k4[k]/56430.d - 9.d*k5[k]/50.d +
-													2.d*k6[k]/55.d;
+				w1[k] = xyz[k] + 25.*k1[k]/216. + 1408.*k3[k]/2565. +
+													2197.*k4[k]/4104. - k5[k]/5.;
+				w2[k] = xyz[k] + 16.*k1[k]/135. + 6656.*k3[k]/12825. +
+													28561.*k4[k]/56430. - 9.*k5[k]/50. +
+													2.*k6[k]/55.;
 				rr += (w1[k]-w2[k])*(w1[k]-w2[k]);
 			}
 			rr = sqrt(rr)/(*ds);
 
 			if (fabs(rr) > 1e-16) {
-				delt = 0.84d *pow(eps/rr,0.25d);	/* this formula sucks because I have
+				delt = 0.84 *pow(eps/rr,0.25);	/* this formula sucks because I have
 																							no it where it came from.
 																							Obviously it involves factors in
 																							the LTEs of the two methods, but

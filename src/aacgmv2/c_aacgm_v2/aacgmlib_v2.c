@@ -53,6 +53,16 @@
 #include "igrflib.h"
 #include "genmag.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+#ifdef _MSC_VER
+#include <float.h>
+#define INFINITY (DBL_MAX+DBL_MAX)
+#define NAN (INFINITY-INFINITY)
+#endif
+
 #define DEBUG 0
 
 /* put these in the library header file when you figure out how to do so... */
@@ -80,10 +90,12 @@ struct {
   double coefs[AACGM_KMAX][NCOORD][POLYORD][NFLAG][2];	/* bracketing coefs */
 } sph_harm_model;
 
+#ifndef complex
 struct complex {
 	double x;
 	double y;
 };
+#endif
 
 
 /*-----------------------------------------------------------------------------
@@ -989,9 +1001,9 @@ int AACGM_v2_Convert(double in_lat, double in_lon, double height,
 //printf("\n");
 
 		/* modify lat/lon/alt to geocentric values */
-		in_lat = 90.d - rtp[1]/DTOR;
+		in_lat = 90. - rtp[1]/DTOR;
 		in_lon = rtp[2]/DTOR;
-		height = (rtp[0]-1.d)*RE;
+		height = (rtp[0]-1.)*RE;
 	}
 
 	err = convert_geo_coord(in_lat,in_lon,height, out_lat,out_lon, code,order);
@@ -1291,7 +1303,7 @@ int AACGM_v2_Trace(double lat_in, double lon_in, double alt,
 										aacgm_date.hour, aacgm_date.minute, aacgm_date.second);
 
 	// Q: these could eventually be command-line options
-	ds    = 1.d;
+	ds    = 1.;
 	dsRE  = ds/RE;
 	dsRE0 = dsRE;
 	eps   = 1.e-4/RE;
@@ -1366,7 +1378,7 @@ int AACGM_v2_Trace(double lat_in, double lon_in, double alt,
 		geo2mag(xyzc, xyzm);  /* geographic to magnetic */
 		car2sph(xyzm, rtp);
 
-		*lat_out = -idir*acos(sqrt(1.d/Lshell))/DTOR;
+		*lat_out = -idir*acos(sqrt(1./Lshell))/DTOR;
 		*lon_out = rtp[2]/DTOR;
 		if (*lon_out > 180) *lon_out -= 360.;
 
@@ -1390,7 +1402,7 @@ int AACGM_v2_Trace_inv(double lat_in, double lon_in, double alt,
 										aacgm_date.hour, aacgm_date.minute, aacgm_date.second);
 
 	// Q: these could eventually be command-line options
-	ds    = 1.d;
+	ds    = 1.;
 	dsRE  = ds/RE;
 	dsRE0 = dsRE;
 	eps   = 1.e-4/RE;
@@ -1400,7 +1412,7 @@ int AACGM_v2_Trace_inv(double lat_in, double lon_in, double alt,
 	if (fabs(fabs(lat_in) - 90.) < 1e-6)
 		lat_in += (lat_in > 0) ? -1e-6 : 1e-6;
 
-	Lshell = 1.d/(cos(lat_in*DTOR)*cos(lat_in*DTOR));
+	Lshell = 1./(cos(lat_in*DTOR)*cos(lat_in*DTOR));
 	if (Lshell <(RE+alt)/RE) { /* solution does not exist; the starting
 															* position at the magnetic equator is below
 															* the altitude of interest */
@@ -1411,7 +1423,7 @@ int AACGM_v2_Trace_inv(double lat_in, double lon_in, double alt,
 		/* magnetic Cartesian coordinates of fieldline trace starting point */
 		xyzm[0] = Lshell*cos(lon_in*DTOR);
 		xyzm[1] = Lshell*sin(lon_in*DTOR);
-		xyzm[2] = 0.d;
+		xyzm[2] = 0.;
 
 		/* geographic Cartesian coordinates of starting point */
 		mag2geo(xyzm, xyzg);
@@ -1457,7 +1469,7 @@ int AACGM_v2_Trace_inv(double lat_in, double lon_in, double alt,
 			niter += kk;
 		}
 
-		*lat_out = 90.d - rtp[1]/DTOR;
+		*lat_out = 90. - rtp[1]/DTOR;
 		*lon_out = rtp[2]/DTOR;
 		if (*lon_out > 180) *lon_out -= 360.;
 		err = 0;
