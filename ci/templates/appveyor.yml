@@ -19,6 +19,9 @@ environment:
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '32'
+      PYTHON_DLL: {{config.python.replace('.', '')}}.dll
+      PYTHON_DEF: {{config.python.replace('.', '')}}.def
+      LIBPYTHON: libs/lib{{config.python.replace('.', '')}}.a
     - TOXENV: '{{ env }}{% if config.cover %},codecov{% endif %}'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}-x64\python.exe
       {%- if config.python != 'python3.5' %}
@@ -29,6 +32,9 @@ environment:
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}-x64
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '64'
+      PYTHON_DLL: {{config.python.replace('.', '')}}.dll
+      PYTHON_DEF: {{config.python.replace('.', '')}}.def
+      LIBPYTHON: libs/lib{{config.python.replace('.', '')}}.a
 {% endif %}{% endfor %}
 init:
   - ps: echo $env:TOXENV
@@ -37,6 +43,9 @@ init:
   - echo compiler=mingw32>>%userprofile%\pydistutils.cfg
   - set PATH=C:\MinGW\bin;%PATH%;C:\MinGW\bin
   - echo %PATH%
+  - C:\MinGW\bin\gendef.exe %PYTHON_DLL%
+  - C:\MinGW\bin\dlltool.exe --dllname %PYTHON_HOME%\%PYTHON_DLL% --def %PYTHON_HOME%\%PYTHON_DEF% --output-lib %PYTHON_HOME%\%LIBPYTHON%
+  - dir %PYTHON_HOME%\libs
 install:
   - python -u ci\appveyor-bootstrap.py
   - '%PYTHON_HOME%\Scripts\virtualenv --version'
