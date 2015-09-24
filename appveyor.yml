@@ -15,7 +15,7 @@ environment:
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '32'
       PYTHON_DLL: C:\Windows\SysWOW64\python27.dll
-      PYTHON_DEF: C:\Windows\SysWOW64\python27.def
+      PYTHON_DEF: python27.def
       LIBPYTHON: libs/libpython27.a
     - TOXENV: '2.7,codecov'
       TOXPYTHON: C:\python27-x64\python.exe
@@ -24,7 +24,7 @@ environment:
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '64'
       PYTHON_DLL: C:\Windows\System32\python27.dll
-      PYTHON_DEF: C:\Windows\System32\python27.def
+      PYTHON_DEF: python27.def
       LIBPYTHON: libs/libpython27.a
     - TOXENV: '2.7-nocover'
       TOXPYTHON: C:\python27\python.exe
@@ -33,7 +33,7 @@ environment:
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '32'
       PYTHON_DLL: C:\Windows\SysWOW64\python27.dll
-      PYTHON_DEF: C:\Windows\SysWOW64\python27.def
+      PYTHON_DEF: python27.def
       LIBPYTHON: libs/libpython27.a
     - TOXENV: '2.7-nocover'
       TOXPYTHON: C:\python27-x64\python.exe
@@ -42,7 +42,7 @@ environment:
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '64'
       PYTHON_DLL: C:\Windows\System32\python27.dll
-      PYTHON_DEF: C:\Windows\System32\python27.def
+      PYTHON_DEF: python27.def
       LIBPYTHON: libs/libpython27.a
     - TOXENV: '3.3,codecov'
       TOXPYTHON: C:\python33\python.exe
@@ -51,7 +51,7 @@ environment:
       PYTHON_VERSION: '3.3'
       PYTHON_ARCH: '32'
       PYTHON_DLL: C:\Windows\SysWOW64\python33.dll
-      PYTHON_DEF: C:\Windows\SysWOW64\python33.def
+      PYTHON_DEF: python33.def
       LIBPYTHON: libs/libpython33.a
     - TOXENV: '3.3,codecov'
       TOXPYTHON: C:\python33-x64\python.exe
@@ -60,7 +60,7 @@ environment:
       PYTHON_VERSION: '3.3'
       PYTHON_ARCH: '64'
       PYTHON_DLL: C:\Windows\System32\python33.dll
-      PYTHON_DEF: C:\Windows\System32\python33.def
+      PYTHON_DEF: python33.def
       LIBPYTHON: libs/libpython33.a
     - TOXENV: '3.3-nocover'
       TOXPYTHON: C:\python33\python.exe
@@ -69,7 +69,7 @@ environment:
       PYTHON_VERSION: '3.3'
       PYTHON_ARCH: '32'
       PYTHON_DLL: C:\Windows\SysWOW64\python33.dll
-      PYTHON_DEF: C:\Windows\SysWOW64\python33.def
+      PYTHON_DEF: python33.def
       LIBPYTHON: libs/libpython33.a
     - TOXENV: '3.3-nocover'
       TOXPYTHON: C:\python33-x64\python.exe
@@ -78,7 +78,7 @@ environment:
       PYTHON_VERSION: '3.3'
       PYTHON_ARCH: '64'
       PYTHON_DLL: C:\Windows\System32\python33.dll
-      PYTHON_DEF: C:\Windows\System32\python33.def
+      PYTHON_DEF: python33.def
       LIBPYTHON: libs/libpython33.a
     - TOXENV: '3.4,codecov'
       TOXPYTHON: C:\python34\python.exe
@@ -87,7 +87,7 @@ environment:
       PYTHON_VERSION: '3.4'
       PYTHON_ARCH: '32'
       PYTHON_DLL: C:\Windows\SysWOW64\python34.dll
-      PYTHON_DEF: C:\Windows\SysWOW64\python34.def
+      PYTHON_DEF: python34.def
       LIBPYTHON: libs/libpython34.a
     - TOXENV: '3.4,codecov'
       TOXPYTHON: C:\python34-x64\python.exe
@@ -96,7 +96,7 @@ environment:
       PYTHON_VERSION: '3.4'
       PYTHON_ARCH: '64'
       PYTHON_DLL: C:\Windows\System32\python34.dll
-      PYTHON_DEF: C:\Windows\System32\python34.def
+      PYTHON_DEF: python34.def
       LIBPYTHON: libs/libpython34.a
     - TOXENV: '3.4-nocover'
       TOXPYTHON: C:\python34\python.exe
@@ -105,7 +105,7 @@ environment:
       PYTHON_VERSION: '3.4'
       PYTHON_ARCH: '32'
       PYTHON_DLL: C:\Windows\SysWOW64\python34.dll
-      PYTHON_DEF: C:\Windows\SysWOW64\python34.def
+      PYTHON_DEF: python34.def
       LIBPYTHON: libs/libpython34.a
     - TOXENV: '3.4-nocover'
       TOXPYTHON: C:\python34-x64\python.exe
@@ -114,7 +114,7 @@ environment:
       PYTHON_VERSION: '3.4'
       PYTHON_ARCH: '64'
       PYTHON_DLL: C:\Windows\System32\python34.dll
-      PYTHON_DEF: C:\Windows\System32\python34.def
+      PYTHON_DEF: python34.def
       LIBPYTHON: libs/libpython34.a
     - TOXENV: '3.5,codecov'
       TOXPYTHON: C:\python35\python.exe
@@ -122,7 +122,7 @@ environment:
       PYTHON_VERSION: '3.5'
       PYTHON_ARCH: '32'
       PYTHON_DLL: C:\Windows\SysWOW64\python35.dll
-      PYTHON_DEF: C:\Windows\SysWOW64\python35.def
+      PYTHON_DEF: python35.def
       LIBPYTHON: libs/libpython35.a
     - TOXENV: '3.5,codecov'
       TOXPYTHON: C:\python35-x64\python.exe
@@ -130,7 +130,7 @@ environment:
       PYTHON_VERSION: '3.5'
       PYTHON_ARCH: '64'
       PYTHON_DLL: C:\Windows\System32\python35.dll
-      PYTHON_DEF: C:\Windows\System32\python35.def
+      PYTHON_DEF: python35.def
       LIBPYTHON: libs/libpython35.a
     - TOXENV: '3.5-nocover'
       TOXPYTHON: C:\python35\python.exe
@@ -138,7 +138,7 @@ environment:
       PYTHON_VERSION: '3.5'
       PYTHON_ARCH: '32'
       PYTHON_DLL: C:\Windows\SysWOW64\python35.dll
-      PYTHON_DEF: C:\Windows\SysWOW64\python35.def
+      PYTHON_DEF: python35.def
       LIBPYTHON: libs/libpython35.a
     - TOXENV: '3.5-nocover'
       TOXPYTHON: C:\python35-x64\python.exe
@@ -146,7 +146,7 @@ environment:
       PYTHON_VERSION: '3.5'
       PYTHON_ARCH: '64'
       PYTHON_DLL: C:\Windows\System32\python35.dll
-      PYTHON_DEF: C:\Windows\System32\python35.def
+      PYTHON_DEF: python35.def
       LIBPYTHON: libs/libpython35.a
 init:
   - ps: echo $env:TOXENV

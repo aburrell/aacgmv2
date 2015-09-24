@@ -20,7 +20,7 @@ environment:
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '32'
       PYTHON_DLL: C:\Windows\SysWOW64\{{config.python.replace('.', '')}}.dll
-      PYTHON_DEF: C:\Windows\SysWOW64\{{config.python.replace('.', '')}}.def
+      PYTHON_DEF: {{config.python.replace('.', '')}}.def
       LIBPYTHON: libs/lib{{config.python.replace('.', '')}}.a
     - TOXENV: '{{ env }}{% if config.cover %},codecov{% endif %}'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}-x64\python.exe
@@ -33,7 +33,7 @@ environment:
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '64'
       PYTHON_DLL: C:\Windows\System32\{{config.python.replace('.', '')}}.dll
-      PYTHON_DEF: C:\Windows\System32\{{config.python.replace('.', '')}}.def
+      PYTHON_DEF: {{config.python.replace('.', '')}}.def
       LIBPYTHON: libs/lib{{config.python.replace('.', '')}}.a
 {% endif %}{% endfor %}
 init:
