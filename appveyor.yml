@@ -153,8 +153,10 @@ init:
   - ps: ls C:\Python*
   - echo [build]>%userprofile%\pydistutils.cfg
   - echo compiler=mingw32>>%userprofile%\pydistutils.cfg
+  - dir C:\Windows\System32\python*.dll
+  - dir C:\Windows\SysWOW64\python*.dll
   - set PATH=C:\MinGW\bin;%PATH%;C:\MinGW\bin
-  - c:\mingw\bin\mingw-get.exe install gendef
+  - C:\mingw\bin\mingw-get.exe install gendef
   - C:\MinGW\bin\gendef.exe %PYTHON_DLL%
   - C:\MinGW\bin\dlltool.exe --dllname %PYTHON_DLL% --def %PYTHON_DEF% --output-lib %PYTHON_HOME%\%LIBPYTHON%
 install:
