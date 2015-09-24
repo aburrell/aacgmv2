@@ -46,7 +46,7 @@ init:
   - cp %PYTHON_DLL% python.dll
   - C:\MinGW\bin\gendef.exe python.dll
   - C:\MinGW\bin\dlltool.exe --dllname python.dll --def python.def --output-lib libpython.a
-  - cp libpython.a %PYTHON_HOME\libs\%LIBPYTHON%
+  - cp libpython.a %PYTHON_HOME%\libs\%LIBPYTHON%
   - del python.dll python.def libpython.a
   - chdir
   - dir C:\projects
