@@ -45,7 +45,7 @@ init:
   - C:\mingw\bin\mingw-get.exe install gendef
   - C:\MinGW\bin\gendef.exe %PYTHON_DLL%
   - C:\MinGW\bin\dlltool.exe --dllname %PYTHON_DLL% --def %PYTHON_DEF% --output-lib %PYTHON_HOME%\libs\%LIBPYTHON%
-  - del python.def
+  - del %PYTHON_DEF%
   - dir %PYTHON_HOME%\libs
 install:
   - python -u ci\appveyor-bootstrap.py
