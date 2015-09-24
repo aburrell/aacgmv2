@@ -26,7 +26,7 @@ def read(*names, **kwargs):
 setup(
     name='aacgmv2',
     version='0.1.0',
-    license='BSD',
+    license='MIT',
     description='"A Python wrapper for AACGM-v2 magnetic coordinates"',
     long_description='%s\n%s' % (read('README.rst'), re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))),
     author='Christer van der Meeren',
@@ -41,7 +41,7 @@ setup(
         # complete classifier list: http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: Unix',
         'Operating System :: POSIX',
         'Operating System :: Microsoft :: Windows',
@@ -52,7 +52,6 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Utilities',
     ],
     keywords=[
@@ -67,12 +66,7 @@ setup(
         #   ':python_version=="2.6"': ['argparse'],
     },
     ext_modules=[
-        Extension(
-            splitext(relpath(path, 'src').replace(os.sep, '.'))[0],
-            sources=[path],
-            include_dirs=[dirname(path)]
-        )
-        for root, _, _ in os.walk('src')
-        for path in glob(join(root, '*.c'))
+        Extension('aacgmv2_interface', sources = ['src/aacgmv2/aacgmv2_interface.c', 'src/aacgmv2/c_aacgm_v2/aacgmlib_v2.c', 'src/aacgmv2/c_aacgm_v2/genmag.c', 'src/aacgmv2/c_aacgm_v2/igrflib.c'],
+        include_dirs = ['src/aacgmv2/c_aacgm_v2'])
     ]
 )
