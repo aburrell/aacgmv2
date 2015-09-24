@@ -14,7 +14,7 @@ environment:
       PYTHON_HOME: C:\python27
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '32'
-      PYTHON_DLL: C:\Windows\SysWOW64\python27.dll
+      PYTHON_DLL: C:\Windows\System32\python27.dll
       PYTHON_DEF: python27.def
       LIBPYTHON: libpython27.a
       DLLTOOL_ARCH: i386
@@ -24,7 +24,7 @@ environment:
       PYTHON_HOME: C:\python27-x64
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '64'
-      PYTHON_DLL: C:\Windows\System32\python27.dll
+      PYTHON_DLL: C:\Windows\SysWOW64\python27.dll
       PYTHON_DEF: python27.def
       LIBPYTHON: libpython27.a
       DLLTOOL_ARCH: i386:x86-64
@@ -34,7 +34,7 @@ environment:
       PYTHON_HOME: C:\python27
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '32'
-      PYTHON_DLL: C:\Windows\SysWOW64\python27.dll
+      PYTHON_DLL: C:\Windows\System32\python27.dll
       PYTHON_DEF: python27.def
       LIBPYTHON: libpython27.a
       DLLTOOL_ARCH: i386
@@ -44,7 +44,7 @@ environment:
       PYTHON_HOME: C:\python27-x64
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '64'
-      PYTHON_DLL: C:\Windows\System32\python27.dll
+      PYTHON_DLL: C:\Windows\SysWOW64\python27.dll
       PYTHON_DEF: python27.def
       LIBPYTHON: libpython27.a
       DLLTOOL_ARCH: i386:x86-64
@@ -54,7 +54,7 @@ environment:
       PYTHON_HOME: C:\python33
       PYTHON_VERSION: '3.3'
       PYTHON_ARCH: '32'
-      PYTHON_DLL: C:\Windows\SysWOW64\python33.dll
+      PYTHON_DLL: C:\Windows\System32\python33.dll
       PYTHON_DEF: python33.def
       LIBPYTHON: libpython33.a
       DLLTOOL_ARCH: i386
@@ -64,7 +64,7 @@ environment:
       PYTHON_HOME: C:\python33-x64
       PYTHON_VERSION: '3.3'
       PYTHON_ARCH: '64'
-      PYTHON_DLL: C:\Windows\System32\python33.dll
+      PYTHON_DLL: C:\Windows\SysWOW64\python33.dll
       PYTHON_DEF: python33.def
       LIBPYTHON: libpython33.a
       DLLTOOL_ARCH: i386:x86-64
@@ -74,7 +74,7 @@ environment:
       PYTHON_HOME: C:\python33
       PYTHON_VERSION: '3.3'
       PYTHON_ARCH: '32'
-      PYTHON_DLL: C:\Windows\SysWOW64\python33.dll
+      PYTHON_DLL: C:\Windows\System32\python33.dll
       PYTHON_DEF: python33.def
       LIBPYTHON: libpython33.a
       DLLTOOL_ARCH: i386
@@ -84,7 +84,7 @@ environment:
       PYTHON_HOME: C:\python33-x64
       PYTHON_VERSION: '3.3'
       PYTHON_ARCH: '64'
-      PYTHON_DLL: C:\Windows\System32\python33.dll
+      PYTHON_DLL: C:\Windows\SysWOW64\python33.dll
       PYTHON_DEF: python33.def
       LIBPYTHON: libpython33.a
       DLLTOOL_ARCH: i386:x86-64
@@ -94,7 +94,7 @@ environment:
       PYTHON_HOME: C:\python34
       PYTHON_VERSION: '3.4'
       PYTHON_ARCH: '32'
-      PYTHON_DLL: C:\Windows\SysWOW64\python34.dll
+      PYTHON_DLL: C:\Windows\System32\python34.dll
       PYTHON_DEF: python34.def
       LIBPYTHON: libpython34.a
       DLLTOOL_ARCH: i386
@@ -104,7 +104,7 @@ environment:
       PYTHON_HOME: C:\python34-x64
       PYTHON_VERSION: '3.4'
       PYTHON_ARCH: '64'
-      PYTHON_DLL: C:\Windows\System32\python34.dll
+      PYTHON_DLL: C:\Windows\SysWOW64\python34.dll
       PYTHON_DEF: python34.def
       LIBPYTHON: libpython34.a
       DLLTOOL_ARCH: i386:x86-64
@@ -114,7 +114,7 @@ environment:
       PYTHON_HOME: C:\python34
       PYTHON_VERSION: '3.4'
       PYTHON_ARCH: '32'
-      PYTHON_DLL: C:\Windows\SysWOW64\python34.dll
+      PYTHON_DLL: C:\Windows\System32\python34.dll
       PYTHON_DEF: python34.def
       LIBPYTHON: libpython34.a
       DLLTOOL_ARCH: i386
@@ -124,7 +124,7 @@ environment:
       PYTHON_HOME: C:\python34-x64
       PYTHON_VERSION: '3.4'
       PYTHON_ARCH: '64'
-      PYTHON_DLL: C:\Windows\System32\python34.dll
+      PYTHON_DLL: C:\Windows\SysWOW64\python34.dll
       PYTHON_DEF: python34.def
       LIBPYTHON: libpython34.a
       DLLTOOL_ARCH: i386:x86-64
@@ -133,7 +133,7 @@ environment:
       PYTHON_HOME: C:\python35
       PYTHON_VERSION: '3.5'
       PYTHON_ARCH: '32'
-      PYTHON_DLL: C:\Windows\SysWOW64\python35.dll
+      PYTHON_DLL: C:\Windows\System32\python35.dll
       PYTHON_DEF: python35.def
       LIBPYTHON: libpython35.a
       DLLTOOL_ARCH: i386
@@ -142,7 +142,7 @@ environment:
       PYTHON_HOME: C:\python35-x64
       PYTHON_VERSION: '3.5'
       PYTHON_ARCH: '64'
-      PYTHON_DLL: C:\Windows\System32\python35.dll
+      PYTHON_DLL: C:\Windows\SysWOW64\python35.dll
       PYTHON_DEF: python35.def
       LIBPYTHON: libpython35.a
       DLLTOOL_ARCH: i386:x86-64
@@ -151,7 +151,7 @@ environment:
       PYTHON_HOME: C:\python35
       PYTHON_VERSION: '3.5'
       PYTHON_ARCH: '32'
-      PYTHON_DLL: C:\Windows\SysWOW64\python35.dll
+      PYTHON_DLL: C:\Windows\System32\python35.dll
       PYTHON_DEF: python35.def
       LIBPYTHON: libpython35.a
       DLLTOOL_ARCH: i386
@@ -160,7 +160,7 @@ environment:
       PYTHON_HOME: C:\python35-x64
       PYTHON_VERSION: '3.5'
       PYTHON_ARCH: '64'
-      PYTHON_DLL: C:\Windows\System32\python35.dll
+      PYTHON_DLL: C:\Windows\SysWOW64\python35.dll
       PYTHON_DEF: python35.def
       LIBPYTHON: libpython35.a
       DLLTOOL_ARCH: i386:x86-64

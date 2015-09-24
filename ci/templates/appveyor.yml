@@ -19,7 +19,7 @@ environment:
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '32'
-      PYTHON_DLL: C:\Windows\SysWOW64\{{config.python.replace('.', '')}}.dll
+      PYTHON_DLL: C:\Windows\System32\{{config.python.replace('.', '')}}.dll
       PYTHON_DEF: {{config.python.replace('.', '')}}.def
       LIBPYTHON: lib{{config.python.replace('.', '')}}.a
       DLLTOOL_ARCH: i386
@@ -33,7 +33,7 @@ environment:
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}-x64
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '64'
-      PYTHON_DLL: C:\Windows\System32\{{config.python.replace('.', '')}}.dll
+      PYTHON_DLL: C:\Windows\SysWOW64\{{config.python.replace('.', '')}}.dll
       PYTHON_DEF: {{config.python.replace('.', '')}}.def
       LIBPYTHON: lib{{config.python.replace('.', '')}}.a
       DLLTOOL_ARCH: i386:x86-64
