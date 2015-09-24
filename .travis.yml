@@ -6,8 +6,6 @@ env:
     LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
   matrix:
     - TOXENV=check
-    - TOXENV=2.6,extension-coveralls,coveralls,codecov
-    - TOXENV=2.6-nocover
     - TOXENV=2.7,extension-coveralls,coveralls,codecov
     - TOXENV=2.7-nocover
     - TOXENV=3.3,extension-coveralls,coveralls,codecov
