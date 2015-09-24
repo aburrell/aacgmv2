@@ -153,7 +153,7 @@ init:
   - ps: ls C:\Python*
   - echo [build]>%userprofile%\pydistutils.cfg
   - echo compiler=mingw32>>%userprofile%\pydistutils.cfg
-  - set PATH=C:\MinGW\bin;%PATH%;C:\MinGW\bin
+
   - C:\mingw\bin\mingw-get.exe install gendef
 install:
   - python -u ci\appveyor-bootstrap.py
