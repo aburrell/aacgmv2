@@ -17,7 +17,6 @@ environment:
       PYTHON_DLL: C:\Windows\System32\python27.dll
       PYTHON_DEF: python27.def
       LIBPYTHON: libpython27.a
-      DLLTOOL_ARCH: i386
     - TOXENV: '2.7,codecov'
       TOXPYTHON: C:\python27-x64\python.exe
       WINDOWS_SDK_VERSION: v7.0
@@ -27,7 +26,6 @@ environment:
       PYTHON_DLL: C:\Windows\SysWOW64\python27.dll
       PYTHON_DEF: python27.def
       LIBPYTHON: libpython27.a
-      DLLTOOL_ARCH: i386:x86-64
     - TOXENV: '2.7-nocover'
       TOXPYTHON: C:\python27\python.exe
       WINDOWS_SDK_VERSION: v7.0
@@ -37,7 +35,6 @@ environment:
       PYTHON_DLL: C:\Windows\System32\python27.dll
       PYTHON_DEF: python27.def
       LIBPYTHON: libpython27.a
-      DLLTOOL_ARCH: i386
     - TOXENV: '2.7-nocover'
       TOXPYTHON: C:\python27-x64\python.exe
       WINDOWS_SDK_VERSION: v7.0
@@ -47,7 +44,6 @@ environment:
       PYTHON_DLL: C:\Windows\SysWOW64\python27.dll
       PYTHON_DEF: python27.def
       LIBPYTHON: libpython27.a
-      DLLTOOL_ARCH: i386:x86-64
     - TOXENV: '3.3,codecov'
       TOXPYTHON: C:\python33\python.exe
       WINDOWS_SDK_VERSION: v7.1
@@ -57,7 +53,6 @@ environment:
       PYTHON_DLL: C:\Windows\System32\python33.dll
       PYTHON_DEF: python33.def
       LIBPYTHON: libpython33.a
-      DLLTOOL_ARCH: i386
     - TOXENV: '3.3,codecov'
       TOXPYTHON: C:\python33-x64\python.exe
       WINDOWS_SDK_VERSION: v7.1
@@ -67,7 +62,6 @@ environment:
       PYTHON_DLL: C:\Windows\SysWOW64\python33.dll
       PYTHON_DEF: python33.def
       LIBPYTHON: libpython33.a
-      DLLTOOL_ARCH: i386:x86-64
     - TOXENV: '3.3-nocover'
       TOXPYTHON: C:\python33\python.exe
       WINDOWS_SDK_VERSION: v7.1
@@ -77,7 +71,6 @@ environment:
       PYTHON_DLL: C:\Windows\System32\python33.dll
       PYTHON_DEF: python33.def
       LIBPYTHON: libpython33.a
-      DLLTOOL_ARCH: i386
     - TOXENV: '3.3-nocover'
       TOXPYTHON: C:\python33-x64\python.exe
       WINDOWS_SDK_VERSION: v7.1
@@ -87,7 +80,6 @@ environment:
       PYTHON_DLL: C:\Windows\SysWOW64\python33.dll
       PYTHON_DEF: python33.def
       LIBPYTHON: libpython33.a
-      DLLTOOL_ARCH: i386:x86-64
     - TOXENV: '3.4,codecov'
       TOXPYTHON: C:\python34\python.exe
       WINDOWS_SDK_VERSION: v7.0
@@ -97,7 +89,6 @@ environment:
       PYTHON_DLL: C:\Windows\System32\python34.dll
       PYTHON_DEF: python34.def
       LIBPYTHON: libpython34.a
-      DLLTOOL_ARCH: i386
     - TOXENV: '3.4,codecov'
       TOXPYTHON: C:\python34-x64\python.exe
       WINDOWS_SDK_VERSION: v7.1
@@ -107,7 +98,6 @@ environment:
       PYTHON_DLL: C:\Windows\SysWOW64\python34.dll
       PYTHON_DEF: python34.def
       LIBPYTHON: libpython34.a
-      DLLTOOL_ARCH: i386:x86-64
     - TOXENV: '3.4-nocover'
       TOXPYTHON: C:\python34\python.exe
       WINDOWS_SDK_VERSION: v7.0
@@ -117,7 +107,6 @@ environment:
       PYTHON_DLL: C:\Windows\System32\python34.dll
       PYTHON_DEF: python34.def
       LIBPYTHON: libpython34.a
-      DLLTOOL_ARCH: i386
     - TOXENV: '3.4-nocover'
       TOXPYTHON: C:\python34-x64\python.exe
       WINDOWS_SDK_VERSION: v7.1
@@ -127,7 +116,6 @@ environment:
       PYTHON_DLL: C:\Windows\SysWOW64\python34.dll
       PYTHON_DEF: python34.def
       LIBPYTHON: libpython34.a
-      DLLTOOL_ARCH: i386:x86-64
     - TOXENV: '3.5,codecov'
       TOXPYTHON: C:\python35\python.exe
       PYTHON_HOME: C:\python35
@@ -136,7 +124,6 @@ environment:
       PYTHON_DLL: C:\Windows\System32\python35.dll
       PYTHON_DEF: python35.def
       LIBPYTHON: libpython35.a
-      DLLTOOL_ARCH: i386
     - TOXENV: '3.5,codecov'
       TOXPYTHON: C:\python35-x64\python.exe
       PYTHON_HOME: C:\python35-x64
@@ -145,7 +132,6 @@ environment:
       PYTHON_DLL: C:\Windows\SysWOW64\python35.dll
       PYTHON_DEF: python35.def
       LIBPYTHON: libpython35.a
-      DLLTOOL_ARCH: i386:x86-64
     - TOXENV: '3.5-nocover'
       TOXPYTHON: C:\python35\python.exe
       PYTHON_HOME: C:\python35
@@ -154,7 +140,6 @@ environment:
       PYTHON_DLL: C:\Windows\System32\python35.dll
       PYTHON_DEF: python35.def
       LIBPYTHON: libpython35.a
-      DLLTOOL_ARCH: i386
     - TOXENV: '3.5-nocover'
       TOXPYTHON: C:\python35-x64\python.exe
       PYTHON_HOME: C:\python35-x64
@@ -163,7 +148,6 @@ environment:
       PYTHON_DLL: C:\Windows\SysWOW64\python35.dll
       PYTHON_DEF: python35.def
       LIBPYTHON: libpython35.a
-      DLLTOOL_ARCH: i386:x86-64
 init:
   - ps: echo $env:TOXENV
   - ps: ls C:\Python*
@@ -172,7 +156,7 @@ init:
   - set PATH=C:\MinGW\bin;%PATH%;C:\MinGW\bin
   - C:\mingw\bin\mingw-get.exe install gendef
   - C:\MinGW\bin\gendef.exe %PYTHON_DLL%
-  - C:\MinGW\bin\dlltool.exe --dllname %PYTHON_DLL% --def %PYTHON_DEF% --output-lib %PYTHON_HOME%\libs\%LIBPYTHON% -m %DLLTOOL_ARCH%
+  - C:\MinGW\bin\dlltool.exe --dllname %PYTHON_DLL% --def %PYTHON_DEF% --output-lib %PYTHON_HOME%\libs\%LIBPYTHON%
   - del %PYTHON_DEF%
   - dir %PYTHON_HOME%\libs
 install:
