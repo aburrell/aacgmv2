@@ -42,7 +42,7 @@ AACGM-v2 Python library
     :target: https://landscape.io/github/cmeeren/aacgmv2/master
     :alt: Code Quality Status
 
-.. |codacy| image:: https://img.shields.io/codacy/REPLACE_WITH_PROJECT_ID.svg?style=flat
+.. |codacy| image:: https://img.shields.io/codacy/af7fdf6be28841f283dfdbc1c01fa82a.svg?style=flat
     :target: https://www.codacy.com/app/cmeeren/aacgmv2
     :alt: Codacy Code Quality Status
 
