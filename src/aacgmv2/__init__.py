@@ -15,4 +15,11 @@ set_coeff_path()
 
 from aacgmv2 import _aacgmv2
 
-__all__ = ['_aacgmv2', 'set_coeff_path', 'AACGM_v2_DAT_PREFIX']
+G2A = 0
+A2G = 1
+TRACE = 2
+ALLOWTRACE = 4
+BADIDEA = 8
+GEOCENTRIC = 16
+
+__all__ = ['_aacgmv2', 'set_coeff_path', 'AACGM_v2_DAT_PREFIX', 'G2A', 'A2G', 'TRACE', 'ALLOWTRACE', 'BADIDEA', 'GEOCENTRIC']
