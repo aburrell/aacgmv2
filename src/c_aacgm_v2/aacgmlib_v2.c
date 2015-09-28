@@ -54,13 +54,13 @@
 #include "genmag.h"
 
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+	#define M_PI 3.14159265358979323846
 #endif
 
 #ifdef _MSC_VER
-#include <float.h>
-#define INFINITY (DBL_MAX+DBL_MAX)
-#define NAN (INFINITY-INFINITY)
+	#include <float.h>
+	#define INFINITY (DBL_MAX+DBL_MAX)
+	#define NAN (INFINITY-INFINITY)
 #endif
 
 #define DEBUG 0
@@ -91,10 +91,10 @@ struct {
 } sph_harm_model;
 
 #ifndef complex
-struct complex {
-	double x;
-	double y;
-};
+	struct complex {
+		double x;
+		double y;
+	};
 #endif
 
 
