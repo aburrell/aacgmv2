@@ -16,7 +16,7 @@ aacgmv2_setDateTime(PyObject *self, PyObject *args)
     err = AACGM_v2_SetDateTime(year, month, day, hour, minute, second);
 
     if (err < 0) {
-        PyErr_SetString(PyExc_RuntimeError, "AACGM_v2_SetDateTime returned error");
+        PyErr_Format(PyExc_RuntimeError, "AACGM_v2_SetDateTime returned error code %d", err);
         return NULL;
     }
 
@@ -38,7 +38,7 @@ aacgmv2_aacgmConvert(PyObject *self, PyObject *args)
 
     err = AACGM_v2_Convert(in_lat, in_lon, height, &out_lat, &out_lon, &r, code);
     if (err < 0) {
-        PyErr_SetString(PyExc_RuntimeError, "AACGM_v2_Convert returned error");
+        PyErr_Format(PyExc_RuntimeError, "AACGM_v2_Convert returned error code %d", err);
         return NULL;
     }
 
@@ -58,7 +58,7 @@ static PyMethodDef aacgmv2Methods[] = {
   static struct PyModuleDef aacgmv2module = {
       PyModuleDef_HEAD_INIT,
       "_aacgmv2",   /* name of module */
-      "FIXME doc here", /* module documentation, may be NULL */
+      NULL, /* module documentation, may be NULL */
       -1,       /* size of per-interpreter state of the module,
                    or -1 if the module keeps state in global variables. */
       aacgmv2Methods
