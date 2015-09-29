@@ -662,7 +662,7 @@ int IGRF_SetDateTime(int year, int month, int day,
 	int err;
 
 	/* load coefficients if not already loaded */
-	if (igrf_date.year < 0) {
+	if (igrf_date.year != year || igrf_date.month != month || igrf_date.day != day) {
 		strcpy(fname,getenv("IGRF_12_COEFFS"));
 		if (strlen(fname)==0) {
 			err = IGRF_loadcoeffs(IGRF_FILE);
@@ -761,7 +761,7 @@ int IGRF_SetNow(void)
 	struct tm *tm_now;
 
 	/* load coefficients if not already loaded */
-	if (igrf_date.year < 0) {
+	if (igrf_date.year != (*tm_now).tm_year + 1900 || igrf_date.month  != (*tm_now).tm_mon  + 1 || igrf_date.day != (*tm_now).tm_mday) {
 		strcpy(fname,getenv("IGRF_12_COEFFS"));
 		if (strlen(fname)==0) {
 			err = IGRF_loadcoeffs(IGRF_FILE);
