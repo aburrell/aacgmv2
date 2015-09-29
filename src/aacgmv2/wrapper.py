@@ -44,7 +44,7 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, 
     =======
 
     lat, lon : ``numpy.array``
-        ..
+        Converted latitude and longitude
 
     References
     ==========
@@ -69,7 +69,8 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, 
     if np.max(np.abs(lat)) > 90:
         raise ValueError('Latitude must be in the range -90 to +90 degrees')
 
-    # TODO: constrain values between -180 and 180
+    # constrain longitudes between -180 and 180
+    lon = ((lon + 180) % 360) - 180
 
     # set to current date if none is given
     if date is None:
