@@ -658,13 +658,13 @@ int IGRF_interpolate_coefs(void) {
 int IGRF_SetDateTime(int year, int month, int day,
 											int hour, int minute, int second)
 {
-	char fname[256];
+	char *fname;
 	int err;
 
 	/* load coefficients if not already loaded */
 	if (igrf_date.year != year || igrf_date.month != month || igrf_date.day != day) {
-		strcpy(fname,getenv("IGRF_12_COEFFS"));
-		if (strlen(fname)==0) {
+		fname = getenv("IGRF_12_COEFFS");
+		if (fname==NULL) {
 			err = IGRF_loadcoeffs(IGRF_FILE);
 		} else {
 			err = IGRF_loadcoeffs(fname);
@@ -754,7 +754,7 @@ int IGRF_GetDateTime(int *year, int *month, int *day,
 int IGRF_SetNow(void)
 {
 	/* current time */
-	char fname[256];
+	char *fname;
 	int err,dyno;
 	double fyear;
 	time_t now;
@@ -762,8 +762,8 @@ int IGRF_SetNow(void)
 
 	/* load coefficients if not already loaded */
 	if (igrf_date.year != (*tm_now).tm_year + 1900 || igrf_date.month  != (*tm_now).tm_mon  + 1 || igrf_date.day != (*tm_now).tm_mday) {
-		strcpy(fname,getenv("IGRF_12_COEFFS"));
-		if (strlen(fname)==0) {
+		fname = getenv("IGRF_12_COEFFS");
+		if (fname==NULL) {
 			err = IGRF_loadcoeffs(IGRF_FILE);
 		} else {
 			err = IGRF_loadcoeffs(fname);
