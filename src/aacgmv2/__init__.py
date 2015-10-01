@@ -23,11 +23,6 @@ set_coeff_path()
 # environment variables above, otherwise it doesn't seem to inherit them
 from aacgmv2 import _aacgmv2
 
-G2A = 0
-A2G = 1
-TRACE = 2
-ALLOWTRACE = 4
-BADIDEA = 8
-GEOCENTRIC = 16
+from aacgmv2.wrapper import convert, convert_mlt, subsol
 
-__all__ = ['_aacgmv2', 'set_coeff_path', 'AACGM_v2_DAT_PREFIX', 'G2A', 'A2G', 'TRACE', 'ALLOWTRACE', 'BADIDEA', 'GEOCENTRIC']
+__all__ = ['_aacgmv2', 'set_coeff_path', 'AACGM_v2_DAT_PREFIX', 'IGRF_12_COEFFS', 'convert', 'convert_mlt', 'subsol']

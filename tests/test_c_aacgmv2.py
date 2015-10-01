@@ -1,7 +1,7 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 
 import aacgmv2
-from aacgmv2 import G2A, A2G, TRACE, ALLOWTRACE, BADIDEA, GEOCENTRIC
+from aacgmv2._aacgmv2 import G2A, A2G, TRACE, ALLOWTRACE, BADIDEA, GEOCENTRIC
 import pytest
 import numpy as np
 
@@ -11,6 +11,15 @@ def test_module_structure():
     assert aacgmv2._aacgmv2
     assert aacgmv2._aacgmv2.setDateTime
     assert aacgmv2._aacgmv2.aacgmConvert
+
+
+def test_constants():
+    assert aacgmv2._aacgmv2.G2A == 0
+    assert aacgmv2._aacgmv2.A2G == 1
+    assert aacgmv2._aacgmv2.TRACE == 2
+    assert aacgmv2._aacgmv2.ALLOWTRACE == 4
+    assert aacgmv2._aacgmv2.BADIDEA == 8
+    assert aacgmv2._aacgmv2.GEOCENTRIC == 16
 
 
 def test_setDateTime():

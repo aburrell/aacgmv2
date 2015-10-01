@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "aacgmlib_v2.h"
 
+PyObject *module;
+
 
 static PyObject *
 aacgmv2_setDateTime(PyObject *self, PyObject *args)
@@ -127,14 +129,27 @@ For example, to convert from AACGM-v2 to geographpic using field-line tracing, u
 
   PyMODINIT_FUNC PyInit__aacgmv2(void)
   {
-      return PyModule_Create(&aacgmv2module);
+      module = PyModule_Create(&aacgmv2module);
+      PyModule_AddIntConstant(module, "G2A", G2A);
+      PyModule_AddIntConstant(module, "A2G", A2G);
+      PyModule_AddIntConstant(module, "TRACE", TRACE);
+      PyModule_AddIntConstant(module, "ALLOWTRACE", ALLOWTRACE);
+      PyModule_AddIntConstant(module, "BADIDEA", BADIDEA);
+      PyModule_AddIntConstant(module, "GEOCENTRIC", GEOCENTRIC);
+      return module;
   }
 
 #else
 
   PyMODINIT_FUNC init_aacgmv2(void)
   {
-      (void) Py_InitModule("_aacgmv2", aacgmv2Methods);
+      module = Py_InitModule("_aacgmv2", aacgmv2Methods);
+      PyModule_AddIntConstant(module, "G2A", G2A);
+      PyModule_AddIntConstant(module, "A2G", A2G);
+      PyModule_AddIntConstant(module, "TRACE", TRACE);
+      PyModule_AddIntConstant(module, "ALLOWTRACE", ALLOWTRACE);
+      PyModule_AddIntConstant(module, "BADIDEA", BADIDEA);
+      PyModule_AddIntConstant(module, "GEOCENTRIC", GEOCENTRIC);
   }
 
 #endif
