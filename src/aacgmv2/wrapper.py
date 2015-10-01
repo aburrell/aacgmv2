@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """This module provides a user-friendly pythonic wrapper for the low-level C interface functions."""
 
-from __future__ import division, absolute_import, print_function
+from __future__ import division, absolute_import, print_function, unicode_literals
 
 import numpy as np
 import aacgmv2
@@ -15,35 +15,33 @@ aacgmConvert_vectorized2 = np.frompyfunc(aacgmv2._aacgmv2.aacgmConvert, 4, 3)
 def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, badidea=False, geocentric=False):
     '''Converts to/from geomagnetic coordinates
 
-    The parameters `lat`, `lon`, and `alt` can be single numbers or
-    1D arrays/lists of length N.
-
     Parameters
     ==========
     lat, lon, alt : array_like or float
         Input latitude(s), longitude(s) and altitude(s). They must be
-        broadcastable to the same shape (i.e., you can mix single numbers
-        and arrays, but the arrays must be the same length).
+        broadcastable to the same shape.
     date : :class:`datetime.date`/:class:`datetime.datetime`, optional
         The date/time to use for the magnetic field (default is ``None``,
         which uses the current time).
     a2g : bool, optional
         Convert from AACGM-v2 to geographic coordinates (default is ``False``,
-        which implies conversion from geographic to AACGM-v2)
+        which implies conversion from geographic to AACGM-v2).
     trace : bool, optional
-        Use field-line tracing instead of coefficients. More precise but significantly slower.
+        Use field-line tracing instead of coefficients. More precise, but
+        significantly slower.
     allowtrace : bool, optional
-        Automatically use field-line tracing above 2000 km (default is ``False``, which causes an
-        exception to be thrown for these altitudes unless `trace` or `badidea` is set).
+        Automatically use field-line tracing above 2000 km (default is
+        ``False``, which causes an exception to be thrown for these altitudes
+        unless ``trace=True`` or ``badidea=True``).
     badidea : bool, optional
-        Allow use of coefficients above 2000 km (bad idea!).
+        Allow use of coefficients above 2000 km (bad idea!)
     geocentric : bool, optional
         Assume inputs are geocentric with Earth radius 6371.2 km.
 
     Returns
     =======
 
-    lat, lon : ``numpy.array``
+    lat_out, lon_out : ``numpy.ndarray``
         Converted latitude and longitude
 
     References
@@ -54,17 +52,19 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, 
 
     .. [1] Shepherd, S. G. (2014), Altitude-adjusted corrected geomagnetic
        coordinates: Definition and functional approximations,
-       J. Geophys. Res. Space Physics, 119, 7501–7521,
+       J. Geophys. Res. Space Physics, 119, 7501--7521,
        doi:`10.1002/2014JA020264 <http://dx.doi.org/10.1002/2014JA020264>`_.
 
-    '''
+   '''
 
+    # check values
     if np.min(alt) < 0:
-        warnings.warn('Coordinate transformations are not intended for altitudes < 0 km')
+        warnings.warn('Coordinate transformations are not intended for altitudes < 0 km', UserWarning)
 
     if np.max(alt) > 2000 and not (trace or allowtrace or badidea):
-        raise ValueError('Coefficients are not valid for altitudes above 2000 km. You must either ue field-line tracing'
-                         ' (trace=True or allowtrace=True) or indicate you know this is a bad idea (badidea=True)')
+        raise ValueError('Coefficients are not valid for altitudes above 2000 km. You must either use field-line '
+                         'tracing (trace=True or allowtrace=True) or indicate you know this is a bad idea '
+                         '(badidea=True)')
 
     if np.max(np.abs(lat)) > 90:
         raise ValueError('Latitude must be in the range -90 to +90 degrees')

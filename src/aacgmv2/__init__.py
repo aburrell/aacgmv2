@@ -9,13 +9,18 @@ IGRF_12_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)), 'i
 
 
 def set_coeff_path():
-    '''Sets the environment variable AACGM_v2_DAT_PREFIX (for the current process)'''
+    '''Sets the environment variable AACGM_v2_DAT_PREFIX (for the current process).
+
+    Automatically called when importing aacgmv2.
+    '''
     _os.environ['AACGM_v2_DAT_PREFIX'] = AACGM_v2_DAT_PREFIX
     _os.environ['IGRF_12_COEFFS'] = IGRF_12_COEFFS
 
-
 set_coeff_path()
 
+
+# NOTE: it is important that we import _aacgmv2 AFTER setting the
+# environment variables above, otherwise it doesn't seem to inherit them
 from aacgmv2 import _aacgmv2
 
 G2A = 0

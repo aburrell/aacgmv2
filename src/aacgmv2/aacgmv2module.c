@@ -47,8 +47,68 @@ aacgmv2_aacgmConvert(PyObject *self, PyObject *args)
 
 
 static PyMethodDef aacgmv2Methods[] = {
-   { "setDateTime" , aacgmv2_setDateTime , METH_VARARGS, "Sets the date and time for the IGRF magnetic field." },
-   { "aacgmConvert", aacgmv2_aacgmConvert, METH_VARARGS, "Converts between geographic and magnetic coordinates." },
+   { "setDateTime" , aacgmv2_setDateTime , METH_VARARGS, "setDateTime(year, month, day, hour, minute, second)\n\
+\n\
+Sets the date and time for the IGRF magnetic field. \n\
+\n\
+Parameters\n\
+==========\n\
+year : int [1900, 2020)\n\
+    ..\n\
+month : int [1, 12]\n\
+    ..\n\
+day : int [1, 31]\n\
+    ..\n\
+hour : int [0, 24]\n\
+    ..\n\
+minute : int [0, 60]\n\
+    ..\n\
+second : int [0, 60]\n\
+    .." },
+   { "aacgmConvert", aacgmv2_aacgmConvert, METH_VARARGS, "aacgmConvert(in_lat, in_lon, height, code) -> out_lat, out_lon, r\n\
+\n\
+Converts between geographic and magnetic coordinates.\n\
+\n\
+Parameters\n\
+----------\n\
+in_lat : float [-90, 90]\n\
+    Input latitude \n\
+in_lon : float [-180, 180]\n\
+    Input longitude\n\
+height : float\n\
+    Input altitude\n\
+code : int\n\
+    Bitwise code for passing options into converter. The codes and their names (defined in this module) are given in the table below.\n\
+\n\
+Returns\n\
+=======\n\
+out_lat : float\n\
+    Converted latitude\n\
+out_lon : float\n\
+    Converted longitude\n\
+r : float\n\
+    Not used, always 1.0\n\
+\n\
+Notes\n\
+=====\n\
+The bitwise codes are:\n\
+\n\
+======  ============ =============\n\
+ Code    Name         Description\n\
+======  ============ =============\n\
+   0     G2A          Convert geographic to AACGM-v2.\n\
+   1     A2G          Convert AACGM-v2 to geographic.\n\
+   2     TRACE        Use field-line tracing instead of coefficients. More precise, but significantly slower.\n\
+   4     ALLOWTRACE   Automatically use field-line tracing above 2000 km. If not set, cause exception to be thrown for these altitudes unless TRACE or BADIDEA is set.\n\
+   8     BADIDEA      Allow use of coefficients above 2000 km (bad idea!)\n\
+  16     GEOCENTRIC   Assume inputs are geocentric with Earth radius 6371.2 km.\n\
+======  ============ =============\n\
+    \n\
+For example, to convert from AACGM-v2 to geographpic using field-line tracing, use either of the following:\n\
+\n\
+    >>> aacgmConvert(in_lat, in_lon, height, A2G | TRACE)\n\
+    >>> aacgmConvert(in_lat, in_lon, height, 1 | 2)\n\
+    >>> aacgmConvert(in_lat, in_lon, height, 3)" },
    { NULL, NULL, 0, NULL }
 };
 
@@ -58,7 +118,7 @@ static PyMethodDef aacgmv2Methods[] = {
   static struct PyModuleDef aacgmv2module = {
       PyModuleDef_HEAD_INIT,
       "_aacgmv2",   /* name of module */
-      NULL, /* module documentation, may be NULL */
+      "This module contains the interface to the AACGM-v2 C library.", /* module documentation, may be NULL */
       -1,       /* size of per-interpreter state of the module,
                    or -1 if the module keeps state in global variables. */
       aacgmv2Methods
