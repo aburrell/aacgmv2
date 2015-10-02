@@ -192,6 +192,16 @@ environment:
       PYTHON_HOME: C:\python35-x64
       PYTHON_VERSION: '3.5'
       PYTHON_ARCH: '64'
+    - TOXENV: '3.5-buildonly-nocover'
+      TOXPYTHON: C:\python35\python.exe
+      PYTHON_HOME: C:\python35
+      PYTHON_VERSION: '3.5'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.5-buildonly-nocover'
+      TOXPYTHON: C:\python35-x64\python.exe
+      PYTHON_HOME: C:\python35-x64
+      PYTHON_VERSION: '3.5'
+      PYTHON_ARCH: '64'
 init:
   - ps: echo $env:TOXENV
   - ps: ls C:\Python*
@@ -212,6 +222,17 @@ on_failure:
   - ps: get-content .tox\*\log\*
 artifacts:
   - path: dist\*
+matrix:
+  allow_failures:
+    - TOXENV: 'check'
+    - TOXENV: '3.3-np1.8-nocover'
+    - TOXENV: '3.3-np1.8,codecov'
+    - TOXENV: '3.4-np1.8-nocover'
+    - TOXENV: '3.4-np1.8,codecov'
+    - TOXENV: '3.5-np1.8-nocover'
+    - TOXENV: '3.5-np1.8,codecov'
+    - TOXENV: '3.5-np1.9-nocover'
+    - TOXENV: '3.5-np1.9,codecov'
 ### To enable remote debugging uncomment this:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
