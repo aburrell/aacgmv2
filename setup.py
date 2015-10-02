@@ -16,11 +16,20 @@ from setuptools import find_packages
 from setuptools import setup
 from distutils.core import Extension
 
+
 def read(*names, **kwargs):
     return io.open(
         join(dirname(__file__), *names),
         encoding=kwargs.get('encoding', 'utf8')
     ).read()
+
+
+# enable code coverage for C code
+# We can't use CFLAGS=-coverage in tox.ini, since that will mess with the
+# compiling numpy. Therefore we set PY_CCOV=-coverage in tox.ini and copy it here
+# (i.e., after numpy has been installed)
+if 'PY_CCOV' in os.environ.keys():
+    os.environ['CFLAGS'] = os.environ['PY_CCOV']
 
 
 setup(
