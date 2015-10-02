@@ -18,18 +18,19 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, 
 
     Parameters
     ==========
-    lat, lon, alt : array_like or float
+    lat, lon, alt : array_like
         Input latitude(s), longitude(s) and altitude(s). They must be
         broadcastable to the same shape.
     date : :class:`datetime.date`/:class:`datetime.datetime`, optional
         The date/time to use for the magnetic field (default is ``None``,
-        which uses the current time).
+        which uses the current time). Must be between 1900 and 2020.
     a2g : bool, optional
         Convert from AACGM-v2 to geographic coordinates (default is ``False``,
         which implies conversion from geographic to AACGM-v2).
     trace : bool, optional
-        Use field-line tracing instead of coefficients. More precise, but
-        significantly slower.
+        Use field-line tracing instead of coefficients. More precise and
+        needed at altitudes > 2000 km, but significantly slower than using
+        the coefficients (default of ``False``, which uses coefficients).
     allowtrace : bool, optional
         Automatically use field-line tracing above 2000 km (default is
         ``False``, which causes an exception to be thrown for these altitudes
