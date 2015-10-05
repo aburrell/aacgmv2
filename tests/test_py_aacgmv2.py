@@ -99,6 +99,13 @@ def test_convert_result_values_shape():
     assert (lat[1, 2], lon[1, 2], 1) == aacgmv2._aacgmv2.aacgmConvert(65, 0, 300, G2A)
 
 
+def test_convert_datetime_date():
+    lat_1, lon_1 = aacgmv2.convert(60, 0, 300, dt.date(2013, 12, 1))
+    lat_2, lon_2 = aacgmv2.convert(60, 0, 300, dt.datetime(2013, 12, 1, 0, 0, 0))
+    assert lat_1 == lat_2
+    assert lon_1 == lon_2
+
+
 def test_convert_result_values_G2A_coeff():
     lat_p, lon_p = aacgmv2.convert(60, 0, 300, dtObj)
     aacgmv2._aacgmv2.setDateTime(*date)
