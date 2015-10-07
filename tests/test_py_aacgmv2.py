@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import division, print_function, absolute_import, unicode_literals
+
+import datetime as dt
+
+import numpy as np
+import pytest
 
 import aacgmv2
-import pytest
-from aacgmv2._aacgmv2 import G2A, A2G, TRACE, ALLOWTRACE, BADIDEA, GEOCENTRIC
-import datetime as dt
-import numpy as np
+from aacgmv2._aacgmv2 import A2G, G2A, TRACE, BADIDEA, ALLOWTRACE, GEOCENTRIC
 
 date = (2015, 1, 1, 0, 0, 0)
 dtObj = dt.datetime(*date)

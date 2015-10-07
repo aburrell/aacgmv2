@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import division, print_function, absolute_import, unicode_literals
 
-import subprocess
-import numpy as np
 import os
+import subprocess
+
+import numpy as np
 
 
 def setup_function(function):

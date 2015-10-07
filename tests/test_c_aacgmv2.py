@@ -1,9 +1,10 @@
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import division, print_function, absolute_import, unicode_literals
+
+import numpy as np
+import pytest
 
 import aacgmv2
-from aacgmv2._aacgmv2 import G2A, A2G, TRACE, ALLOWTRACE, BADIDEA, GEOCENTRIC
-import pytest
-import numpy as np
+from aacgmv2._aacgmv2 import A2G, G2A, TRACE, BADIDEA, ALLOWTRACE, GEOCENTRIC
 
 
 def test_module_structure():

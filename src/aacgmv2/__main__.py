@@ -3,14 +3,15 @@
 
 '''Executed when latexdiffcite is invoked with python -m latexdiffcite'''
 
-from __future__ import print_function, division, absolute_import
+from __future__ import division, print_function, absolute_import
 
 import sys
-import datetime as dt
 import argparse
-import aacgmv2
+import datetime as dt
+
 import numpy as np
 
+import aacgmv2
 
 try:
     # Python 3

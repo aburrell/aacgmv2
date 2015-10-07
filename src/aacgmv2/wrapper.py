@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 '''This module provides a user-friendly pythonic wrapper for the low-level C interface functions.'''
 
-from __future__ import division, absolute_import, print_function, unicode_literals
+from __future__ import division, print_function, absolute_import, unicode_literals
 
-import numpy as np
-from aacgmv2._aacgmv2 import aacgmConvert, setDateTime
-from aacgmv2._aacgmv2 import A2G, TRACE, ALLOWTRACE, BADIDEA, GEOCENTRIC
 import datetime as dt
 import warnings
+
+import numpy as np
+
+from aacgmv2._aacgmv2 import A2G, TRACE, BADIDEA, ALLOWTRACE, GEOCENTRIC, setDateTime, aacgmConvert
 
 aacgmConvert_vectorized = np.vectorize(aacgmConvert)
 
