@@ -14,4 +14,4 @@ The package has been tested with the following setups (others might work, too):
 
 * Windows (32/64 bit) and Linux (64 bit)
 * Python 2.7, 3.3, 3.4 and 3.5
-* NumPy 1.8 and 1.9
+* NumPy 1.8, 1.9, 1.10
