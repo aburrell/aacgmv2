@@ -194,8 +194,17 @@ def test_exception_lat90():
     aacgmv2.convert(-90, 0, 300, dtObj)
 
 
-# TODO: test MLT
-def test_MLT():
+def test_MLT_forward_backward():
     mlon = aacgmv2.convert_mlt(12, dtObj, m2a=True)
     mlt = aacgmv2.convert_mlt(mlon, dtObj)
     np.testing.assert_allclose(mlt, 12)
+
+
+def test_MLT_a2m():
+    mlt = aacgmv2.convert_mlt([1, 12, 23], dt.datetime(2015, 2, 24, 14, 0, 15))
+    np.testing.assert_allclose(mlt, [9.185806, 9.919139, 10.652473], rtol=1e-6)
+
+
+def test_MLT_m2a():
+    mlon = aacgmv2.convert_mlt([1, 12, 23], dt.datetime(2015, 2, 24, 14, 0, 15), m2a=True)
+    np.testing.assert_allclose(mlon, [238.212909, 43.212909, 208.212909], rtol=1e-6)
