@@ -91,8 +91,8 @@ test_script:
   - '%WITH_COMPILER% %PYTHON_HOME%\Scripts\tox'
 
 after_test:
-  #- IF "%TOXENV:~-8,8%" == "-nocover" %WITH_COMPILER% %TOXPYTHON% setup.py bdist_wheel
-  - IF NOT "%APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED%"=="%APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED:PYPI_RELEASE=%" (%WITH_COMPILER% %TOXPYTHON% setup.py bdist_wheel && %PYTHON_HOME%\Scripts\pip install twine && %PYTHON_HOME%\Scripts\twine upload -u %PYPI_USER% -p %PYPI_PASS% dist/*)
+  # if tagged commit, build/upload wheel
+  - IF "%APPVEYOR_REPO_TAG%"=="TRUE" (%WITH_COMPILER% %TOXPYTHON% setup.py bdist_wheel && %PYTHON_HOME%\Scripts\pip install twine && %PYTHON_HOME%\Scripts\twine upload -u %PYPI_USER% -p %PYPI_PASS% dist/*)
 
 on_failure:
   - ps: dir "env:"
