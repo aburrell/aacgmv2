@@ -9,9 +9,11 @@ IGRF_12_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)), 'i
 
 
 def set_coeff_path():
-    '''Sets the environment variable AACGM_v2_DAT_PREFIX (for the current process).
-
-    Automatically called when importing aacgmv2.
+    '''Sets the environment variables ``AACGM_v2_DAT_PREFIX`` and
+    ``IGRF_12_COEFFS`` (for the current process). These are required for the
+    C library to function correctly. This function is automatically called
+    when importing aacgmv2. You may need to call this manually if you use
+    multithreading or spawn child processes (untested).
     '''
     _os.environ['AACGM_v2_DAT_PREFIX'] = AACGM_v2_DAT_PREFIX
     _os.environ['IGRF_12_COEFFS'] = IGRF_12_COEFFS
@@ -25,4 +27,4 @@ from aacgmv2 import _aacgmv2
 
 from aacgmv2.wrapper import convert, convert_mlt, subsol
 
-__all__ = ['_aacgmv2', 'set_coeff_path', 'AACGM_v2_DAT_PREFIX', 'IGRF_12_COEFFS', 'convert', 'convert_mlt', 'subsol']
+__all__ = ['_aacgmv2', 'convert', 'convert_mlt', 'subsol', 'set_coeff_path', 'AACGM_v2_DAT_PREFIX', 'IGRF_12_COEFFS']

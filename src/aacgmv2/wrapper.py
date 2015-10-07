@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""This module provides a user-friendly pythonic wrapper for the low-level C interface functions."""
+'''This module provides a user-friendly pythonic wrapper for the low-level C interface functions.'''
 
 from __future__ import division, absolute_import, print_function, unicode_literals
 
@@ -14,27 +14,30 @@ aacgmConvert_vectorized = np.vectorize(aacgmConvert)
 
 
 def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, badidea=False, geocentric=False):
-    '''Converts to/from geomagnetic coordinates
+    '''Converts to/from geomagnetic coordinates.
+
+    This is a user-friendly pythonic wrapper for the low-level C interface
+    functions available in :mod:`aacgmv2._aacgmv2`.
 
     Parameters
     ==========
-    lat, lon, alt : array_like
+    lat,lon,alt : array_like
         Input latitude(s), longitude(s) and altitude(s). They must be
-        broadcastable to the same shape.
+        `broadcastable to the same shape <http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html>`_.
     date : :class:`datetime.date`/:class:`datetime.datetime`, optional
-        The date/time to use for the magnetic field (default is ``None``,
-        which uses the current time). Must be between 1900 and 2020.
+        The date/time to use for the magnetic field model, default ``None`` (uses
+        current time). Must be between 1900 and 2020.
     a2g : bool, optional
-        Convert from AACGM-v2 to geographic coordinates (default is ``False``,
-        which implies conversion from geographic to AACGM-v2).
+        Convert from AACGM-v2 to geographic coordinates, default ``False``
+        (converts geographic to AACGM-v2).
     trace : bool, optional
-        Use field-line tracing instead of coefficients. More precise and
-        needed at altitudes > 2000 km, but significantly slower than using
-        the coefficients (default of ``False``, which uses coefficients).
+        Use field-line tracing, default ``False`` (uses coefficients). Tracing
+        is more precise and needed at altitudes > 2000 km, but significantly
+        slower.
     allowtrace : bool, optional
-        Automatically use field-line tracing above 2000 km (default is
-        ``False``, which causes an exception to be thrown for these altitudes
-        unless ``trace=True`` or ``badidea=True``).
+        Automatically use field-line tracing above 2000 km, default ``False``
+        (raises an exception for these altitudes unless ``trace=True`` or
+        ``badidea=True``).
     badidea : bool, optional
         Allow use of coefficients above 2000 km (bad idea!)
     geocentric : bool, optional
@@ -43,14 +46,31 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, 
     Returns
     =======
 
-    lat_out, lon_out : ``numpy.ndarray``
-        Converted latitude and longitude
+    lat_out : ``numpy.ndarray``
+        Converted latitude
+    lon_out : ``numpy.ndarray``
+        Converted longitude
 
-    References
-    ==========
+    Raises
+    ======
 
-    Details of the techniques used to derive the new coefficients are
-    described by Shepherd, 2014 [1]_.
+    ValueError
+        if max(alt) > 2000 and neither of `trace`, `allowtrace`, or `badidea` is ``True``
+    ValueError
+        if latitude is outside the range -90 to +90 degrees
+    RuntimeError
+        if there was a problem in the C extension
+
+    Notes
+    =====
+
+    This function exclusively relies on the `AACGM-v2 C library
+    <https://engineering.dartmouth.edu/superdarn/aacgm.html>`_. Specifically,
+    it calls the functions :func:`_aacgmv2.setDateTime` and
+    :func:`_aacgmv2.aacgmConvert`, which are simple interfaces to the
+    C library functions :func:`AACGM_v2_SetDateTime` and
+    :func:`AACGM_v2_Convert`. Details of the techniques used to derive the
+    AACGM-v2 coefficients are described by Shepherd, 2014 [1]_.
 
     .. [1] Shepherd, S. G. (2014), Altitude-adjusted corrected geomagnetic
        coordinates: Definition and functional approximations,
@@ -96,7 +116,10 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, 
 
 
 def convert_mlt(arr, datetime, m2a=False):
-    '''Converts between magnetic local time (MLT) and AACGM-v2 longitude
+    '''Converts between magnetic local time (MLT) and AACGM-v2 longitude.
+
+    .. note:: This function is not related to the AACGM-v2 C library, but is provided as
+              a convenience in the hopes that it might be useful for some purposes.
 
     Parameters
     ==========
@@ -110,7 +133,7 @@ def convert_mlt(arr, datetime, m2a=False):
 
     Returns
     =======
-    out : ``numpy.ndarray``
+    out : numpy.ndarray
         Converted coordinates/MLT
 
     Notes
@@ -118,34 +141,37 @@ def convert_mlt(arr, datetime, m2a=False):
 
     **Performance**
 
-    This function performs a field-line tracing on every call. For optimal
-    performance, call this function as few times as possible (convert a few
-    large arrays rather than many small ones if possible).
+    This function performs a field-line tracing on every call. For each unique
+    date/time, consider calling this function with one or a few large arrays
+    rather than many small ones.
 
     **Implementation**
+
+    Note that this is not part of the AACGM-v2 C library.
 
     The subsolar point is used as a reference for 12 MLT, and other MLTs are
     calculated based on 1 hour MLT = 15 degrees magnetic longitude. Since
     AACGM-v2 is not defined everywhere at low latitudes (where the subsolar
-    point is), an altitude of 30 Re is used when converting the subsolar point
-    to AACGM-v2 to obtain the subsolar magnetic longitude at high latitudes.
-    This means that the calculated MLT may not be accurate at low latitudes.
+    point is), an altitude of 30 Earth radii is used when tracing the
+    subsolar point to AACGM-v2 to obtain the corresponding subsolar magnetic
+    longitude at high latitudes. This means that the calculated MLT may not be
+    accurate at low latitudes.
 
     Specifically, the algorithm is:
 
     1. Calculate the subsolar point (in geographical coordinates) for the
        given date/time using :func:`subsol`
-    2. Convert the subsolar latitude/longitude and an altitude of 30 Re to
-       AACGM-v2 to get the subsolar magnetic longitude
+    2. Convert the subsolar latitude/longitude at an altitude of 30 Re to
+       AACGM-v2 using field-line tracing to get the subsolar magnetic longitude
     3. Use this subsolar magnetic longitude as a reference to convert the
        input using one of these two equations:
 
-       .. math:: \mathrm{MLT} = (\mathrm{MLON} - \mathrm{MLON}_\mathrm{subsol}) / 15 + 12
-       .. math:: \mathrm{MLON} = (15 \\times \mathrm{MLT} - 12) + \mathrm{MLON}_\mathrm{subsol}
+       * MLT = (MLON - MLON_subsol) / 15 + 12
+       * MLON = (15 x MLT - 12) + MLON_subsol
 
-    MLON is used/calculated modulo 360 to ensure it is between 0 and 360
-    degrees. Similarly MLT is used/calculated modulo 24. For implementation
-    of the subsolar point calculation, see :func:`subsol`.
+    Both input and output MLON are taken modulo 360 to ensure they are between
+    0 and 360 degrees. Similarly, input/output MLT are taken modulo 24. For
+    implementation of the subsolar point calculation, see :func:`subsol`.
 
     '''
 
@@ -170,37 +196,42 @@ def convert_mlt(arr, datetime, m2a=False):
 
 
 def subsol(year, doy, ut):
-    """
-    Find subsolar geographic latitude and longitude from date and time.
+    '''Finds subsolar geographic latitude.
 
     Helper function for :func:`convert_mlt`.
 
+    Parameters
+    ==========
+    year : int [1601, 2100]
+        Calendar year
+    doy : int [1, 365/366]
+        Day of year
+    ut : float
+        Seconds since midnight on the specified day
+
+    Returns
+    =======
+    sbsllat : float
+        Subsolar latitude for the given date/time
+    sbsllon : float
+        Subsolar longitude for the given date/time
+
+    Notes
+    =====
+
     Based on formulas in Astronomical Almanac for the year 1996, p. C24.
-    (U.S. Government Printing Office, 1994).
-    Usable for years 1601-2100, inclusive.  According to the Almanac,
-    results are good to at least 0.01 degree latitude and 0.025 degree
-    longitude between years 1950 and 2050.  Accuracy for other years
-    has not been tested.  Every day is assumed to have exactly
-    86400 seconds; thus leap seconds that sometimes occur on December
-    31 are ignored:  their effect is below the accuracy threshold of
-    the algorithm.
+    (U.S. Government Printing Office, 1994). Usable for years 1601-2100,
+    inclusive. According to the Almanac, results are good to at least 0.01
+    degree latitude and 0.025 degrees longitude between years 1950 and 2050.
+    Accuracy for other years has not been tested. Every day is assumed to have
+    exactly 86400 seconds; thus leap seconds that sometimes occur on December
+    31 are ignored (their effect is below the accuracy threshold of the
+    algorithm).
 
-    After Fortran code by: 961026 A. D. Richmond, NCAR
-    ... And then translated from IDL
+    After Fortran code by A. D. Richmond, NCAR. Translated from IDL
+    by K. Laundal.
 
-    Input:
-      year: calender year (e.g., 1994).  1600 < IYR < 2101
-      doy:  day of the year (1 = January 1; 365 [366 in leap year] =
-        December 31).
-      Specify UT time as UTsec=seconds, with seconds counting from
-      0:00:00 UT on the specified day.
-
-    Input must be numbers
-
-    Output:
-      sbsllat, sbsllon: geographic latitude and longitude of the subsolar
-                        point in degrees (lon from -180 to +180)
-    """
+    '''
 
     from numpy import sin, cos, pi, arctan2, arcsin
 
