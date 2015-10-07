@@ -108,8 +108,6 @@ def test_convert_mlt_m2a():
     p.wait()
     data = np.loadtxt('tests/output.txt')
     np.testing.assert_allclose(data, [238.212909, 43.212909, 208.212909], rtol=1e-6)
-    import shutil
-    shutil.copyfile('tests/output.txt', 'tests/asd.txt')
 
 
 def test_convert_mlt_single_line():
