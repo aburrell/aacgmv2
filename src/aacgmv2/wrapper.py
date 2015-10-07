@@ -10,7 +10,6 @@ import datetime as dt
 import warnings
 
 aacgmConvert_vectorized = np.vectorize(aacgmConvert)
-#aacgmConvert_vectorized = np.frompyfunc(aacgmv2._aacgmv2.aacgmConvert, 4, 3)
 
 
 def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, badidea=False, geocentric=False):

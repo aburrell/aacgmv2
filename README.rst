@@ -1,6 +1,6 @@
-=======================
-AACGM-v2 Python library
-=======================
+========
+Overview
+========
 
 .. list-table::
     :stub-columns: 1
