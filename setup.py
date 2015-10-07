@@ -79,5 +79,10 @@ setup(
         Extension('aacgmv2._aacgmv2',
                   sources=['src/aacgmv2/aacgmv2module.c', 'src/c_aacgm_v2/aacgmlib_v2.c', 'src/c_aacgm_v2/genmag.c', 'src/c_aacgm_v2/igrflib.c'],
                   include_dirs=['src/c_aacgm_v2'])
-    ]
+    ],
+    entry_points={
+        'console_scripts': [
+            'aacgmv2 = aacgmv2.__main__:main',
+        ]
+    },
 )
