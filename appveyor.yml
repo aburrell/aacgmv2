@@ -220,6 +220,10 @@ matrix:
     - TOXENV: '3.5-np1.9,codecov'
     - TOXENV: '3.5-np1.10-nocover'
     - TOXENV: '3.5-np1.10,codecov'
+    - TOXENV: '2.7-buildonly-nocover'
+    - TOXENV: '3.3-buildonly-nocover'
+    - TOXENV: '3.4-buildonly-nocover'
+    - TOXENV: '3.5-buildonly-nocover'
 ### To enable remote debugging uncomment this:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
