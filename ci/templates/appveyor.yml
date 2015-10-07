@@ -83,8 +83,8 @@ test_script:
   - '%WITH_COMPILER% %PYTHON_HOME%\Scripts\tox'
 
 after_test:
-  - IF "%TOXENV:~-8,8%" == "-nocover" %WITH_COMPILER% %TOXPYTHON% setup.py bdist_wheel
-  - IF NOT "%APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED%"=="%APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED:PYPI_RELEASE=%" (pip install twine && twine upload -u %PYPI_USER% -p %PYPI_PASS% -r aacgmv2 dist/*
+  #- IF "%TOXENV:~-8,8%" == "-nocover" %WITH_COMPILER% %TOXPYTHON% setup.py bdist_wheel
+  - IF NOT "%APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED%"=="%APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED:PYPI_RELEASE=%" (%WITH_COMPILER% %TOXPYTHON% setup.py bdist_wheel && pip install twine && twine upload -u %PYPI_USER% -p %PYPI_PASS% -r aacgmv2 dist/*)
 
 on_failure:
   - ps: dir "env:"
