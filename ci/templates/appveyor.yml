@@ -54,6 +54,7 @@ test_script:
 
 after_test:
   - IF "%TOXENV:~-8,8%" == "-nocover" %WITH_COMPILER% %TOXPYTHON% setup.py bdist_wheel
+  - IF NOT "%APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED%"=="%APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED:PYPI_RELEASE=%" (pip install -y twine && twine upload -u %PYPI_USER% -p %PYPI_PASS% -r aacgmv2 dist/*
 
 on_failure:
   - ps: dir "env:"
