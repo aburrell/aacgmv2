@@ -39,6 +39,7 @@ Convert between AACGM and MLT::
     >>> mlon
     array([ 163.16984389,  343.16984389])
 
+If you don't know or use Python, you can also use the command line. See details in the full documentation.
 
 Documentation
 =============

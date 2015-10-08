@@ -1,5 +1,5 @@
-Welcome to AACGM-v2 Python library's documentation!
-=====================================================
+AACGM-v2 Python library documentation
+=====================================
 
 Contents:
 
