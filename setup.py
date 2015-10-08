@@ -34,7 +34,7 @@ if 'PY_CCOV' in os.environ.keys():
 
 setup(
     name='aacgmv2',
-    version='1.0.5',
+    version='1.0.6',
     license='MIT',
     description='A Python wrapper for AACGM-v2 magnetic coordinates',
     long_description='%s\n%s' % (read('README.rst'), re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))),
