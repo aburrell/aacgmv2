@@ -2,6 +2,52 @@
 Overview
 ========
 
+|docs| |version|
+
+This is a Python wrapper for the AACGM-v2 C library, which allows converting between geographic and magnetic coordinates. MLT calculations are also included. The package is free software (MIT license).
+
+Quick start
+===========
+
+Install (requires NumPy)::
+
+    pip install aacgmv2
+
+Convert between AACGM and magnetic coordinates::
+
+    >>> from aacgmv2 import convert
+    >>> from datetime import date
+    >>> # geo to AACGM, single numbers
+    >>> mlat, mlon = convert(60, 15, 300, date(2013, 11, 3))
+    >>> mlat
+    array(57.47207691280528)
+    >>> mlon
+    array(93.62138045643167)
+    >>> # AACGM to geo, mix arrays/numbers
+    >>> glat, glon = convert([90, -90], 0, 0, date(2013, 11, 3), a2g=True)
+    >>> glat
+    array([ 82.96656071, -74.33854592])
+    >>> glon
+    array([ -84.66516034,  125.84014944])
+
+Convert between AACGM and MLT::
+
+    >>> from aacgmv2 import convert_mlt
+    >>> from datetime import datetime
+    >>> # MLT to AACGM
+    >>> mlon = convert_mlt([0, 12], datetime(2013, 11, 3, 18, 0), m2a=True)
+    >>> mlon
+    array([ 163.16984389,  343.16984389])
+
+
+Documentation
+=============
+
+https://aacgmv2.readthedocs.org/
+
+Badges
+======
+
 .. list-table::
     :stub-columns: 1
 
@@ -10,9 +56,11 @@ Overview
     * - tests
       - | |travis| |appveyor| |requires|
         | |coveralls| |codecov|
-        | |landscape| |scrutinizer| |codacy| |codeclimate|
+        | |landscape|  |codeclimate|
+        | |scrutinizer| |codacy|
     * - package
-      - |version| |downloads| |wheel| |supported-versions| |supported-implementations|
+      - | |version| |supported-versions|
+        | |wheel| |supported-implementations|
 
 .. |docs| image:: https://readthedocs.org/projects/aacgmv2/badge/?style=flat
     :target: https://readthedocs.org/projects/aacgmv2
@@ -72,47 +120,3 @@ Overview
 .. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/cmeeren/aacgmv2/master.svg?style=flat
     :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/cmeeren/aacgmv2/
-
-This is a Python wrapper for the AACGM-v2 C library, which allows converting between geographic and magnetic coordinates. MLT calculations are also included.
-
-* Free software: MIT license
-
-Quick start
-===========
-
-Install (requires NumPy)::
-
-    pip install aacgmv2
-
-Convert between AACGM and magnetic coordinates::
-
-    >>> from aacgmv2 import convert
-    >>> from datetime import date
-    >>> # geo to AACGM, single numbers
-    >>> mlat, mlon = convert(60, 15, 300, date(2013, 11, 3))
-    >>> mlat
-    array(57.47207691280528)
-    >>> mlon
-    array(93.62138045643167)
-    >>> # AACGM to geo, mix arrays/numbers
-    >>> glat, glon = convert([90, -90], 0, 0, date(2013, 11, 3), a2g=True)
-    >>> glat
-    array([ 82.96656071, -74.33854592])
-    >>> glon
-    array([ -84.66516034,  125.84014944])
-
-Convert between AACGM and MLT::
-
-    >>> from aacgmv2 import convert_mlt
-    >>> from datetime import datetime
-    >>> # MLT to AACGM
-    >>> mlon = convert_mlt([0, 12], datetime(2013, 11, 3, 18, 0), m2a=True)
-    >>> mlon
-    array([ 163.16984389,  343.16984389])
-
-
-Documentation
-=============
-
-https://aacgmv2.readthedocs.org/
-
