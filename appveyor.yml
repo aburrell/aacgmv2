@@ -208,7 +208,7 @@ test_script:
 
 after_test:
   # if tagged commit, build/upload wheel
-  - IF %APPVEYOR_REPO_TAG%=="true" (%WITH_COMPILER% %TOXPYTHON% setup.py bdist_wheel && %PYTHON_HOME%\Scripts\pip install twine && %PYTHON_HOME%\Scripts\twine upload -u %PYPI_USER% -p %PYPI_PASS% dist/*)
+  - IF "%APPVEYOR_REPO_TAG%"=="true" (%WITH_COMPILER% %TOXPYTHON% setup.py bdist_wheel && %PYTHON_HOME%\Scripts\pip install twine && %PYTHON_HOME%\Scripts\twine upload -u %PYPI_USER% -p %PYPI_PASS% dist/*)
 
 on_failure:
   - ps: dir "env:"
