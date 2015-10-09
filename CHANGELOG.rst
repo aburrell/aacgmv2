@@ -2,7 +2,7 @@
 Changelog
 =========
 
-1.0.9 (2015-10-08)
+1.0.10 (2015-10-08)
 -----------------------------------------
 
 * No code changes, debugged automatic build/upload process and needed new version numbers along the way
