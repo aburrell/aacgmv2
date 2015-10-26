@@ -151,3 +151,9 @@ def test_aacgmConvert_GEOCENTRIC_A2G_TRACE():
     np.testing.assert_almost_equal(mlat, 30.6211, decimal=4)
     np.testing.assert_almost_equal(mlon, -94.1809, decimal=4)
     assert r == 1
+
+
+def test_forbidden():
+    mlat, mlon, r = aacgmv2._aacgmv2.aacgmConvert(7, 0, 0, G2A)
+    assert np.isnan(mlat)
+    assert np.isnan(mlon)

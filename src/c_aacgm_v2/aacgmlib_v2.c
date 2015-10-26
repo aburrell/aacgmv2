@@ -670,10 +670,10 @@ int convert_geo_coord(double lat_in, double lon_in, double height_in,
 		fac = x*x + y*y;
 		if (fac > 1.) {
 			/* we are in the forbidden region and the solution is undefined */
-			*lat_out = HUGE_VAL;
-			*lon_out = HUGE_VAL;
+			*lat_out = NAN;
+			*lon_out = NAN;
 
-      return -64;
+      return 0; /* return -64; */
 		}
 
 		ztmp = sqrt(1. - fac);

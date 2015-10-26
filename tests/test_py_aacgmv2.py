@@ -196,6 +196,12 @@ def test_exception_lat90():
     aacgmv2.convert(-90, 0, 300, dtObj)
 
 
+def test_forbidden():
+    mlat, mlon = aacgmv2.convert(7, 0, 0)
+    assert np.isnan(mlat)
+    assert np.isnan(mlon)
+
+
 def test_MLT_forward_backward():
     mlon = aacgmv2.convert_mlt(12, dtObj, m2a=True)
     mlt = aacgmv2.convert_mlt(mlon, dtObj)
