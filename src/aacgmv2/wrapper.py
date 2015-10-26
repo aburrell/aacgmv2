@@ -111,8 +111,7 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, 
     # convert
     lat_out, lon_out, _ = aacgmConvert_vectorized(lat, lon, alt, flag)
 
-    # FIXME: astype() only required if using np.frompyfunc, not vectorize()
-    return lat_out.astype(float), lon_out.astype(float)
+    return lat_out, lon_out
 
 
 def convert_mlt(arr, datetime, m2a=False):
