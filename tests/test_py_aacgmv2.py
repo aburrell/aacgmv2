@@ -204,9 +204,9 @@ def test_MLT_forward_backward():
 
 def test_MLT_a2m():
     mlt = aacgmv2.convert_mlt([1, 12, 23], dt.datetime(2015, 2, 24, 14, 0, 15))
-    np.testing.assert_allclose(mlt, [9.185806, 9.919139, 10.652473], rtol=1e-6)
+    np.testing.assert_allclose(mlt, [9.057048, 9.790381, 10.523714], rtol=1e-6)
 
 
 def test_MLT_m2a():
     mlon = aacgmv2.convert_mlt([1, 12, 23], dt.datetime(2015, 2, 24, 14, 0, 15), m2a=True)
-    np.testing.assert_allclose(mlon, [238.212909, 43.212909, 208.212909], rtol=1e-6)
+    np.testing.assert_allclose(mlon, [240.144283, 45.144283, 210.144283], rtol=1e-6)

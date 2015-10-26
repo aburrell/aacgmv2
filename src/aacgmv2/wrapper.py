@@ -257,10 +257,10 @@ def subsol(year, doy, ut):
     df = (ut/86400 - 1.5) + doy
 
     # Addition to Mean longitude of Sun since January 1 of IYR:
-    lf = 9856474*df
+    lf = 0.9856474*df
 
     # Addition to Mean anomaly since January 1 of IYR:
-    gf = 9856003*df
+    gf = 0.9856003*df
 
     # Mean longitude of Sun:
     l = l0 + lf

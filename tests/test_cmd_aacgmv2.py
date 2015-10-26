@@ -99,7 +99,7 @@ def test_convert_mlt_a2m():
     p.communicate()
     p.wait()
     data = np.loadtxt('tests/output.txt')
-    np.testing.assert_allclose(data, [9.185806, 9.919139, 10.652473], rtol=1e-6)
+    np.testing.assert_allclose(data, [9.057048, 9.790381, 10.523714], rtol=1e-6)
 
 
 def test_convert_mlt_m2a():
@@ -108,7 +108,7 @@ def test_convert_mlt_m2a():
     p.communicate()
     p.wait()
     data = np.loadtxt('tests/output.txt')
-    np.testing.assert_allclose(data, [238.212909, 43.212909, 208.212909], rtol=1e-6)
+    np.testing.assert_allclose(data, [240.144283, 45.144283, 210.144283], rtol=1e-6)
 
 
 def test_convert_mlt_single_line():
@@ -117,18 +117,18 @@ def test_convert_mlt_single_line():
     p.communicate()
     p.wait()
     data = np.loadtxt('tests/output.txt')
-    np.testing.assert_allclose(data, [9.185806], rtol=1e-6)
+    np.testing.assert_allclose(data, 9.05704782, rtol=1e-6)
 
 
 def test_convert_mlt_stdin_stdout():
     p = subprocess.Popen('echo 12 | aacgmv2 convert_mlt -v 20150224140015', shell=True, stdout=subprocess.PIPE)
     stdout, _ = p.communicate()
     p.wait()
-    assert b'43.21290868' in stdout
+    assert b'45.14428275' in stdout
 
 
 def test_convert_mlt_stdin_stdout_order():
     p = subprocess.Popen('echo 12 | aacgmv2 convert_mlt 20150224140015 -v', shell=True, stdout=subprocess.PIPE)
     stdout, _ = p.communicate()
     p.wait()
-    assert b'43.21290868' in stdout
+    assert b'45.14428275' in stdout
