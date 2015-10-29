@@ -88,8 +88,10 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, 
                          'tracing (trace=True or allowtrace=True) or indicate you know this is a bad idea '
                          '(badidea=True)')
 
-    if np.max(np.abs(lat)) > 90:
+    # check if latitudes are > 90.1 (to allow some room for rounding errors, which will be clipped)
+    if np.max(np.abs(lat)) > 90.1:
         raise ValueError('Latitude must be in the range -90 to +90 degrees')
+    np.clip(lat, -90, 90)
 
     # constrain longitudes between -180 and 180
     lon = ((np.asarray(lon) + 180) % 360) - 180
@@ -179,6 +181,7 @@ def convert_mlt(arr, datetime, m2a=False):
     doy = datetime.timetuple().tm_yday
     ssm = datetime.hour*3600 + datetime.minute*60 + datetime.second
     subsol_lon, subsol_lat = subsol(yr, doy, ssm)
+    subsol_lat = gc2gd_lat(subsol_lat)
 
     # convert subsolar coordinates at 30Re altitude to AACGM-v2 (tracing)
     _, mlon_subsol = convert(subsol_lat, subsol_lon, 30*6371.2, datetime, trace=True)
@@ -195,7 +198,7 @@ def convert_mlt(arr, datetime, m2a=False):
 
 
 def subsol(year, doy, ut):
-    '''Finds subsolar geographic latitude.
+    '''Finds subsolar geocentric latitude and longitude.
 
     Helper function for :func:`convert_mlt`.
 
@@ -303,3 +306,21 @@ def subsol(year, doy, ut):
     sbsllon = sbsllon - 360*nrot
 
     return sbsllon, sbsllat
+
+
+def gc2gd_lat(gc_lat):
+    '''Convert geocentric latitude to geodecit latitude using WGS84.
+
+    Parameters
+    ==========
+    gc_lat : array_like or float
+        Geocentric latitude
+
+    Returns
+    =======
+    gd_lat : same as input
+        Geodetic latitude
+
+    '''
+    WGS84_e2 = 0.006694379990141317
+    return np.rad2deg(-np.arctan(np.tan(np.deg2rad(gc_lat))/(WGS84_e2 - 1)))
