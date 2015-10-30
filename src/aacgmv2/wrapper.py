@@ -160,7 +160,7 @@ def convert_mlt(arr, datetime, m2a=False):
 
     Specifically, the algorithm is:
 
-    1. Calculate the subsolar point (in geographical coordinates) for the
+    1. Calculate the subsolar point (in geodetic WGS84 coordinates) for the
        given date/time using :func:`subsol`
     2. Convert the subsolar latitude/longitude at an altitude of 30 Re to
        AACGM-v2 using field-line tracing to get the subsolar magnetic longitude
@@ -198,7 +198,7 @@ def convert_mlt(arr, datetime, m2a=False):
 
 
 def subsol(year, doy, ut):
-    '''Finds subsolar geocentric latitude and longitude.
+    '''Finds subsolar geocentric longitude and latitude.
 
     Helper function for :func:`convert_mlt`.
 
@@ -213,10 +213,10 @@ def subsol(year, doy, ut):
 
     Returns
     =======
-    sbsllat : float
-        Subsolar latitude for the given date/time
     sbsllon : float
         Subsolar longitude for the given date/time
+    sbsllat : float
+        Subsolar latitude for the given date/time
 
     Notes
     =====
@@ -309,7 +309,7 @@ def subsol(year, doy, ut):
 
 
 def gc2gd_lat(gc_lat):
-    '''Convert geocentric latitude to geodecit latitude using WGS84.
+    '''Convert geocentric latitude to geodetic latitude using WGS84.
 
     Parameters
     ==========
