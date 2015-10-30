@@ -2,6 +2,13 @@
 Changelog
 =========
 
+1.0.13 (2015-10-30)
+-----------------------------------------
+
+* Correctly convert output of subsol() to geodetic coordinates (the error in MLT/mlon conversion was not large, typically two decimal places and below)
+
+
+
 1.0.12 (2015-10-26)
 -----------------------------------------
 
