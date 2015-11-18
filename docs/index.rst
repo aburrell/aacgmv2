@@ -1,6 +1,3 @@
-AACGM-v2 Python library documentation
-=====================================
-
 Contents:
 
 .. toctree::
