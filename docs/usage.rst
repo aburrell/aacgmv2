@@ -65,7 +65,7 @@ This works in much the same way as ``convert``. The file should only contain a s
     12
     23
 
-To convert these MLTs to magnetic longitudes at 2015-02-24 14:00:15, run e.g. ``aacgmv2 convert_mlt 20150224140015 -i input.txt -o output.txt --v`` (note that the date/time is a required parameter). The output file will then look like this::
+To convert these MLTs to magnetic longitudes at 2015-02-24 14:00:15, run e.g. ``aacgmv2 convert_mlt 20150224140015 -i input.txt -o output.txt -v`` (note that the date/time is a required parameter). The output file will then look like this::
 
     238.21290868
     43.21290868
