@@ -13,7 +13,7 @@ Install (requires NumPy)::
 
     pip install aacgmv2
 
-Convert between AACGM and magnetic coordinates::
+Convert between AACGM and geographic coordinates::
 
     >>> from aacgmv2 import convert
     >>> from datetime import date
