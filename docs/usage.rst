@@ -5,7 +5,7 @@ Usage examples
 Python library
 ==============
 
-For full documentation of the functions, see :doc:`Reference  → aacgmv2 <reference/aacgmv2>`.
+For full documentation of the functions, see :doc:`Reference → aacgmv2 <reference/aacgmv2>`.
 
   >>> from aacgmv2 import convert
   >>> from datetime import date
