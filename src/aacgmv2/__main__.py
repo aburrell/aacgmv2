@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-'''Executed when latexdiffcite is invoked with python -m latexdiffcite'''
+'''Executed when aacgmv2 is invoked with python -m aacgmv2'''
 
 from __future__ import division, print_function, absolute_import
 
