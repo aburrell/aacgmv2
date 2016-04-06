@@ -67,11 +67,11 @@ This works in much the same way as ``convert``. The file should only contain a s
 
 To convert these MLTs to magnetic longitudes at 2015-02-24 14:00:15, run e.g. ``aacgmv2 convert_mlt 20150224140015 -i input.txt -o output.txt -v`` (note that the date/time is a required parameter). The output file will then look like this::
 
-    238.21290868
-    43.21290868
-    208.21290868
+    240.13651777
+    45.13651777
+    210.13651777
 
 Like with ``convert``, you can use stdin/stdout instead of input/output files::
 
-    $ echo 12 | python -m aacgmv2 convert_mlt 20150224140015 -v
-    43.21290868
+    $ echo 12 | aacgmv2 convert_mlt 20150224140015 -v
+    45.13651777
