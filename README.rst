@@ -4,7 +4,8 @@ Overview
 
 |docs| |version|
 
-This is a Python wrapper for the AACGM-v2 C library, which allows converting between geographic and magnetic coordinates. MLT calculations are also included. The package is free software (MIT license).
+This is a Python wrapper for the `AACGM-v2 C library
+<https://engineering.dartmouth.edu/superdarn/aacgm.html>`_, which allows converting between geographic and magnetic coordinates. The currently included version of the C library is 2.2. The wrapper is provided "as is" in the hopes that it will be useful to the space science community, and will not automatically be updated when new versions of the C library is released. MLT calculations are included in the wrapper (not part of the C library, please see the documentation for implementation details). The package is free software (MIT license).
 
 Quick start
 ===========
