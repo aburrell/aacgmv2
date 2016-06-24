@@ -4,11 +4,15 @@
 from __future__ import division, print_function, absolute_import, unicode_literals
 
 import datetime as dt
+import calendar
 import warnings
+import os as _os
 
 import numpy as np
 
 from aacgmv2._aacgmv2 import A2G, TRACE, BADIDEA, ALLOWTRACE, GEOCENTRIC, setDateTime, aacgmConvert
+
+IGRF_12_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)), 'igrf12coeffs.txt')
 
 aacgmConvert_vectorized = np.vectorize(aacgmConvert)
 
@@ -162,8 +166,7 @@ def convert_mlt(arr, datetime, m2a=False):
 
     1. Calculate the subsolar point (in geodetic WGS84 coordinates) for the
        given date/time using :func:`subsol`
-    2. Convert the subsolar latitude/longitude at an altitude of 30 Re to
-       AACGM-v2 using field-line tracing to get the subsolar magnetic longitude
+    2. Find the centered dipole longitude of the subsolar point, MLON_subsol
     3. Use this subsolar magnetic longitude as a reference to convert the
        input using one of these two equations:
 
@@ -175,16 +178,29 @@ def convert_mlt(arr, datetime, m2a=False):
     implementation of the subsolar point calculation, see :func:`subsol`.
 
     '''
+    d2r = np.pi/180
 
     # find subsolar point
     yr = datetime.year
     doy = datetime.timetuple().tm_yday
     ssm = datetime.hour*3600 + datetime.minute*60 + datetime.second
     subsol_lon, subsol_lat = subsol(yr, doy, ssm)
-    subsol_lat = gc2gd_lat(subsol_lat)
 
-    # convert subsolar coordinates at 30Re altitude to AACGM-v2 (tracing)
-    _, mlon_subsol = convert(subsol_lat, subsol_lon, 30*6371.2, datetime, trace=True)
+    # unit vector pointing at subsolar point:
+    s = np.array([np.cos(subsol_lat * d2r) * np.cos(subsol_lon * d2r), 
+                  np.cos(subsol_lat * d2r) * np.sin(subsol_lon * d2r),
+                  np.sin(subsol_lat * d2r)                            ])
+
+    # convert subsolar coordinates to centered dipole coordinates
+    z = igrf_dipole_axis(datetime) # Cartesian axis pointing at Northern dipole pole
+    y = np.cross(np.array([0,0,1]), z)
+    y = y/np.linalg.norm(y)
+    x = np.cross(y, z)
+    R = np.vstack((x,y,z))
+    s_cd = R.dot(s)
+
+    # centered dipole longitude of subsolar point:
+    mlon_subsol = np.arctan2(s_cd[1], s_cd[0])/d2r
 
     # convert the input array
     if m2a:  # MLT to AACGM
@@ -324,3 +340,81 @@ def gc2gd_lat(gc_lat):
     '''
     WGS84_e2 = 0.006694379990141317
     return np.rad2deg(-np.arctan(np.tan(np.deg2rad(gc_lat))/(WGS84_e2 - 1)))
+
+
+def igrf_dipole_axis(date):
+    '''Get Cartesian unit vector pointing at dipole pole in the north, according to IGRF
+
+    Parameters
+    ==========
+    date : Date and time
+
+    Returns
+    =======
+    m: Cartesian 3 element vector pointing at dipole pole in the north (geocentric coords)
+
+    Notes
+    =====
+    IGRF coefficients are read from the igrf12coeffs.txt file. It should also work after IGRF updates.
+    The dipole coefficients are interpolated to the date, or extrapolated if date > latest IGRF model
+    '''
+
+    # get time in years, as float:
+    year = date.year
+    doy  = date.timetuple().tm_yday
+    year = year + doy/(365. + calendar.isleap(year))
+    
+
+    # read the IGRF coefficients
+    with open(IGRF_12_COEFFS, 'r') as f:
+        lines = f.readlines()
+        years = lines[3].split()[3:][:-1]
+        years = np.array(map(float, years)) # time array
+
+        g10 = lines[4].split()[3:]
+        g11 = lines[5].split()[3:]
+        h11 = lines[6].split()[3:]
+
+    # secular variation coefficients (for extrapolation)
+    g10sv = np.float32(g10[-1])
+    g11sv = np.float32(g11[-1])
+    h11sv = np.float32(h11[-1])
+
+    # model coefficients:
+    g10 = np.array(map(np.float32, g10[:-1]))
+    g11 = np.array(map(np.float32, g11[:-1]))
+    h11 = np.array(map(np.float32, h11[:-1]))
+
+    # get the gauss coefficient at given time:
+    if year <= years[-1]: # regular interpolation
+        g10 = np.interp(year, years, g10)
+        g11 = np.interp(year, years, g11)
+        h11 = np.interp(year, years, h11)
+    else: # extrapolation
+        dt = year - years[-1]
+        g10 = g10[-1] + g10sv * dt
+        g11 = g11[-1] + g11sv * dt
+        h11 = h11[-1] + h11sv * dt
+
+    # calculate pole position
+    B0 = np.sqrt(g10**2 + g11**2 + h11**2)
+
+    return -np.array([g11, h11, g10])/B0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
