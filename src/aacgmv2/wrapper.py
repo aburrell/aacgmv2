@@ -6,10 +6,13 @@ from __future__ import division, print_function, absolute_import, unicode_litera
 import datetime as dt
 import calendar
 import warnings
+import os as _os
 
 import numpy as np
 
 from aacgmv2._aacgmv2 import A2G, TRACE, BADIDEA, ALLOWTRACE, GEOCENTRIC, setDateTime, aacgmConvert
+
+IGRF_12_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)), 'igrf12coeffs.txt')
 
 aacgmConvert_vectorized = np.vectorize(aacgmConvert)
 
@@ -363,7 +366,7 @@ def igrf_dipole_axis(date):
     
 
     # read the IGRF coefficients
-    with open('igrf12coeffs.txt', 'r') as f:
+    with open(IGRF_12_COEFFS, 'r') as f:
         lines = f.readlines()
         years = lines[3].split()[3:][:-1]
         years = np.array(map(float, years)) # time array
