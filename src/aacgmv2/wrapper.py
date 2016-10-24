@@ -144,38 +144,34 @@ def convert_mlt(arr, datetime, m2a=False):
     Notes
     =====
 
-    **Performance**
+    The MLT conversion is not part of the AACGM-v2 C library and is instead based
+    on Laundal et al., 2016 [1]_. A brief summary of the method is provided below.
 
-    This function performs a field-line tracing on every call. For each unique
-    date/time, consider calling this function with one or a few large arrays
-    rather than many small ones.
+    MLT is defined as
 
-    **Implementation**
+        MLT = (magnetic longitude - magnetic noon meridian longitude) / 15 + 12
 
-    Note that this is not part of the AACGM-v2 C library.
+    where the magnetic noon meridian longitude is the centered dipole longitude
+    of the subsolar point.
 
-    The subsolar point is used as a reference for 12 MLT, and other MLTs are
-    calculated based on 1 hour MLT = 15 degrees magnetic longitude. Since
-    AACGM-v2 is not defined everywhere at low latitudes (where the subsolar
-    point is), an altitude of 30 Earth radii is used when tracing the
-    subsolar point to AACGM-v2 to obtain the corresponding subsolar magnetic
-    longitude at high latitudes. This means that the calculated MLT may not be
-    accurate at low latitudes.
+    There are two important reasons for using centered dipole instead of AACGM for
+    this calculation. One reason is that the AACGM longitude of the subsolar point
+    is often undefined (being at low latitudes). More importantly, if the subsolar
+    point close to ground was used, the MLT at polar latitudes would be affected
+    by non-dipole features at low latitudes, such as the South Atlantic Anomaly.
+    This is not desirable; since the Sun-Earth interaction takes place at polar
+    field lines, it is these field lines the MLT should describe.
 
-    Specifically, the algorithm is:
-
-    1. Calculate the subsolar point (in geodetic WGS84 coordinates) for the
-       given date/time using :func:`subsol`
-    2. Find the centered dipole longitude of the subsolar point, MLON_subsol
-    3. Use this subsolar magnetic longitude as a reference to convert the
-       input using one of these two equations:
-
-       * MLT = (MLON - MLON_subsol) / 15 + 12
-       * MLON = (15 x MLT - 12) + MLON_subsol
+    In calculating the centered dipole longitude of the subsolar point, we use
+    the first three IGRF Gauss coefficients, using linear interpolation between
+    the model updates every five years.
 
     Both input and output MLON are taken modulo 360 to ensure they are between
-    0 and 360 degrees. Similarly, input/output MLT are taken modulo 24. For
-    implementation of the subsolar point calculation, see :func:`subsol`.
+    0 and 360 degrees. Similarly, input/output MLT are taken modulo 24.
+    For implementation of the subsolar point calculation, see :func:`subsol`.
+
+    .. [1] Laundal, K. M. and A. D. Richmond (2016), Magnetic Coordinate Systems,
+       Space Sci. Rev., doi:`10.1007/s11214-016-0275-y <http://dx.doi.org/10.1007/s11214-016-0275-y>`_.
 
     '''
     d2r = np.pi/180
