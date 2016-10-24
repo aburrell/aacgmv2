@@ -187,16 +187,16 @@ def convert_mlt(arr, datetime, m2a=False):
     subsol_lon, subsol_lat = subsol(yr, doy, ssm)
 
     # unit vector pointing at subsolar point:
-    s = np.array([np.cos(subsol_lat * d2r) * np.cos(subsol_lon * d2r), 
+    s = np.array([np.cos(subsol_lat * d2r) * np.cos(subsol_lon * d2r),
                   np.cos(subsol_lat * d2r) * np.sin(subsol_lon * d2r),
-                  np.sin(subsol_lat * d2r)                            ])
+                  np.sin(subsol_lat * d2r)])
 
     # convert subsolar coordinates to centered dipole coordinates
-    z = igrf_dipole_axis(datetime) # Cartesian axis pointing at Northern dipole pole
-    y = np.cross(np.array([0,0,1]), z)
+    z = igrf_dipole_axis(datetime)  # Cartesian axis pointing at Northern dipole pole
+    y = np.cross(np.array([0, 0, 1]), z)
     y = y/np.linalg.norm(y)
     x = np.cross(y, z)
-    R = np.vstack((x,y,z))
+    R = np.vstack((x, y, z))
     s_cd = R.dot(s)
 
     # centered dipole longitude of subsolar point:
@@ -347,11 +347,13 @@ def igrf_dipole_axis(date):
 
     Parameters
     ==========
-    date : Date and time
+    date : :class:`datetime.datetime`
+        Date and time
 
     Returns
     =======
-    m: Cartesian 3 element vector pointing at dipole pole in the north (geocentric coords)
+    m: numpy.ndarray
+        Cartesian 3 element vector pointing at dipole pole in the north (geocentric coords)
 
     Notes
     =====
@@ -361,19 +363,19 @@ def igrf_dipole_axis(date):
 
     # get time in years, as float:
     year = date.year
-    doy  = date.timetuple().tm_yday
-    year = year + doy/(365. + calendar.isleap(year))
-    
+    doy = date.timetuple().tm_yday
+    year = year + doy/(365 + calendar.isleap(year))
 
     # read the IGRF coefficients
     with open(IGRF_12_COEFFS, 'r') as f:
         lines = f.readlines()
-        years = lines[3].split()[3:][:-1]
-        years = np.array(map(float, years)) # time array
 
-        g10 = lines[4].split()[3:]
-        g11 = lines[5].split()[3:]
-        h11 = lines[6].split()[3:]
+    years = lines[3].split()[3:][:-1]
+    years = np.array(map(float, years))  # time array
+
+    g10 = lines[4].split()[3:]
+    g11 = lines[5].split()[3:]
+    h11 = lines[6].split()[3:]
 
     # secular variation coefficients (for extrapolation)
     g10sv = np.float32(g10[-1])
@@ -386,11 +388,11 @@ def igrf_dipole_axis(date):
     h11 = np.array(map(np.float32, h11[:-1]))
 
     # get the gauss coefficient at given time:
-    if year <= years[-1]: # regular interpolation
+    if year <= years[-1]:  # regular interpolation
         g10 = np.interp(year, years, g10)
         g11 = np.interp(year, years, g11)
         h11 = np.interp(year, years, h11)
-    else: # extrapolation
+    else:  # extrapolation
         dt = year - years[-1]
         g10 = g10[-1] + g10sv * dt
         g11 = g11[-1] + g11sv * dt
@@ -400,21 +402,3 @@ def igrf_dipole_axis(date):
     B0 = np.sqrt(g10**2 + g11**2 + h11**2)
 
     return -np.array([g11, h11, g10])/B0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
