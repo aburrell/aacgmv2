@@ -124,11 +124,11 @@ def test_convert_mlt_stdin_stdout():
     p = subprocess.Popen('echo 12 | aacgmv2 convert_mlt -v 20150224140015', shell=True, stdout=subprocess.PIPE)
     stdout, _ = p.communicate()
     p.wait()
-    assert b'45.15285394' in stdout
+    assert b'45.15285362' in stdout
 
 
 def test_convert_mlt_stdin_stdout_order():
     p = subprocess.Popen('echo 12 | aacgmv2 convert_mlt 20150224140015 -v', shell=True, stdout=subprocess.PIPE)
     stdout, _ = p.communicate()
     p.wait()
-    assert b'45.15285394' in stdout
+    assert b'45.15285362' in stdout
