@@ -38,7 +38,7 @@ Convert between AACGM and MLT::
     >>> # MLT to AACGM
     >>> mlon = convert_mlt([0, 12], datetime(2013, 11, 3, 18, 0), m2a=True)
     >>> mlon
-    array([ 159.0896797,  339.0896797])
+    array([ 159.08967974,  339.08967974])
 
 If you don't know or use Python, you can also use the command line. See details in the full documentation.
 
