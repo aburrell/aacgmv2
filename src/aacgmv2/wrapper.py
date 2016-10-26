@@ -379,9 +379,9 @@ def igrf_dipole_axis(date):
     h11sv = np.float32(h11[-1])
 
     # model coefficients:
-    g10 = np.array(map(np.float32, g10[:-1]))
-    g11 = np.array(map(np.float32, g11[:-1]))
-    h11 = np.array(map(np.float32, h11[:-1]))
+    g10 = np.array(g10[:-1], dtype=float)
+    g11 = np.array(g11[:-1], dtype=float)
+    h11 = np.array(h11[:-1], dtype=float)
 
     # get the gauss coefficient at given time:
     if year <= years[-1]:  # regular interpolation
