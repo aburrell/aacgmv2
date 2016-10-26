@@ -367,7 +367,7 @@ def igrf_dipole_axis(date):
         lines = f.readlines()
 
     years = lines[3].split()[3:][:-1]
-    years = np.array(years)  # time array
+    years = np.array(years, dtype=float)  # time array
 
     g10 = lines[4].split()[3:]
     g11 = lines[5].split()[3:]
