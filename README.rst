@@ -64,7 +64,7 @@ Badges
       - | |version| |supported-versions|
         | |wheel| |supported-implementations|
 
-.. |docs| image:: https://readthedocs.org/projects/aacgmv2/badge/?style=flat
+.. |docs| image:: https://readthedocs.org/projects/aacgmv2/badge/?version=stable&style=flat
     :target: https://readthedocs.org/projects/aacgmv2
     :alt: Documentation Status
 
