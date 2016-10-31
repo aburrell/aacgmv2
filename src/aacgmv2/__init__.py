@@ -22,7 +22,7 @@ set_coeff_path()
 
 # NOTE: it is important that we import _aacgmv2 AFTER setting the
 # environment variables above, otherwise it doesn't seem to inherit them
-from aacgmv2 import _aacgmv2
+from aacgmv2 import _aacgmv2 # noqa: E402
 
 from aacgmv2.wrapper import convert, convert_mlt, subsol
 
