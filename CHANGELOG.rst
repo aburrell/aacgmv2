@@ -2,7 +2,7 @@
 Changelog
 =========
 
-2.0.0 (2016-10-25)
+2.0.0 (2016-11-03)
 -----------------------------------------
 
 * Change method of calculating MLT, see documentation of convert_mlt for details
