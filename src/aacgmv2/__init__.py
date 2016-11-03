@@ -1,6 +1,6 @@
 import os as _os
 
-__version__ = "1.0.13"
+__version__ = "2.0.0"
 
 # path and filename prefix for the IGRF coefficients
 AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)), 'aacgm_coeffs', 'aacgm_coeffs-12-')
