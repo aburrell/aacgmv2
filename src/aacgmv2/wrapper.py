@@ -1,400 +1,437 @@
 # -*- coding: utf-8 -*-
-'''This module provides a user-friendly pythonic wrapper for the low-level C interface functions.'''
+"""Pythonic wrappers for AACGM-V2 C functions.
 
-from __future__ import division, print_function, absolute_import, unicode_literals
+Functions
+--------------
+convert_latlon : Converts scalar location
+convert_latlon_arr : Converts array location
+get_aacgm_coord : Get scalar magnetic lat, lon, mlt from geographic location
+get_aacgm_coord_arr : Get array magnetic lat, lon, mlt from geographic location
+convert_str_to_bit : Convert human readible AACGM flag to bits
+convert_bool_to_bit : Convert boolian flags to bits
+--------------
+"""
 
-import datetime as dt
-import calendar
-import warnings
-import os as _os
-
+from __future__ import division, absolute_import, unicode_literals
 import numpy as np
+import datetime as dt
+import logging
+import aacgmv2
 
-from aacgmv2._aacgmv2 import A2G, TRACE, BADIDEA, ALLOWTRACE, GEOCENTRIC, setDateTime, aacgmConvert
-
-IGRF_12_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)), 'igrf12coeffs.txt')
-
-aacgmConvert_vectorized = np.vectorize(aacgmConvert)
-
-
-def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False, badidea=False, geocentric=False):
-    '''Converts to/from geomagnetic coordinates.
-
-    This is a user-friendly pythonic wrapper for the low-level C interface
-    functions available in :mod:`aacgmv2._aacgmv2`.
+def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
+                   coeff_prefix=None):
+    """Converts between geomagnetic coordinates and AACGM coordinates
 
     Parameters
-    ==========
-    lat,lon,alt : array_like
-        Input latitude(s), longitude(s) and altitude(s). They must be
-        `broadcastable to the same shape <http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html>`_.
-    date : :class:`datetime.date`/:class:`datetime.datetime`, optional
-        The date/time to use for the magnetic field model, default ``None`` (uses
-        current time). Must be between 1900 and 2020.
-    a2g : bool, optional
-        Convert from AACGM-v2 to geographic coordinates, default ``False``
-        (converts geographic to AACGM-v2).
-    trace : bool, optional
-        Use field-line tracing, default ``False`` (uses coefficients). Tracing
-        is more precise and needed at altitudes > 2000 km, but significantly
-        slower.
-    allowtrace : bool, optional
-        Automatically use field-line tracing above 2000 km, default ``False``
-        (raises an exception for these altitudes unless ``trace=True`` or
-        ``badidea=True``).
-    badidea : bool, optional
-        Allow use of coefficients above 2000 km (bad idea!)
-    geocentric : bool, optional
-        Assume inputs are geocentric with Earth radius 6371.2 km.
+    ------------
+    in_lat : (float)
+        Input latitude in degrees N (code specifies type of latitude)
+    in_lon : (float)
+        Input longitude in degrees E (code specifies type of longitude)
+    height : (float)
+        Altitude above the surface of the earth in km
+    dtime : (datetime)
+        Datetime for magnetic field
+    code : (str or int)
+        Bit code or string denoting which type(s) of conversion to perform
+        G2A        - geographic (geodetic) to AACGM-v2
+        A2G        - AACGM-v2 to geographic (geodetic)
+        TRACE      - use field-line tracing, not coefficients
+        ALLOWTRACE - use trace only above 2000 km
+        BADIDEA    - use coefficients above 2000 km
+        GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
+        (default is "G2A")
+    igrf_file : (str or NoneType)
+        Full filename of IGRF coefficient file or None to use
+        aacgmv2.IGRF_12_COEFFS. (default=None)
+    coeff_prefix : (str or NoneType)
+        Location and file prefix for aacgm coefficient files or None to use
+        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
 
     Returns
-    =======
+    -------
+    out_lat : (float)
+        Output latitude in degrees
+    out_lon : (float)
+        Output longitude in degrees
+    out_r : (float)
+        Geocentric radial distance in R
+    """
+    # Define coefficient file prefix if not supplied
+    if coeff_prefix is None:
+        coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
 
-    lat_out : ``numpy.ndarray``
-        Converted latitude
-    lon_out : ``numpy.ndarray``
-        Converted longitude
+    # Define IGRF file if not supplied
+    if igrf_file is None:
+        igrf_file = aacgmv2.IGRF_12_COEFFS
 
-    Raises
-    ======
+    # Test time
+    if isinstance(dtime, dt.date):
+        date = dt.datetime.combine(dtime, dt.time(0))
 
-    ValueError
-        if max(alt) > 2000 and neither of `trace`, `allowtrace`, or `badidea` is ``True``
-    ValueError
-        if latitude is outside the range -90 to +90 degrees
-    RuntimeError
-        if there was a problem in the C extension
+    assert isinstance(dtime, dt.datetime), \
+        logging.error('time must be specified as datetime object')
 
-    Notes
-    =====
+    # Test height
+    if height < 0:
+        logging.warn('conversion not intended for altitudes < 0 km')
 
-    This function exclusively relies on the `AACGM-v2 C library
-    <https://engineering.dartmouth.edu/superdarn/aacgm.html>`_. Specifically,
-    it calls the functions :func:`_aacgmv2.setDateTime` and
-    :func:`_aacgmv2.aacgmConvert`, which are simple interfaces to the
-    C library functions :func:`AACGM_v2_SetDateTime` and
-    :func:`AACGM_v2_Convert`. Details of the techniques used to derive the
-    AACGM-v2 coefficients are described by Shepherd, 2014 [1]_.
+    # Test code
+    if isinstance(code, str):
+        code = code.upper()
 
-    .. [1] Shepherd, S. G. (2014), Altitude-adjusted corrected geomagnetic
-       coordinates: Definition and functional approximations,
-       J. Geophys. Res. Space Physics, 119, 7501--7521,
-       doi:`10.1002/2014JA020264 <http://dx.doi.org/10.1002/2014JA020264>`_.
+        if(height > 2000 and code.find("TRACE") < 0 and
+           code.find("ALLOWTRACE") < 0 and code.find("BADIDEA")):
+            estr = 'coefficients are not valid for altitudes above 2000 km. You'
+            estr += ' must either use field-line tracing (trace=True '
+            estr += 'or allowtrace=True) or indicate you know this '
+            estr += 'is a bad idea'
+            logging.error(estr)
 
-   '''
+        # make flag
+        bit_code = convert_str_to_bit(code)
+    else:
+        bit_code = code
 
-    # check values
-    if np.min(alt) < 0:
-        warnings.warn('Coordinate transformations are not intended for altitudes < 0 km', UserWarning)
+    assert isinstance(bit_code, int), \
+        logging.error("unknown code {:}".format(bit_code))
 
-    if np.max(alt) > 2000 and not (trace or allowtrace or badidea):
-        raise ValueError('Coefficients are not valid for altitudes above 2000 km. You must either use field-line '
-                         'tracing (trace=True or allowtrace=True) or indicate you know this is a bad idea '
-                         '(badidea=True)')
+    # Test latitude range
+    if abs(in_lat) > 90.0:
+        assert abs(in_lat) <= 90.1, logging.error('unrealistic latitude')
+        in_lat = np.sign(in_lat) * 90.0
 
-    # check if latitudes are > 90.1 (to allow some room for rounding errors, which will be clipped)
-    if np.max(np.abs(lat)) > 90.1:
-        raise ValueError('Latitude must be in the range -90 to +90 degrees')
-    np.clip(lat, -90, 90)
+    # Constrain longitudes between -180 and 180
+    in_lon = ((in_lon + 180.0) % 360.0) - 180.0
 
-    # constrain longitudes between -180 and 180
-    lon = ((np.asarray(lon) + 180) % 360) - 180
+    # Set current date and time
+    aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
+                         dtime.minute, dtime.second, coeff_prefix)
 
-    # set to current date if none is given
-    if date is None:
-        date = dt.datetime.now()
-
-    # add time info if only date is given
-    if isinstance(date, dt.date):
-        date = dt.datetime.combine(date, dt.time(0))
-
-    # set current date and time
-    setDateTime(date.year, date.month, date.day, date.hour, date.minute, date.second)
-
-    # make flag
-    flag = A2G*a2g + TRACE*trace + ALLOWTRACE*allowtrace + BADIDEA*badidea + GEOCENTRIC*geocentric
 
     # convert
-    lat_out, lon_out, _ = aacgmConvert_vectorized(lat, lon, alt, flag)
+    lat_out, lon_out, r_out = aacgmv2.convert(in_lat, in_lon, height, bit_code,
+                                              igrf_file)
 
-    return lat_out, lon_out
-
-
-def convert_mlt(arr, datetime, m2a=False):
-    '''Converts between magnetic local time (MLT) and AACGM-v2 longitude.
-
-    .. note:: This function is not related to the AACGM-v2 C library, but is provided as
-              a convenience in the hopes that it might be useful for some purposes.
-
-    Parameters
-    ==========
-    arr : array_like or float
-        Magnetic longitudes or MLTs to convert.
-    datetime : :class:`datetime.datetime`
-        Date and time for MLT conversion in Universal Time (UT).
-    m2a : bool
-        Convert MLT to AACGM-v2 longitude (default is ``False``, which implies
-        conversion from AACGM-v2 longitude to MLT).
-
-    Returns
-    =======
-    out : numpy.ndarray
-        Converted coordinates/MLT
-
-    Notes
-    =====
-
-    The MLT conversion is not part of the AACGM-v2 C library and is instead based
-    on Laundal et al., 2016 [1]_. A brief summary of the method is provided below.
-
-    MLT is defined as
-
-        MLT = (magnetic longitude - magnetic noon meridian longitude) / 15 + 12
-
-    where the magnetic noon meridian longitude is the centered dipole longitude
-    of the subsolar point.
-
-    There are two important reasons for using centered dipole instead of AACGM for
-    this calculation. One reason is that the AACGM longitude of the subsolar point
-    is often undefined (being at low latitudes). More importantly, if the subsolar
-    point close to ground was used, the MLT at polar latitudes would be affected
-    by non-dipole features at low latitudes, such as the South Atlantic Anomaly.
-    This is not desirable; since the Sun-Earth interaction takes place at polar
-    field lines, it is these field lines the MLT should describe.
-
-    In calculating the centered dipole longitude of the subsolar point, we use
-    the first three IGRF Gauss coefficients, using linear interpolation between
-    the model updates every five years.
-
-    Both input and output MLON are taken modulo 360 to ensure they are between
-    0 and 360 degrees. Similarly, input/output MLT are taken modulo 24.
-    For implementation of the subsolar point calculation, see :func:`subsol`.
-
-    .. [1] Laundal, K. M. and A. D. Richmond (2016), Magnetic Coordinate Systems,
-       Space Sci. Rev., doi:`10.1007/s11214-016-0275-y <http://dx.doi.org/10.1007/s11214-016-0275-y>`_.
-
-    '''
-    d2r = np.pi/180
-
-    # find subsolar point
-    yr = datetime.year
-    doy = datetime.timetuple().tm_yday
-    ssm = datetime.hour*3600 + datetime.minute*60 + datetime.second
-    subsol_lon, subsol_lat = subsol(yr, doy, ssm)
-
-    # unit vector pointing at subsolar point:
-    s = np.array([np.cos(subsol_lat * d2r) * np.cos(subsol_lon * d2r),
-                  np.cos(subsol_lat * d2r) * np.sin(subsol_lon * d2r),
-                  np.sin(subsol_lat * d2r)])
-
-    # convert subsolar coordinates to centered dipole coordinates
-    z = igrf_dipole_axis(datetime)  # Cartesian axis pointing at Northern dipole pole
-    y = np.cross(np.array([0, 0, 1]), z)
-    y = y/np.linalg.norm(y)
-    x = np.cross(y, z)
-    R = np.vstack((x, y, z))
-    s_cd = R.dot(s)
-
-    # centered dipole longitude of subsolar point:
-    mlon_subsol = np.arctan2(s_cd[1], s_cd[0])/d2r
-
-    # convert the input array
-    if m2a:  # MLT to AACGM
-        mlt = np.asarray(arr) % 24
-        mlon = (15*(mlt - 12) + mlon_subsol) % 360
-        return mlon
-    else:  # AACGM to MLT
-        mlon = np.asarray(arr) % 360
-        mlt = ((mlon - mlon_subsol)/15 + 12) % 24
-        return mlt
+    return lat_out, lon_out, r_out
 
 
-def subsol(year, doy, ut):
-    '''Finds subsolar geocentric longitude and latitude.
-
-    Helper function for :func:`convert_mlt`.
+def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
+                       igrf_file=None, coeff_prefix=None):
+    """Converts between geomagnetic coordinates and AACGM coordinates
 
     Parameters
-    ==========
-    year : int [1601, 2100]
-        Calendar year
-    doy : int [1, 365/366]
-        Day of year
-    ut : float
-        Seconds since midnight on the specified day
+    ------------
+    in_lat : (np.ndarray)
+        Input latitude in degrees N (code specifies type of latitude)
+    in_lon : (np.ndarray)
+        Input longitude in degrees E (code specifies type of longitude)
+    height : (np.ndarray)
+        Altitude above the surface of the earth in km
+    dtime : (datetime)
+        Single datetime object for magnetic field
+    code : (int or str)
+        Bit code or string denoting which type(s) of conversion to perform
+        G2A        - geographic (geodetic) to AACGM-v2
+        A2G        - AACGM-v2 to geographic (geodetic)
+        TRACE      - use field-line tracing, not coefficients
+        ALLOWTRACE - use trace only above 2000 km
+        BADIDEA    - use coefficients above 2000 km
+        GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
+        (default = "G2A")
+    igrf_file : (str or NoneType)
+        Full filename of IGRF coefficient file or None to use
+        aacgmv2.IGRF_12_COEFFS. (default=None)
+    coeff_prefix : (str or NoneType)
+        Location and file prefix for aacgm coefficient files or None to use
+        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
 
     Returns
-    =======
-    sbsllon : float
-        Subsolar longitude for the given date/time
-    sbsllat : float
-        Subsolar latitude for the given date/time
+    -------
+    out_lat : (np.ndarray)
+        Output latitudes in degrees
+    out_lon : (np.ndarray)
+        Output longitudes in degrees
+    out_r : (np.ndarray)
+        Geocentric radial distances in R
+    """
+    # If someone was lazy and entered a list instead of a numpy array,
+    # recast it here
 
-    Notes
-    =====
+    if isinstance(in_lat, list):
+        in_lat = np.array(in_lat)
 
-    Based on formulas in Astronomical Almanac for the year 1996, p. C24.
-    (U.S. Government Printing Office, 1994). Usable for years 1601-2100,
-    inclusive. According to the Almanac, results are good to at least 0.01
-    degree latitude and 0.025 degrees longitude between years 1950 and 2050.
-    Accuracy for other years has not been tested. Every day is assumed to have
-    exactly 86400 seconds; thus leap seconds that sometimes occur on December
-    31 are ignored (their effect is below the accuracy threshold of the
-    algorithm).
+    if isinstance(in_lon, list):
+        in_lon = np.array(in_lon)
 
-    After Fortran code by A. D. Richmond, NCAR. Translated from IDL
-    by K. Laundal.
+    if isinstance(height, list):
+        height = np.array(height)
 
-    '''
+    # Ensure that lat, lon, and height are the same length or if the lengths
+    # differ that the different ones contain only a single value
+    ulen = np.unique([height.shape, in_lat.shape, in_lon.shape])
+    if ulen.shape[0] > 2 or (ulen.shape[0] == 2 and ulen[0] > 1):
+        logging.error("mismatched input arrays")
+        return None, None, None
 
-    from numpy import sin, cos, pi, arctan2, arcsin
+    # Define coefficient file prefix if not supplied
+    if coeff_prefix is None:
+        coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
 
-    yr = year - 2000
+    # Define IGRF file if not supplied
+    if igrf_file is None:
+        igrf_file = aacgmv2.IGRF_12_COEFFS
 
-    if year >= 2101:
-        print('subsol.py: subsol invalid after 2100. Input year is:', year)
+    # Test time
+    if isinstance(dtime, dt.date):
+        date = dt.datetime.combine(dtime, dt.time(0))
 
-    nleap = np.floor((year-1601)/4)
-    nleap = nleap - 99
-    if year <= 1900:
-        if year <= 1600:
-            print('subsol.py: subsol invalid before 1601. Input year is:', year)
-        ncent = np.floor((year-1601)/100)
-        ncent = 3 - ncent
-        nleap = nleap + ncent
+    assert isinstance(dtime, dt.datetime), \
+        logging.error('time must be specified as datetime object')
 
-    l0 = -79.549 + (-0.238699*(yr-4*nleap) + 3.08514e-2*nleap)
+    # Test height
+    if np.min(height) < 0:
+        logging.warn('conversion not intended for altitudes < 0 km')
 
-    g0 = -2.472 + (-0.2558905*(yr-4*nleap) - 3.79617e-2*nleap)
+    # Test code
+    if isinstance(code, str):
+        code = code.upper()
 
-    # Days (including fraction) since 12 UT on January 1 of IYR:
-    df = (ut/86400 - 1.5) + doy
+        if(np.max(height) > 2000 and code.find("TRACE") < 0 and
+           code.find("ALLOWTRACE") < 0 and code.find("BADIDEA")):
+            estr = 'coefficients are not valid for altitudes above 2000 km. You'
+            estr += ' must either use field-line tracing (trace=True '
+            estr += 'or allowtrace=True) or indicate you know this '
+            estr += 'is a bad idea'
+            logging.error(estr)
 
-    # Addition to Mean longitude of Sun since January 1 of IYR:
-    lf = 0.9856474*df
+        # make flag
+        bit_code = convert_str_to_bit(code)
+    else:
+        bit_code = code
 
-    # Addition to Mean anomaly since January 1 of IYR:
-    gf = 0.9856003*df
+    assert isinstance(bit_code, int), \
+        logging.error("unknown code {:}".format(bit_code))
 
-    # Mean longitude of Sun:
-    l = l0 + lf
+    # Test latitude range
+    if np.abs(in_lat).max() > 90.0:
+        assert np.abs(in_lat).max() <= 90.1, \
+            logging.error('unrealistic latitude')
+        in_lat = np.clip(in_lat, -90.0, 90.0)
 
-    # Mean anomaly:
-    g = g0 + gf
-    grad = g*pi/180
+    # Constrain longitudes between -180 and 180
+    in_lon = ((in_lon + 180.0) % 360.0) - 180.0
 
-    # Ecliptic longitude:
-    lmbda = l + 1.915*sin(grad) + 0.020*sin(2*grad)
-    lmrad = lmbda*pi/180
-    sinlm = sin(lmrad)
+    # Set current date and time
+    aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
+                         dtime.minute, dtime.second, coeff_prefix)
 
-    # Days (including fraction) since 12 UT on January 1 of 2000:
-    n = df + 365*yr + nleap
+    # Vectorise the AACGM code
+    convert_vectorised = np.vectorize(aacgmv2.convert)
 
-    # Obliquity of ecliptic:
-    epsilon = 23.439 - 4e-7*n
-    epsrad = epsilon*pi/180
+    # convert
+    lat_out, lon_out, r_out = convert_vectorised(in_lat, in_lon, height,
+                                                 bit_code, igrf_file)
 
-    # Right ascension:
-    alpha = arctan2(cos(epsrad)*sinlm, cos(lmrad)) * 180/pi
+    return lat_out, lon_out, r_out
 
-    # Declination:
-    delta = arcsin(sin(epsrad)*sinlm) * 180/pi
-
-    # Subsolar latitude:
-    sbsllat = delta
-
-    # Equation of time (degrees):
-    etdeg = l - alpha
-    nrot = round(etdeg/360)
-    etdeg = etdeg - 360*nrot
-
-    # Apparent time (degrees):
-    aptime = ut/240 + etdeg    # Earth rotates one degree every 240 s.
-
-    # Subsolar longitude:
-    sbsllon = 180 - aptime
-    nrot = round(sbsllon/360)
-    sbsllon = sbsllon - 360*nrot
-
-    return sbsllon, sbsllat
-
-
-def gc2gd_lat(gc_lat):
-    '''Convert geocentric latitude to geodetic latitude using WGS84.
+def get_aacgm_coord(glat, glon, height, dtime, method="TRACE",
+                    igrf_file=None, coeff_prefix=None):
+    """Get AACGM latitude, longitude, and magnetic local time
 
     Parameters
-    ==========
-    gc_lat : array_like or float
-        Geocentric latitude
+    ------------
+    glat : (float)
+        Geodetic latitude in degrees N
+    glon : (float)
+        Geodetic longitude in degrees E
+    height : (float)
+        Altitude above the surface of the earth in km
+    dtime : (datetime)
+        Date and time to calculate magnetic location
+    method : (str)
+        String denoting which type(s) of conversion to perform
+        TRACE      - use field-line tracing, not coefficients
+        ALLOWTRACE - use trace only above 2000 km
+        BADIDEA    - use coefficients above 2000 km
+        GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
+        (default = "TRACE")
+    igrf_file : (str or NoneType)
+        Full filename of IGRF coefficient file or None to use
+        aacgmv2.IGRF_12_COEFFS. (default=None)
+    coeff_prefix : (str or NoneType)
+        Location and file prefix for aacgm coefficient files or None to use
+        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
 
     Returns
-    =======
-    gd_lat : same as input
-        Geodetic latitude
+    -------
+    mlat : (float)
+        magnetic latitude in degrees
+    mlon : (float)
+        magnetic longitude in degrees
+    mlt : (float)
+        magnetic local time in hours
+    """
+    # Define coefficient file prefix if not supplied
+    if coeff_prefix is None:
+        coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
 
-    '''
-    WGS84_e2 = 0.006694379990141317
-    return np.rad2deg(-np.arctan(np.tan(np.deg2rad(gc_lat))/(WGS84_e2 - 1)))
+    # Define IGRF file if not supplied
+    if igrf_file is None:
+        igrf_file = aacgmv2.IGRF_12_COEFFS
+
+    # Initialize return values
+    mlat = None
+    mlon = None
+    mlt = None
+
+    try:
+        # Get magnetic lat and lon.
+        mlat, mlon, mr = convert_latlon(glat, glon, height, dtime,
+                                        code="G2A|{:s}".format(method),
+                                        igrf_file=igrf_file,
+                                        coeff_prefix=coeff_prefix)
+        # Get magnetic local time
+        mlt = aacgmv2.mlt_convert(dtime.year, dtime.month, dtime.day,
+                                  dtime.hour, dtime.minute, dtime.second, mlon,
+                                  coeff_prefix, igrf_file)
+    except:
+        logging.error("Unable to get magnetic lat/lon")
+
+    return mlat, mlon, mlt
 
 
-def igrf_dipole_axis(date):
-    '''Get Cartesian unit vector pointing at dipole pole in the north, according to IGRF
+def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE",
+                        igrf_file=None, coeff_prefix=None):
+    """Get AACGM latitude, longitude, and magnetic local time
 
     Parameters
-    ==========
-    date : :class:`datetime.datetime`
-        Date and time
+    ------------
+    glat : (np.array or list)
+        Geodetic latitude in degrees N
+    glon : (np.array or list)
+        Geodetic longitude in degrees E
+    height : (np.array or list)
+        Altitude above the surface of the earth in km
+    dtime : (datetime)
+        Date and time to calculate magnetic location
+    method : (str)
+        String denoting which type(s) of conversion to perform
+        TRACE      - use field-line tracing, not coefficients
+        ALLOWTRACE - use trace only above 2000 km
+        BADIDEA    - use coefficients above 2000 km
+        GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
+        (default = "TRACE")
+    igrf_file : (str or NoneType)
+        Full filename of IGRF coefficient file or None to use
+        aacgmv2.IGRF_12_COEFFS. (default=None)
+    coeff_prefix : (str or NoneType)
+        Location and file prefix for aacgm coefficient files or None to use
+        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
 
     Returns
-    =======
-    m: numpy.ndarray
-        Cartesian 3 element vector pointing at dipole pole in the north (geocentric coords)
+    -------
+    mlat : (float)
+        magnetic latitude in degrees
+    mlon : (float)
+        magnetic longitude in degrees
+    mlt : (float)
+        magnetic local time in hours
+    """
+    # Define coefficient file prefix if not supplied
+    if coeff_prefix is None:
+        coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
 
-    Notes
-    =====
-    IGRF coefficients are read from the igrf12coeffs.txt file. It should also work after IGRF updates.
-    The dipole coefficients are interpolated to the date, or extrapolated if date > latest IGRF model
-    '''
+    # Define IGRF file if not supplied
+    if igrf_file is None:
+        igrf_file = aacgmv2.IGRF_12_COEFFS
 
-    # get time in years, as float:
-    year = date.year
-    doy = date.timetuple().tm_yday
-    year = year + doy/(365 + calendar.isleap(year))
+    # Initialize return values
+    mlat = None
+    mlon = None
+    mlt = None
 
-    # read the IGRF coefficients
-    with open(IGRF_12_COEFFS, 'r') as f:
-        lines = f.readlines()
+    try:
+        # Get magnetic lat and lon.
+        mlat, mlon, mr = convert_latlon_arr(glat, glon, height, dtime,
+                                            code="G2A|{:s}".format(method),
+                                            igrf_file=igrf_file,
+                                            coeff_prefix=coeff_prefix)
 
-    years = lines[3].split()[3:][:-1]
-    years = np.array(years, dtype=float)  # time array
+        if mlon is not None:
+            # Get magnetic local time
+            mlt_vectorised = np.vectorize(aacgmv2.mlt_convert)
+            mlt = mlt_vectorised(dtime.year, dtime.month, dtime.day,
+                                 dtime.hour, dtime.minute, dtime.second, mlon,
+                                 coeff_prefix, igrf_file)
+    except:
+        logging.error("Unable to get magnetic lat/lon")
 
-    g10 = lines[4].split()[3:]
-    g11 = lines[5].split()[3:]
-    h11 = lines[6].split()[3:]
+    return mlat, mlon, mlt
 
-    # secular variation coefficients (for extrapolation)
-    g10sv = np.float32(g10[-1])
-    g11sv = np.float32(g11[-1])
-    h11sv = np.float32(h11[-1])
+def convert_str_to_bit(code):
+    """convert string code specification to bit code specification
 
-    # model coefficients:
-    g10 = np.array(g10[:-1], dtype=float)
-    g11 = np.array(g11[:-1], dtype=float)
-    h11 = np.array(h11[:-1], dtype=float)
+    Parameters
+    ------------
+    code : (str)
+        Bitwise code for passing options into converter (default=0)
+        G2A        - geographic (geodetic) to AACGM-v2
+        A2G        - AACGM-v2 to geographic (geodetic)
+        TRACE      - use field-line tracing, not coefficients
+        ALLOWTRACE - use trace only above 2000 km
+        BADIDEA    - use coefficients above 2000 km
+        GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
 
-    # get the gauss coefficient at given time:
-    if year <= years[-1]:  # regular interpolation
-        g10 = np.interp(year, years, g10)
-        g11 = np.interp(year, years, g11)
-        h11 = np.interp(year, years, h11)
-    else:  # extrapolation
-        dt = year - years[-1]
-        g10 = g10[-1] + g10sv * dt
-        g11 = g11[-1] + g11sv * dt
-        h11 = h11[-1] + h11sv * dt
+    Returns
+    --------
+    bit_code : (int)
+        code specification in bits
+    """
+    convert_code = {"G2A": aacgmv2.G2A, "A2G": aacgmv2.A2G,
+                    "TRACE": aacgmv2.TRACE, "GEOCENTRIC": aacgmv2.GEOCENTRIC,
+                    "ALLOWTRACE": aacgmv2.ALLOWTRACE,
+                    "BADIDEA": aacgmv2.BADIDEA}
 
-    # calculate pole position
-    B0 = np.sqrt(g10**2 + g11**2 + h11**2)
+    code = code.upper()
 
-    return -np.array([g11, h11, g10])/B0
+    bit_code = sum([convert_code[k] for k in convert_code.keys()
+                    if code.find(k) >= 0])
+
+    return bit_code
+
+def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
+                        badidea=False, geocentric=False):
+    """convert boolian flags to bit code specification
+
+    Parameters
+    ----------
+    a2g : (bool)
+        True for AACGM-v2 to geographic (geodetic), False otherwise
+        (default=False)
+    trace : (bool)
+        If True, use field-line tracing, not coefficients (default=False)
+    allowtrace : (bool)
+        If True, use trace only above 2000 km (default=False)
+    badidea : (bool)
+        If True, use coefficients above 2000 km (default=False)
+    geocentric : (bool)
+        True for geodetic, False for geocentric w/RE=6371.2 (default=False)
+
+    Returns
+    --------
+    bit_code : (int)
+        code specification in bits
+    """
+    bit_code = aacgmv2.A2G if a2g else aacgmv2.G2A
+
+    if trace:
+        bit_code += aacgmv2.TRACE
+    if allowtrace:
+        bit_code += aacgmv2.ALLOWTRACE
+    if badidea:
+        bit_code += aacgmv2.BADIDEA
+    if geocentric:
+        bit_code += aacgmv2.GEOCENTRIC
+
+    return bit_code

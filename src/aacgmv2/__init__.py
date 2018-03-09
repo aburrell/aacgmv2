@@ -1,29 +1,70 @@
-import os as _os
+# -*- coding: utf-8 -*-
+"""aacgmv2
 
-__version__ = "2.0.0"
+Parameters
+-----------
+AACGM_v2_DAT_PREFIX
+IGRF_12_COEFFS
+G2A
+A2G
+TRACE
+ALLOWTRACE
+BADIDEA
+GEOCENTRIC
+
+Functions
+------------
+convert_latlon
+convert_latlon_arr
+convert_str_to_bit
+convert_bool_to_bit
+get_aacgm_coord
+get_aacgm_coord_arr
+convert
+set_datetime
+mlt_convert
+mlt_convert_yrsec
+inv_mlt_convert
+inv_mlt_convert_yrsec
+"""
+import os.path as _path
+import logging
+__version__ = "2.0.1"
 
 # path and filename prefix for the IGRF coefficients
-AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)), 'aacgm_coeffs', 'aacgm_coeffs-12-')
-IGRF_12_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)), 'igrf12coeffs.txt')
+AACGM_v2_DAT_PREFIX = _path.join(_path.realpath(_path.dirname(__file__)),
+                                 'aacgm_coeffs', 'aacgm_coeffs-12-')
+IGRF_12_COEFFS = _path.join(_path.realpath(_path.dirname(__file__)),
+                            'igrf12coeffs.txt')
 
+try:
+    from wrapper import convert_latlon, convert_str_to_bit, get_aacgm_coord
+    from wrapper import convert_latlon_arr, get_aacgm_coord_arr
+    from wrapper import convert_bool_to_bit
+except Exception, e:
+    logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
 
-def set_coeff_path():
-    '''Sets the environment variables ``AACGM_v2_DAT_PREFIX`` and
-    ``IGRF_12_COEFFS`` (for the current process). These are required for the
-    C library to function correctly. This function is automatically called
-    when importing aacgmv2. You may need to call this manually if you use
-    multithreading or spawn child processes (untested).
-    '''
-    _os.environ['AACGM_v2_DAT_PREFIX'] = AACGM_v2_DAT_PREFIX
-    _os.environ['IGRF_12_COEFFS'] = IGRF_12_COEFFS
+try:
+    from aacgmv2 import convert
+except Exception, e:
+    logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
 
-set_coeff_path()
+try:
+    from aacgmv2 import set_datetime
+except Exception, e:
+    logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
 
+try:
+    from aacgmv2 import mlt_convert, inv_mlt_convert
+except Exception, e:
+    logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
 
-# NOTE: it is important that we import _aacgmv2 AFTER setting the
-# environment variables above, otherwise it doesn't seem to inherit them
-from aacgmv2 import _aacgmv2  # noqa: E402
+try:
+    from aacgmv2 import mlt_convert_yrsec, inv_mlt_convert_yrsec
+except Exception, e:
+    logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
 
-from aacgmv2.wrapper import convert, convert_mlt, subsol  # noqa: E402
-
-__all__ = ['_aacgmv2', 'convert', 'convert_mlt', 'subsol', 'set_coeff_path', 'AACGM_v2_DAT_PREFIX', 'IGRF_12_COEFFS']
+try:
+    from aacgmv2 import G2A, A2G, TRACE, ALLOWTRACE, BADIDEA, GEOCENTRIC
+except Exception, e:
+    logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
