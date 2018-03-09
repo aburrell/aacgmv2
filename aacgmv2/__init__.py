@@ -45,26 +45,27 @@ except Exception, e:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
 
 try:
-    from aacgmv2 import convert
+    from aacgmv2._aacgmv2 import convert
 except Exception, e:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
 
 try:
-    from aacgmv2 import set_datetime
+    from aacgmv2._aacgmv2 import set_datetime
 except Exception, e:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
 
 try:
-    from aacgmv2 import mlt_convert, inv_mlt_convert
+    from aacgmv2._aacgmv2 import mlt_convert, inv_mlt_convert
 except Exception, e:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
 
 try:
-    from aacgmv2 import mlt_convert_yrsec, inv_mlt_convert_yrsec
+    from aacgmv2._aacgmv2 import mlt_convert_yrsec, inv_mlt_convert_yrsec
 except Exception, e:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
 
 try:
-    from aacgmv2 import G2A, A2G, TRACE, ALLOWTRACE, BADIDEA, GEOCENTRIC
+    from aacgmv2._aacgmv2 import (G2A, A2G, TRACE, ALLOWTRACE, BADIDEA,
+                                  GEOCENTRIC)
 except Exception, e:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(e))

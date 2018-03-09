@@ -314,7 +314,7 @@ mlon : (float)\n\
 /* Different versions of python require different constant declarations */
 
 #if PY_MAJOR_VERSION >= 3
-  static struct PyModuleDef aacgm_module = {
+  static struct PyModuleDef aacgmv2module = {
     PyModuleDef_HEAD_INIT,
     "aacgmv2",   /* name of module */
     "Interface to the AACGM-v2 C library.", /* module documentation */
@@ -325,7 +325,7 @@ mlon : (float)\n\
 
   PyMODINIT_FUNC PyInit_aacgm(void)
   {
-    module = PyModule_Create(&aacgm_module);
+    module = PyModule_Create(&aacgmv2module);
     PyModule_AddIntConstant(module, "G2A", G2A);
     PyModule_AddIntConstant(module, "A2G", A2G);
     PyModule_AddIntConstant(module, "TRACE", TRACE);
