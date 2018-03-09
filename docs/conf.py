@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 import os
 
-
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
@@ -23,9 +22,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = u'AACGM-v2 Python library'
 year = u'2015'
-author = u'Christer van der Meeren'
+author = u'Angeline G. Burrell, Christer van der Meeren'
 copyright = '{0}, {1}'.format(year, author)
-version = release = u'2.0.0'
+version = release = u'2.0.1'
 # on_rtd is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 

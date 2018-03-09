@@ -34,13 +34,15 @@ if 'PY_CCOV' in os.environ.keys():
 
 setup(
     name='aacgmv2',
-    version='2.0.0',
+    version='2.0.1',
     license='MIT',
     description='A Python wrapper for AACGM-v2 magnetic coordinates',
-    long_description='%s\n%s' % (read('README.rst'), re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))),
-    author='Christer van der Meeren',
-    author_email='cmeeren@gmail.com',
-    url='https://github.com/cmeeren/aacgmv2',
+    long_description='%s\n%s' % (read('README.rst'),
+                                 re.sub(':[a-z]+:`~?(.*?)`',
+                                        r'``\1``', read('CHANGELOG.rst'))),
+    author='Angeline G. Burrell, Christer van der Meeren',
+    author_email='agb073000@utdallas.edu',
+    url='https://github.com/aburrell/aacgmv2',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
@@ -53,6 +55,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: Unix',
         'Operating System :: POSIX',
+        'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
@@ -60,6 +63,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Scientific/Engineering :: Physics',
         'Topic :: Utilities',
@@ -80,7 +84,10 @@ setup(
     ],
     ext_modules=[
         Extension('aacgmv2._aacgmv2',
-                  sources=['src/aacgmv2/aacgmv2module.c', 'src/c_aacgm_v2/aacgmlib_v2.c', 'src/c_aacgm_v2/genmag.c', 'src/c_aacgm_v2/igrflib.c'],
+                  sources=['src/aacgmv2/aacgmv2module.c',
+                           'src/c_aacgm_v2/aacgmlib_v2.c',
+                           'src/c_aacgm_v2/genmag.c',
+                           'src/c_aacgm_v2/igrflib.c'],
                   include_dirs=['src/c_aacgm_v2'])
     ],
     entry_points={
