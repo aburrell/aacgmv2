@@ -100,14 +100,17 @@ def main():
     elif args.subcommand == 'mlt_convert':
         dtime = dt.datetime.strptime(args.datetime, '%Y%m%d%H%M%S')
         if args.m2a:
-            out = aacgmv2.inv_mlt_convert(dtime.year, dtime.month, dtime.day,
-                                          dtime.hour, dtime.minute,
-                                          dtime.second, array[:,1],
-                                          aacgmv2.IGRF_12_COEFFS)
+            out = aacgmv2._aacgmv2.inv_mlt_convert(dtime.year, dtime.month,
+                                                   dtime.day, dtime.hour,
+                                                   dtime.minute, dtime.second,
+                                                   array[:,1],
+                                                   aacgmv2.IGRF_12_COEFFS)
         else:
-            out = aacgmv2.mlt_convert(dtime.year, dtime.month, dtime.day,
-                                      dtime.hour, dtime.minute, dtime.second,
-                                      array[:,1], aacgmv2.IGRF_12_COEFFS)
+            out = aacgmv2._aacgmv2.mlt_convert(dtime.year, dtime.month,
+                                               dtime.day, dtime.hour,
+                                               dtime.minute, dtime.second,
+                                               array[:,1],
+                                               aacgmv2.IGRF_12_COEFFS)
         np.savetxt(args.file_out, out, fmt='%.8f')
 
 

@@ -1,31 +1,38 @@
 # -*- coding: utf-8 -*-
 """aacgmv2
 
+Modules
+---------------------------------------------------------------------------
+_aacgmv2 : Contains functions and variables from c code
+---------------------------------------------------------------------------
+
 Parameters
------------
+---------------------------------------------------------------------------
 AACGM_v2_DAT_PREFIX
 IGRF_12_COEFFS
-G2A
-A2G
-TRACE
-ALLOWTRACE
-BADIDEA
-GEOCENTRIC
+_aacgmv2.G2A
+_aacgmv2.A2G
+_aacgmv2.TRACE
+_aacgmv2.ALLOWTRACE
+_aacgmv2.BADIDEA
+_aacgmv2.GEOCENTRIC
+---------------------------------------------------------------------------
 
 Functions
-------------
-convert_latlon
+---------------------------------------------------------------------------
 convert_latlon_arr
 convert_str_to_bit
 convert_bool_to_bit
 get_aacgm_coord
 get_aacgm_coord_arr
-convert
-set_datetime
-mlt_convert
-mlt_convert_yrsec
-inv_mlt_convert
-inv_mlt_convert_yrsec
+_aacgmv2.convert
+_aacgmv2.set_datetime
+_aacgmv2.mlt_convert
+_aacgmv2.mlt_convert_yrsec
+_aacgmv2.inv_mlt_convert
+_aacgmv2.inv_mlt_convert_yrsec
+---------------------------------------------------------------------------
+
 """
 import os.path as _path
 import logging
@@ -37,35 +44,17 @@ AACGM_v2_DAT_PREFIX = _path.join(_path.realpath(_path.dirname(__file__)),
 IGRF_12_COEFFS = _path.join(_path.realpath(_path.dirname(__file__)),
                             'igrf12coeffs.txt')
 
+# Imports
+#---------------------------------------------------------------------
+
 try:
-    from wrapper import convert_latlon, convert_str_to_bit, get_aacgm_coord
-    from wrapper import convert_latlon_arr, get_aacgm_coord_arr
-    from wrapper import convert_bool_to_bit
-except Exception, e:
+    from aacgmv2.wrapper import (convert_latlon, get_aacgm_coord)
+    from aacgmv2.wrapper import (convert_latlon_arr, get_aacgm_coord_arr)
+    from aacgmv2.wrapper import (convert_bool_to_bit, convert_str_to_bit)
+except Exception as e:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
 
 try:
-    from aacgmv2._aacgmv2 import convert
-except Exception, e:
-    logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
-
-try:
-    from aacgmv2._aacgmv2 import set_datetime
-except Exception, e:
-    logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
-
-try:
-    from aacgmv2._aacgmv2 import mlt_convert, inv_mlt_convert
-except Exception, e:
-    logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
-
-try:
-    from aacgmv2._aacgmv2 import mlt_convert_yrsec, inv_mlt_convert_yrsec
-except Exception, e:
-    logging.exception(__file__ + ' -> aacgmv2: ' + str(e))
-
-try:
-    from aacgmv2._aacgmv2 import (G2A, A2G, TRACE, ALLOWTRACE, BADIDEA,
-                                  GEOCENTRIC)
-except Exception, e:
+    from aacgmv2 import (_aacgmv2)
+except Exception as e:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(e))

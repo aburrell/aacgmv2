@@ -316,14 +316,14 @@ mlon : (float)\n\
 #if PY_MAJOR_VERSION >= 3
   static struct PyModuleDef aacgmv2module = {
     PyModuleDef_HEAD_INIT,
-    "aacgmv2",   /* name of module */
+    "_aacgmv2",   /* name of module */
     "Interface to the AACGM-v2 C library.", /* module documentation */
     -1, /* size of per-interpreter state of the module,
 	   or -1 if the module keeps state in global variables. */
     aacgm_v2_methods
   };
 
-  PyMODINIT_FUNC PyInit_aacgm(void)
+  PyMODINIT_FUNC PyInit__aacgmv2(void)
   {
     module = PyModule_Create(&aacgmv2module);
     PyModule_AddIntConstant(module, "G2A", G2A);
@@ -337,9 +337,9 @@ mlon : (float)\n\
 
 #else
 
-  PyMODINIT_FUNC initaacgm(void)
+  PyMODINIT_FUNC init_aacgmv2(void)
   {
-    module = Py_InitModule("aacgm", aacgm_v2_methods);
+    module = Py_InitModule("_aacgmv2", aacgm_v2_methods);
     PyModule_AddIntConstant(module, "G2A", G2A);
     PyModule_AddIntConstant(module, "A2G", A2G);
     PyModule_AddIntConstant(module, "TRACE", TRACE);

@@ -105,13 +105,14 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
     in_lon = ((in_lon + 180.0) % 360.0) - 180.0
 
     # Set current date and time
-    aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
-                         dtime.minute, dtime.second, coeff_prefix)
+    aacgmv2._aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day,
+                                  dtime.hour, dtime.minute, dtime.second,
+                                  coeff_prefix)
 
 
     # convert
-    lat_out, lon_out, r_out = aacgmv2.convert(in_lat, in_lon, height, bit_code,
-                                              igrf_file)
+    lat_out, lon_out, r_out = aacgmv2._aacgmv2.convert(in_lat, in_lon, height,
+                                                       bit_code, igrf_file)
 
     return lat_out, lon_out, r_out
 
@@ -223,11 +224,12 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
     in_lon = ((in_lon + 180.0) % 360.0) - 180.0
 
     # Set current date and time
-    aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
-                         dtime.minute, dtime.second, coeff_prefix)
+    aacgmv2._aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day,
+                                  dtime.hour, dtime.minute, dtime.second,
+                                  coeff_prefix)
 
     # Vectorise the AACGM code
-    convert_vectorised = np.vectorize(aacgmv2.convert)
+    convert_vectorised = np.vectorize(aacgmv2._aacgmv2.convert)
 
     # convert
     lat_out, lon_out, r_out = convert_vectorised(in_lat, in_lon, height,
@@ -292,9 +294,10 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE",
                                         igrf_file=igrf_file,
                                         coeff_prefix=coeff_prefix)
         # Get magnetic local time
-        mlt = aacgmv2.mlt_convert(dtime.year, dtime.month, dtime.day,
-                                  dtime.hour, dtime.minute, dtime.second, mlon,
-                                  coeff_prefix, igrf_file)
+        mlt = aacgmv2._aacgmv2.mlt_convert(dtime.year, dtime.month, dtime.day,
+                                           dtime.hour, dtime.minute,
+                                           dtime.second, mlon,
+                                           coeff_prefix, igrf_file)
     except:
         logging.error("Unable to get magnetic lat/lon")
 
@@ -360,7 +363,7 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE",
 
         if mlon is not None:
             # Get magnetic local time
-            mlt_vectorised = np.vectorize(aacgmv2.mlt_convert)
+            mlt_vectorised = np.vectorize(aacgmv2._aacgmv2.mlt_convert)
             mlt = mlt_vectorised(dtime.year, dtime.month, dtime.day,
                                  dtime.hour, dtime.minute, dtime.second, mlon,
                                  coeff_prefix, igrf_file)
@@ -388,10 +391,11 @@ def convert_str_to_bit(code):
     bit_code : (int)
         code specification in bits
     """
-    convert_code = {"G2A": aacgmv2.G2A, "A2G": aacgmv2.A2G,
-                    "TRACE": aacgmv2.TRACE, "GEOCENTRIC": aacgmv2.GEOCENTRIC,
-                    "ALLOWTRACE": aacgmv2.ALLOWTRACE,
-                    "BADIDEA": aacgmv2.BADIDEA}
+    convert_code = {"G2A": aacgmv2._aacgmv2.G2A, "A2G": aacgmv2._aacgmv2.A2G,
+                    "TRACE": aacgmv2._aacgmv2.TRACE,
+                    "GEOCENTRIC": aacgmv2._aacgmv2.GEOCENTRIC,
+                    "ALLOWTRACE": aacgmv2._aacgmv2.ALLOWTRACE,
+                    "BADIDEA": aacgmv2._aacgmv2.BADIDEA}
 
     code = code.upper()
 
@@ -423,15 +427,15 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
     bit_code : (int)
         code specification in bits
     """
-    bit_code = aacgmv2.A2G if a2g else aacgmv2.G2A
+    bit_code = aacgmv2._aacgmv2.A2G if a2g else aacgmv2._aacgmv2.G2A
 
     if trace:
-        bit_code += aacgmv2.TRACE
+        bit_code += aacgmv2._aacgmv2.TRACE
     if allowtrace:
-        bit_code += aacgmv2.ALLOWTRACE
+        bit_code += aacgmv2._aacgmv2.ALLOWTRACE
     if badidea:
-        bit_code += aacgmv2.BADIDEA
+        bit_code += aacgmv2._aacgmv2.BADIDEA
     if geocentric:
-        bit_code += aacgmv2.GEOCENTRIC
+        bit_code += aacgmv2._aacgmv2.GEOCENTRIC
 
     return bit_code
