@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import
 
 import io
 import os
@@ -12,13 +12,11 @@ from setuptools import find_packages
 from setuptools import setup
 from distutils.core import Extension
 
-
 def read(*names, **kwargs):
     return io.open(
         path.join(path.dirname(__file__), *names),
         encoding=kwargs.get('encoding', 'utf8')
     ).read()
-
 
 # enable code coverage for C code
 # We can't use CFLAGS=-coverage in tox.ini, since that may mess with
@@ -79,9 +77,10 @@ setup(
     ],
     install_requires=[
         'numpy',
+        'logging',
     ],
     ext_modules=[
-        Extension('aacgmv2._aacgmv2',
+        Extension('_aacgmv2',
                   sources=['aacgmv2/aacgmv2module.c',
                            'c_aacgmv2/src/aacgmlib_v2.c',
                            'c_aacgmv2/src/astalglib.c',
