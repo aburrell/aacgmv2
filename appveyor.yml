@@ -52,10 +52,34 @@ environment:
       PYTHON_HOME: C:\python35-x64
       PYTHON_VERSION: '3.5'
       PYTHON_ARCH: '64'
+    - TOXENV: '3.6-buildonly-nocover'
+      TOXPYTHON: C:\python36\python.exe
+      WINDOWS_SDK_VERSION: v7.1
+      PYTHON_HOME: C:\python36
+      PYTHON_VERSION: '3.6'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.6-buildonly-nocover'
+      TOXPYTHON: C:\python36-x64\python.exe
+      WINDOWS_SDK_VERSION: v7.1
+      PYTHON_HOME: C:\python36-x64
+      PYTHON_VERSION: '3.6'
+      PYTHON_ARCH: '64'
     - TOXENV: check
       PYTHON_HOME: C:\Python27
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '32'
+    - TOXENV: '2.7-np1.14-nocover'
+      TOXPYTHON: C:\python27\python.exe
+      WINDOWS_SDK_VERSION: v7.0
+      PYTHON_HOME: C:\python27
+      PYTHON_VERSION: '2.7'
+      PYTHON_ARCH: '32'
+    - TOXENV: '2.7-np1.14-nocover'
+      TOXPYTHON: C:\python27-x64\python.exe
+      WINDOWS_SDK_VERSION: v7.0
+      PYTHON_HOME: C:\python27-x64
+      PYTHON_VERSION: '2.7'
+      PYTHON_ARCH: '64'
     - TOXENV: '2.7-np1.10-nocover'
       TOXPYTHON: C:\python27\python.exe
       WINDOWS_SDK_VERSION: v7.0
@@ -128,6 +152,18 @@ environment:
       PYTHON_HOME: C:\python33-x64
       PYTHON_VERSION: '3.3'
       PYTHON_ARCH: '64'
+    - TOXENV: '3.4-np1.14-nocover'
+      TOXPYTHON: C:\python34\python.exe
+      WINDOWS_SDK_VERSION: v7.0
+      PYTHON_HOME: C:\python34
+      PYTHON_VERSION: '3.4'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.4-np1.14-nocover'
+      TOXPYTHON: C:\python34-x64\python.exe
+      WINDOWS_SDK_VERSION: v7.1
+      PYTHON_HOME: C:\python34-x64
+      PYTHON_VERSION: '3.4'
+      PYTHON_ARCH: '64'
     - TOXENV: '3.4-np1.10-nocover'
       TOXPYTHON: C:\python34\python.exe
       WINDOWS_SDK_VERSION: v7.0
@@ -164,6 +200,16 @@ environment:
       PYTHON_HOME: C:\python34-x64
       PYTHON_VERSION: '3.4'
       PYTHON_ARCH: '64'
+    - TOXENV: '3.5-np1.14-nocover'
+      TOXPYTHON: C:\python35\python.exe
+      PYTHON_HOME: C:\python35
+      PYTHON_VERSION: '3.5'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.5-np1.14-nocover'
+      TOXPYTHON: C:\python35-x64\python.exe
+      PYTHON_HOME: C:\python35-x64
+      PYTHON_VERSION: '3.5'
+      PYTHON_ARCH: '64'
     - TOXENV: '3.5-np1.10-nocover'
       TOXPYTHON: C:\python35\python.exe
       PYTHON_HOME: C:\python35
@@ -193,6 +239,46 @@ environment:
       TOXPYTHON: C:\python35-x64\python.exe
       PYTHON_HOME: C:\python35-x64
       PYTHON_VERSION: '3.5'
+      PYTHON_ARCH: '64'
+    - TOXENV: '3.6-np1.14-nocover'
+      TOXPYTHON: C:\python36\python.exe
+      PYTHON_HOME: C:\python36
+      PYTHON_VERSION: '3.6'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.6-np1.14-nocover'
+      TOXPYTHON: C:\python36-x64\python.exe
+      PYTHON_HOME: C:\python36-x64
+      PYTHON_VERSION: '3.6'
+      PYTHON_ARCH: '64'
+    - TOXENV: '3.6-np1.10-nocover'
+      TOXPYTHON: C:\python36\python.exe
+      PYTHON_HOME: C:\python36
+      PYTHON_VERSION: '3.6'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.6-np1.10-nocover'
+      TOXPYTHON: C:\python36-x64\python.exe
+      PYTHON_HOME: C:\python36-x64
+      PYTHON_VERSION: '3.6'
+      PYTHON_ARCH: '64'
+    - TOXENV: '3.6-np1.8-nocover'
+      TOXPYTHON: C:\python36\python.exe
+      PYTHON_HOME: C:\python36
+      PYTHON_VERSION: '3.6'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.6-np1.8-nocover'
+      TOXPYTHON: C:\python36-x64\python.exe
+      PYTHON_HOME: C:\python36-x64
+      PYTHON_VERSION: '3.6'
+      PYTHON_ARCH: '64'
+    - TOXENV: '3.6-np1.9-nocover'
+      TOXPYTHON: C:\python36\python.exe
+      PYTHON_HOME: C:\python36
+      PYTHON_VERSION: '3.6'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.6-np1.9-nocover'
+      TOXPYTHON: C:\python36-x64\python.exe
+      PYTHON_HOME: C:\python36-x64
+      PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '64'
 init:
   - ps: echo $env:TOXENV
@@ -229,14 +315,21 @@ matrix:
     - TOXENV: '3.4-np1.8,codecov'
     - TOXENV: '3.5-np1.8-nocover'
     - TOXENV: '3.5-np1.8,codecov'
+    - TOXENV: '3.6-np1.8-nocover'
+    - TOXENV: '3.6-np1.8,codecov'
     - TOXENV: '3.5-np1.9-nocover'
     - TOXENV: '3.5-np1.9,codecov'
+    - TOXENV: '3.6-np1.9-nocover'
+    - TOXENV: '3.6-np1.9,codecov'
     - TOXENV: '3.5-np1.10-nocover'
     - TOXENV: '3.5-np1.10,codecov'
+    - TOXENV: '3.6-np1.10-nocover'
+    - TOXENV: '3.6-np1.10,codecov'
     - TOXENV: '2.7-buildonly-nocover'
     - TOXENV: '3.3-buildonly-nocover'
     - TOXENV: '3.4-buildonly-nocover'
     - TOXENV: '3.5-buildonly-nocover'
+    - TOXENV: '3.6-buildonly-nocover'
 ### To enable remote debugging uncomment this:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 

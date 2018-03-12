@@ -16,8 +16,9 @@ def make_auth_headers():
     """Make the authentication headers needed to use the Appveyor API."""
     if not os.path.exists(".appveyor.token"):
         raise RuntimeError(
-            "Please create a file named `.appveyor.token` in the current directory. "
-            "You can get the token from https://ci.appveyor.com/api-token"
+            "Please create a file named `.appveyor.token` in the current "
+            " directory. You can get the token from "
+            "https://ci.appveyor.com/api-token"
         )
     with open(".appveyor.token") as f:
         token = f.read().strip()
@@ -35,7 +36,8 @@ def make_url(url, **kwargs):
 
 def get_project_build(account_project):
     """Get the details of the latest Appveyor build."""
-    url = make_url("/projects/{account_project}", account_project=account_project)
+    url = make_url("/projects/{account_project}",
+                   account_project=account_project)
     response = requests.get(url, headers=make_auth_headers())
     return response.json()
 
@@ -47,7 +49,8 @@ def download_latest_artifacts(account_project):
     print("Build {0[build][version]}, {1} jobs: {0[build][message]}".format(build, len(jobs)))
     for job in jobs:
         name = job['name'].partition(':')[2].split(',')[0].strip()
-        print("  {0}: {1[status]}, {1[artifactsCount]} artifacts".format(name, job))
+        print("  {0}: {1[status]}, {1[artifactsCount]} artifacts".format(name,
+                                                                         job))
 
         url = make_url("/buildjobs/{jobid}/artifacts", jobid=job['jobId'])
         response = requests.get(url, headers=make_auth_headers())
@@ -96,10 +99,10 @@ def unpack_zipfile(filename):
             ensure_dirs(name)
             z.extract(name)
 
-parser = argparse.ArgumentParser(description='Download artifacts from AppVeyor.')
-parser.add_argument('name',
-                    metavar='ID',
-                    help='Project ID in AppVeyor. Example: ionelmc/python-nameless')
+desc = 'Download artifacts from AppVeyor.'
+parser = argparse.ArgumentParser(description=desc)
+desc = 'Project ID in AppVeyor. Example: ionelmc/python-nameless'
+parser.add_argument('name', metavar='ID', help=desc)
 
 if __name__ == "__main__":
     # import logging

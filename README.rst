@@ -13,7 +13,7 @@ version of the C library is 2.4.  The package is free software
 Quick start
 ===========
 
-Install (requires NumPy)::
+Install (requires NumPy and logging)::
 
     pip install aacgmv2
 
@@ -43,7 +43,8 @@ Convert between AACGM and MLT::
     >>> mlon
     array([ 159.08967974,  339.08967974])
 
-If you don't know or use Python, you can also use the command line. See details in the full documentation.
+If you don't know or use Python, you can also use the command line. See details
+in the full documentation.
 
 Documentation
 =============
