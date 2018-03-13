@@ -127,7 +127,7 @@ class TestDepAACGMV2:
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
         assert lat.shape == lon.shape & lat.shape == (1,)
-        assert np.all(np.isnan(lat), np.isnan(lon)])
+        assert np.all([np.isnan(lat), np.isnan(lon)])
 
     def test_convert_location_failure(self):
         """Test conversion with a bad location"""

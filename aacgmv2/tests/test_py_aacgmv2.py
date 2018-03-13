@@ -179,7 +179,7 @@ class TestPyAACGMV2:
         assert isinstance(lon, np.ndarray)
         assert isinstance(r, np.ndarray)
         assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (1,)
-        assert np.all(np.isnan(lat), np.isnan(lon), np.isnan(r)])
+        assert np.all([np.isnan(lat), np.isnan(lon), np.isnan(r)])
 
     def test_convert_latlon_arr_location_failure(self):
         """Test array latlon conversion with a bad location"""
@@ -425,7 +425,7 @@ class TestPyAACGMV2:
         assert isinstance(mlt, np.ndarray)
         assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
             mlt.shape == (1,)
-        assert np.all(np.isnan(mlat), np.isnan(mlon), np.isnan(mlt)])
+        assert np.all([np.isnan(mlat), np.isnan(mlon), np.isnan(mlt)])
 
     def test_get_aacgm_coord_arr_location_failure(self):
         """Test array AACGMV2 calculation with a bad location"""
