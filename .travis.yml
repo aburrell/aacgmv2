@@ -41,3 +41,7 @@ notifications:
 matrix:
   allow_failures:
     - env: "TOXENV=check"
+    - env: "TOXENV=np114-nocover"
+      python: 3.3
+    - env: "TOXENV=np114-cover"
+      python: 3.3
