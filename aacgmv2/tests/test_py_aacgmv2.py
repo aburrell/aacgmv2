@@ -203,7 +203,7 @@ class TestPyAACGMV2:
         assert lon_1 == lon_2
         assert r_1 == r_2
 
-    def test_convert_latlon_datetime_date(self):
+    def test_convert_latlon_arr_datetime_date(self):
         """Test array latlon conversion with date and datetime input"""
         lat_1, lon_1, r_1 = aacgmv2.convert_latlon_arr([60], [0], [300],
                                                        self.ddate)
@@ -223,7 +223,7 @@ class TestPyAACGMV2:
 
         assert l.check(("root", "WARNING", lwarn)) is None
         l.uninstall()
-        
+
     def test_warning_below_ground_convert_latlon_arr(self):
         """ Test that a warning is issued if altitude is below zero"""
         import testfixtures
@@ -255,7 +255,7 @@ class TestPyAACGMV2:
 
         with pytest.raises(AssertionError):
             aacgmv2.convert_latlon(-91, 0, 300, self.dtime)
-            
+
     def test_convert_latlon_arr_lat_failure(self):
         """Test error return for co-latitudes above 90 for an array"""
         with pytest.raises(AssertionError):

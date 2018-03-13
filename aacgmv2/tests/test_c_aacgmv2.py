@@ -243,7 +243,7 @@ class TestCAACGMV2:
         np.testing.assert_almost_equal(mlon_1, -153.5339, decimal=4)
         np.testing.assert_almost_equal(mlon_2, 41.4661, decimal=4)
         np.testing.assert_almost_equal(mlon_2, 11.4661, decimal=4)
-        
+
     def test_mlt_convert(self):
         """Test MLT calculation"""
         mlt_args_1 = list(flatten([long_date, 270.0,
