@@ -1,218 +1,596 @@
 # -*- coding: utf-8 -*-
-
-from __future__ import division, print_function, absolute_import, unicode_literals
+from __future__ import division, absolute_import, unicode_literals
 
 import datetime as dt
-
 import numpy as np
 import pytest
-
 import aacgmv2
-from aacgmv2._aacgmv2 import A2G, G2A, TRACE, BADIDEA, ALLOWTRACE, GEOCENTRIC
 
-date = (2015, 1, 1, 0, 0, 0)
-dtObj = dt.datetime(*date)
+class TestPyAACGMV2:
+    def setup(self):
+        """Runs before every method to create a clean testing setup"""
+        self.date_args = (2015, 1, 1, 0, 0, 0, aacgmv2.AACGM_v2_DAT_PREFIX)
+        self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
+        self.ddate = dt.date(2015, 1, 1)
 
+    def teardown(self):
+        """Runs after every method to clean up previous testing"""
+        del self.date_args, self.dtime, self.ddate
 
-def test_module_structure():
-    assert aacgmv2
-    assert aacgmv2.convert
+    def test_module_structure(self):
+        """Test module structure"""
+        assert aacgmv2
+        assert aacgmv2.convert_bool_to_bit
+        assert aacgmv2.convert_str_to_bit
+        assert aacgmv2.convert_latlon
+        assert aacgmv2.convert_latlon_arr
+        assert aacgmv2.get_aacgm_coord
+        assert aacgmv2.get_aacgm_coord_arr
+        assert aacgmv2.wrapper
 
+    def test_module_parameters(self):
+        """Test module constants"""
+        path1 = "aacgmv2/aacgmv2/aacgm_coeffs/aacgm_coeffs-12-"
+        arg1 = aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) >= 0
 
-def test_output_type():
-    lat, lon = aacgmv2.convert(60, 0, 300, dtObj)
-    print(type(lat))
-    print(lat.shape)
-    print(lat.size)
-    assert isinstance(lat, np.ndarray)
-    assert isinstance(lon, np.ndarray)
+        path2 = "aacgmv2/aacgmv2/igrf12coeffs.txt"
+        arg2 = aacgmv2.IGRF_12_COEFFS.find(path2) >= 0
 
-    lat, lon = aacgmv2.convert([60], [0], [300], dtObj)
-    assert isinstance(lat, np.ndarray)
-    assert isinstance(lon, np.ndarray)
+        assert arg1 & arg2
 
-    lat, lon = aacgmv2.convert([60, 61], [0, 0], [300, 300], dtObj)
-    assert isinstance(lat, np.ndarray)
-    assert isinstance(lon, np.ndarray)
+    def test_convert_latlon(self):
+        """Test single value latlon conversion"""
+        lat, lon, r = aacgmv2.convert_latlon(60, 0, 300, self.dtime)
+        np.testing.assert_almost_equal(lat, 58.2258, decimal=4)
+        np.testing.assert_almost_equal(lon, 81.1685, decimal=4)
+        np.testing.assert_almost_equal(r, 1.0457, decimal=4)
 
-    lat, lon = aacgmv2.convert([60, 61, 62], 0, 300, dtObj)
-    assert isinstance(lat, np.ndarray)
-    assert isinstance(lon, np.ndarray)
+    def test_convert_latlon_badidea_failure(self):
+        """Test single value latlon conversion with a bad flag"""
+        code = "G2A | BADIDEA"
+        lat, lon, r = aacgmv2.convert_latlon(60, 0, 3000, self.dtime, code)
+        assert np.isnan(lat) & np.isnan(lon) & np.isnan(r)
 
-    lat, lon = aacgmv2.convert(np.array([60, 61, 62]), 0, 300, dtObj)
-    assert isinstance(lat, np.ndarray)
-    assert isinstance(lon, np.ndarray)
+    def test_convert_latlon_location_failure(self):
+        """Test single value latlon conversion with a bad location"""
+        lat, lon, r = aacgmv2.convert_latlon(0, 0, 0, self.dtime)
+        assert np.isnan(lat) & np.isnan(lon) & np.isnan(r)
 
-    lat, lon = aacgmv2.convert(np.array([[60, 61, 62], [63, 64, 65]]), 0, 300, dtObj)
-    assert isinstance(lat, np.ndarray)
-    assert isinstance(lon, np.ndarray)
+    def test_convert_latlon_time_failure(self):
+        """Test single value latlon conversion with a bad datetime"""
+        with pytest.raises(AssertionError):
+            lat, lon, r = aacgmv2.convert_latlon(60, 0, 300, None)
 
+    def test_convert_latlon_arr_single_val(self):
+        """Test array latlon conversion for a single value"""
+        lat, lon, r = aacgmv2.convert_latlon(60, 0, 300, self.dtime)
+        assert isinstance(lat, np.ndarray)
+        assert isinstance(lon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 1
+        np.testing.assert_allclose(lat, [58.2258], rtol=1e-4)
+        np.testing.assert_allclose(lon, [81.1685], rtol=1e-4)
+        np.testing.assert_allclose(r, [1.0457], rtol=1e-4)
 
-def test_output_shape_size():
-    lat, lon = aacgmv2.convert(60, 0, 300, dtObj)
-    assert lat.shape == tuple()
-    assert lon.shape == tuple()
-    assert lat.size == 1
-    assert lon.size == 1
+    def test_convert_latlon_arr_list(self):
+        """Test array latlon conversion for list input"""
+        lat, lon, r = aacgmv2.convert_latlon_arr([60], [0], [300], self.dtime)
+        assert isinstance(lat, np.ndarray)
+        assert isinstance(lon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 1
+        np.testing.assert_allclose(lat, [58.2258], rtol=1e-4)
+        np.testing.assert_allclose(lon, [81.1685], rtol=1e-4)
+        np.testing.assert_allclose(r, [1.0457], rtol=1e-4)
 
-    lat, lon = aacgmv2.convert([60], [0], [300], dtObj)
-    assert lat.shape == (1,)
-    assert lon.shape == (1,)
-    assert lat.size == 1
-    assert lon.size == 1
+        lat, lon, r = aacgmv2.convert_latlon_arr([60, 61], [0, 0], [300, 300],
+                                                 self.dtime)
+        assert isinstance(lat, np.ndarray)
+        assert isinstance(lon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 2
+        np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
+        np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
+        np.testing.assert_allclose(r, [1.0457, 1.0456], rtol=1e-4)
 
-    lat, lon = aacgmv2.convert([60, 61], [0, 0], [300, 300], dtObj)
-    assert lat.shape == (2,)
-    assert lon.shape == (2,)
-    assert lat.size == 2
-    assert lon.size == 2
+    def test_convert_latlon_arr_arr(self):
+        """Test array latlon conversion for array input"""
+        lat, lon, r = aacgmv2.convert_latlon_arr(np.array([60]), np.array([0]),
+                                                 np.array([300]), self.dtime)
+        assert isinstance(lat, np.ndarray)
+        assert isinstance(lon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 1
+        np.testing.assert_allclose(lat, [58.2258], rtol=1e-4)
+        np.testing.assert_allclose(lon, [81.1685], rtol=1e-4)
+        np.testing.assert_allclose(r, [1.0457], rtol=1e-4)
 
-    lat, lon = aacgmv2.convert([60, 61, 62], 0, 300, dtObj)
-    assert lat.shape == (3,)
-    assert lon.shape == (3,)
-    assert lat.size == 3
-    assert lon.size == 3
+        lat, lon, r = aacgmv2.convert_latlon_arr(np.array([60, 61]),
+                                                 np.array([0, 0]),
+                                                 np.array([300, 300]),
+                                                 self.dtime)
+        assert isinstance(lat, np.ndarray)
+        assert isinstance(lon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 2
+        np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
+        np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
+        np.testing.assert_allclose(r, [1.0457, 1.0456], rtol=1e-4)
 
-    lat, lon = aacgmv2.convert(np.array([60, 61, 62]), 0, 300, dtObj)
-    assert lat.shape == (3,)
-    assert lon.shape == (3,)
-    assert lat.size == 3
-    assert lon.size == 3
+    def test_convert_latlon_arr_unequal(self):
+        """Test array latlon conversion for unequal sized input"""
+        lat, lon, r = aacgmv2.convert_latlon_arr([60, 61], 0, 300, self.dtime)
+        assert isinstance(lat, np.ndarray)
+        assert isinstance(lon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 2
+        np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
+        np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
+        np.testing.assert_allclose(r, [1.0457, 1.0456], rtol=1e-4)
 
-    lat, lon = aacgmv2.convert(np.array([[60, 61, 62],
-                                         [63, 64, 65]]),
-                               0, 300, dtObj)
-    assert lat.shape == (2, 3)
-    assert lon.shape == (2, 3)
-    assert lat.size == 6
-    assert lon.size == 6
+        lat, lon, r = aacgmv2.convert_latlon_arr(np.array([60, 61]), 0, 300,
+                                                 self.dtime)
+        assert isinstance(lat, np.ndarray)
+        assert isinstance(lon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 2
+        np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
+        np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
+        np.testing.assert_allclose(r, [1.0457, 1.0456], rtol=1e-4)
 
+        lat, lon, r = aacgmv2.convert_latlon_arr(np.array([[60, 61, 62],
+                                                           [63, 64, 65]]), 0,
+                                                 300, self.dtime)
+        assert isinstance(lat, np.ndarray)
+        assert isinstance(lon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (2, 3)
+        np.testing.assert_allclose(lat, [[58.2258, 59.3186, 60.4040],
+                                         [61.4820, 62.5528, 63.6164]],
+                                   rtol=1e-4)
+        np.testing.assert_allclose(lon, [[81.1685, 81.6140, 82.0872],
+                                         [82.5909, 83.1286, 83.7039]],
+                                   rtol=1e-4)
+        np.testing.assert_allclose(r, [[1.0457, 1.0456, 1.0456]
+                                       [1.0455, 1.0455, 1.0454]], rtol=1e-4)
 
-def test_convert_result_values_shape():
-    lat, lon = aacgmv2.convert(np.array([[60, 61, 62],
-                                         [63, 64, 65]]),
-                               0, 300, dtObj)
-    aacgmv2._aacgmv2.setDateTime(*date)
-    assert (lat[0, 0], lon[0, 0], 1) == aacgmv2._aacgmv2.aacgmConvert(60, 0, 300, G2A)
-    assert (lat[0, 1], lon[0, 1], 1) == aacgmv2._aacgmv2.aacgmConvert(61, 0, 300, G2A)
-    assert (lat[0, 2], lon[0, 2], 1) == aacgmv2._aacgmv2.aacgmConvert(62, 0, 300, G2A)
-    assert (lat[1, 0], lon[1, 0], 1) == aacgmv2._aacgmv2.aacgmConvert(63, 0, 300, G2A)
-    assert (lat[1, 1], lon[1, 1], 1) == aacgmv2._aacgmv2.aacgmConvert(64, 0, 300, G2A)
-    assert (lat[1, 2], lon[1, 2], 1) == aacgmv2._aacgmv2.aacgmConvert(65, 0, 300, G2A)
+        lat, lon, r = aacgmv2.convert_latlon_arr(np.array([[60, 61, 62],
+                                                           [63, 64, 65]]), [0],
+                                                 [300], self.dtime)
+        assert isinstance(lat, np.ndarray)
+        assert isinstance(lon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (2, 3)
+        np.testing.assert_allclose(lat, [[58.2258, 59.3186, 60.4040],
+                                         [61.4820, 62.5528, 63.6164]],
+                                   rtol=1e-4)
+        np.testing.assert_allclose(lon, [[81.1685, 81.6140, 82.0872],
+                                         [82.5909, 83.1286, 83.7039]],
+                                   rtol=1e-4)
+        np.testing.assert_allclose(r, [[1.0457, 1.0456, 1.0456]
+                                       [1.0455, 1.0455, 1.0454]], rtol=1e-4)
 
+    def test_convert_latlon_arr_badidea_failure(self):
+        """Test array latlon conversion failure for BADIDEA"""
+        code = "G2A | BADIDEA"
+        lat, lon, r = aacgmv2.convert_latlon_arr([60], [0], [3000], self.dtime,
+                                                 code)
+        assert isinstance(lat, np.ndarray)
+        assert isinstance(lon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (1,)
+        assert np.all(np.isnan(lat), np.isnan(lon), np.isnan(r)])
 
-def test_convert_datetime_date():
-    lat_1, lon_1 = aacgmv2.convert(60, 0, 300, dt.date(2013, 12, 1))
-    lat_2, lon_2 = aacgmv2.convert(60, 0, 300, dt.datetime(2013, 12, 1, 0, 0, 0))
-    assert lat_1 == lat_2
-    assert lon_1 == lon_2
+    def test_convert_latlon_arr_location_failure(self):
+        """Test array latlon conversion with a bad location"""
+        lat, lon, r = aacgmv2.convert_latlon_arr([0], [0], [0], self.dtime)
+        assert isinstance(lat, np.ndarray)
+        assert isinstance(lon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (1,)
+        assert np.all([np.isnan(lat), np.isnan(lon), np.isnan(r)])
 
+    def test_convert_latlon_arr_time_failure(self):
+        """Test array latlon conversion with a bad time"""
+        with pytest.raises(AssertionError):
+            lat, lon, r = aacgmv2.convert_latlon_arr([60], [0], [300], None)
 
-def test_convert_result_values_G2A_coeff():
-    lat_p, lon_p = aacgmv2.convert(60, 0, 300, dtObj)
-    aacgmv2._aacgmv2.setDateTime(*date)
-    lat_c, lon_c, _ = aacgmv2._aacgmv2.aacgmConvert(60, 0, 300, G2A)
-    assert lat_p == lat_c
-    assert lon_p == lon_c
+    def test_convert_latlon_datetime_date(self):
+        """Test single latlon conversion with date and datetime input"""
+        lat_1, lon_1, r_1 = aacgmv2.convert_latlon(60, 0, 300, self.ddate)
+        lat_2, lon_2, r_2 = aacgmv2.convert_latlon(60, 0, 300, self.dtime)
+        assert lat_1 == lat_2
+        assert lon_1 == lon_2
+        assert r_1 == r_2
 
+    def test_convert_latlon_datetime_date(self):
+        """Test array latlon conversion with date and datetime input"""
+        lat_1, lon_1, r_1 = aacgmv2.convert_latlon_arr([60], [0], [300],
+                                                       self.ddate)
+        lat_2, lon_2, r_2 = aacgmv2.convert_latlon_arr([60], [0], [300],
+                                                       self.dtime)
+        assert lat_1 == lat_2
+        assert lon_1 == lon_2
+        assert r_1 == r_2
 
-def test_convert_result_values_A2G_coeff():
-    lat_p, lon_p = aacgmv2.convert(60, 0, 300, dtObj, a2g=True)
-    aacgmv2._aacgmv2.setDateTime(*date)
-    lat_c, lon_c, _ = aacgmv2._aacgmv2.aacgmConvert(60, 0, 300, A2G)
-    assert lat_p == lat_c
-    assert lon_p == lon_c
+    def test_warning_below_ground_convert_latlon(self):
+        """ Test that a warning is issued if altitude is below zero"""
+        import testfixtures
+        lwarn = u"conversion not intended for altitudes < 0 km"
 
+        with testfixtures.LogCapture() as l:
+            lat, lon, r = aacgmv2.convert_latlon(60, 0, -1, self.dtime)
 
-def test_convert_result_values_G2A_trace():
-    lat_p, lon_p = aacgmv2.convert(60, 0, 300, dtObj, trace=True)
-    aacgmv2._aacgmv2.setDateTime(*date)
-    lat_c, lon_c, _ = aacgmv2._aacgmv2.aacgmConvert(60, 0, 300, G2A | TRACE)
-    assert lat_p == lat_c
-    assert lon_p == lon_c
+        assert l.check(("root", "WARNING", lwarn)) is None
+        l.uninstall()
+        
+    def test_warning_below_ground_convert_latlon_arr(self):
+        """ Test that a warning is issued if altitude is below zero"""
+        import testfixtures
+        lwarn = u"conversion not intended for altitudes < 0 km"
 
+        with testfixtures.LogCapture() as l:
+            lat, lon, r = aacgmv2.convert_latlon_arr([60], [0], [-1],
+                                                     self.dtime)
 
-def test_convert_result_values_A2G_trace():
-    lat_p, lon_p = aacgmv2.convert(60, 0, 300, dtObj, a2g=True, trace=True)
-    aacgmv2._aacgmv2.setDateTime(*date)
-    lat_c, lon_c, _ = aacgmv2._aacgmv2.aacgmConvert(60, 0, 300, A2G | TRACE)
-    assert lat_p == lat_c
-    assert lon_p == lon_c
+        assert l.check(("root", "WARNING", lwarn)) is None
+        l.uninstall()
 
+    def test_convert_latlon_maxalt_failure(self):
+        """For a single value, test failure for an altitude too high for
+        coefficients"""
+        lat, lon, r = aacgmv2.convert_latlon(60, 0, 2001, self.dtime)
+        assert np.isnan(lat) & np.isnan(lon) & np.isnan(r)
 
-def test_convert_result_values_allowtrace():
-    lat, lon = aacgmv2.convert(60, 0, [300, 5000], dtObj, allowtrace=True)
-    aacgmv2._aacgmv2.setDateTime(*date)
-    assert (lat[0], lon[0], 1) == aacgmv2._aacgmv2.aacgmConvert(60, 0, 300, ALLOWTRACE)
-    assert (lat[1], lon[1], 1) == aacgmv2._aacgmv2.aacgmConvert(60, 0, 5000, ALLOWTRACE)
+    def test_convert_latlon_arr_maxalt_failure(self):
+        """For an array, test failure for an altitude too high for
+        coefficients"""
+        lat, lon, r = aacgmv2.convert_latlon_arr([60], [0], [2001], self.dtime)
+        assert np.all([np.isnan(lat), np.isnan(lon), np.isnan(r)])
 
+    def test_convert_latlon_lat_failure(self):
+        """Test error return for co-latitudes above 90 for a single value"""
+        with pytest.raises(AssertionError):
+            aacgmv2.convert_latlon(91, 0, 300, self.dtime)
 
-def test_convert_result_values_badidea():
-    lat, lon = aacgmv2.convert(60, 0, [300, 5000], dtObj, badidea=True)
-    aacgmv2._aacgmv2.setDateTime(*date)
-    assert (lat[0], lon[0], 1) == aacgmv2._aacgmv2.aacgmConvert(60, 0, 300, BADIDEA)
-    assert (lat[1], lon[1], 1) == aacgmv2._aacgmv2.aacgmConvert(60, 0, 5000, BADIDEA)
+        with pytest.raises(AssertionError):
+            aacgmv2.convert_latlon(-91, 0, 300, self.dtime)
+            
+    def test_convert_latlon_arr_lat_failure(self):
+        """Test error return for co-latitudes above 90 for an array"""
+        with pytest.raises(AssertionError):
+            aacgmv2.convert_latlon_arr([91, 60, -91], 0, 300, self.dtime)
 
+    def test_get_aacgm_coord(self):
+        """Test single value AACGMV2 calculation, defaults to TRACE"""
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord(60, 0, 300, self.dtime)
+        np.testing.assert_almost_equal(mlat, 58.2257, decimal=4)
+        np.testing.assert_almost_equal(mlon, 81.1761, decimal=4)
+        np.testing.assert_almost_equal(mlt, 0.1889, decimal=4)
 
-def test_convert_result_values_geocentric():
-    lat_p, lon_p = aacgmv2.convert(60, 0, 300, dtObj, geocentric=True)
-    aacgmv2._aacgmv2.setDateTime(*date)
-    lat_c, lon_c, _ = aacgmv2._aacgmv2.aacgmConvert(60, 0, 300, GEOCENTRIC)
-    assert lat_p == lat_c
-    assert lon_p == lon_c
+    def test_get_aacgm_coord_badidea_failure(self):
+        """Test single value AACGMV2 calculation with a bad flag"""
+        method = "BADIDEA"
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord(60, 0, 3000, self.dtime,
+                                              method=method)
+        assert np.isnan(mlat) & np.isnan(mlon) & np.isnan(mlt)
 
+    def test_get_aacgm_coord_location_failure(self):
+        """Test single value AACGMV2 calculation with a bad location"""
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord(0, 0, 0, self.dtime)
+        assert np.isnan(mlat) & np.isnan(mlon) & np.isnan(mlt)
 
-def test_warning_below_ground():
-    with pytest.warns(UserWarning):
-        aacgmv2.convert(60, 0, -1, dtObj)
-    with pytest.warns(UserWarning):
-        aacgmv2.convert(60, 0, [300, -1], dtObj)
+    def test_get_aacgm_coord_time_failure(self):
+        """Test single value AACGMV2 calculation with a bad datetime"""
+        import testfixtures
+        lerr_1 = u"time must be specified as datetime object"
+        lerr_2 = u"Unable to get magnetic lat/lon"
 
+        with testfixtures.LogCapture() as l:
+            mlat, mlon, mlt = aacgmv2.get_aacgm_coord(60, 0, 300, None)
 
-def test_exception_maxalt():
-    with pytest.raises(ValueError):
-        aacgmv2.convert(60, 0, 2001, dtObj)
-    with pytest.raises(ValueError):
-        aacgmv2.convert(60, 0, [300, 2001], dtObj)
+        assert l.check(("root", "ERROR", lerr_1),
+                       ("root", "ERROR", lerr_2)) is None
+        l.uninstall()
 
-    # the following should not raise exceptions
-    aacgmv2.convert(60, 0, 2001, dtObj, trace=True)
-    aacgmv2.convert(60, 0, 2001, dtObj, allowtrace=True)
-    aacgmv2.convert(60, 0, 2001, dtObj, badidea=True)
+    def test_get_aacgm_coord_arr_single_val(self):
+        """Test array AACGMV2 calculation for a single value"""
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr(60, 0, 300, self.dtime)
+        assert isinstance(mlat, np.ndarray)
+        assert isinstance(mlon, np.ndarray)
+        assert isinstance(mlt, np.ndarray)
+        assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
+            mlt.shape[0] == 1
+        np.testing.assert_allclose(mlat, [58.2247], rtol=1e-4)
+        np.testing.assert_allclose(mlon, [81.1761], rtol=1e-4)
+        np.testing.assert_allclose(mlt, [0.1889], rtol=1e-4)
 
+    def test_get_aacgm_coord_arr_list(self):
+        """Test array AACGMV2 calculation for list input"""
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr([60], [0], [300],
+                                                      self.dtime)
+        assert isinstance(mlat, np.ndarray)
+        assert isinstance(mlon, np.ndarray)
+        assert isinstance(mlt, np.ndarray)
+        assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
+            mlt.shape[0] == 1
+        np.testing.assert_allclose(mlat, [58.2247], rtol=1e-4)
+        np.testing.assert_allclose(mlon, [81.1761], rtol=1e-4)
+        np.testing.assert_allclose(mlt, [0.1889], rtol=1e-4)
 
-def test_exception_lat90():
-    with pytest.raises(ValueError):
-        aacgmv2.convert(91, 0, 300, dtObj)
-    with pytest.raises(ValueError):
-        aacgmv2.convert(-91, 0, 300, dtObj)
-    with pytest.raises(ValueError):
-        aacgmv2.convert([60, 91], 0, 300, dtObj)
-    with pytest.raises(ValueError):
-        aacgmv2.convert([60, -91], 0, 300, dtObj)
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr([60, 61], [0, 0],
+                                                      [300, 300], self.dtime)
+        assert isinstance(mlat, np.ndarray)
+        assert isinstance(mlon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
+            mlt.shape[0] == 2
+        np.testing.assert_allclose(mlat, [58.2247, 59.3165], rtol=1e-4)
+        np.testing.assert_allclose(mlon, [81.1761, 81.6228], rtol=1e-4)
+        np.testing.assert_allclose(mlt, [0.1889, 0.2187], rtol=1e-4)
 
-    # the following should not raise exceptions
-    aacgmv2.convert(90, 0, 300, dtObj)
-    aacgmv2.convert(-90, 0, 300, dtObj)
+    def test_get_aacgm_coord_arr_arr(self):
+        """Test array AACGMV2 calculation for array input"""
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr(np.array([60]),
+                                                      np.array([0]),
+                                                      np.array([300]),
+                                                      self.dtime)
+        assert isinstance(mlat, np.ndarray)
+        assert isinstance(mlon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
+            mlt.shape[0] == 1
+        np.testing.assert_allclose(mlat, [58.2247], rtol=1e-4)
+        np.testing.assert_allclose(mlon, [81.1761], rtol=1e-4)
+        np.testing.assert_allclose(mlt, [0.1889], rtol=1e-4)
 
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr(np.array([60, 61]),
+                                                 np.array([0, 0]),
+                                                 np.array([300, 300]),
+                                                 self.dtime)
+        assert isinstance(mlat, np.ndarray)
+        assert isinstance(mlon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
+            mlt.shape[0] == 2
+        np.testing.assert_allclose(mlat, [58.2247, 59.3165], rtol=1e-4)
+        np.testing.assert_allclose(mlon, [81.1761, 81.6228], rtol=1e-4)
+        np.testing.assert_allclose(mlt, [0.1889, 0.2187], rtol=1e-4)
 
-def test_forbidden():
-    mlat, mlon = aacgmv2.convert(7, 0, 0)
-    assert np.isnan(mlat)
-    assert np.isnan(mlon)
+    def test_get_aacgm_coord_arr_unequal(self):
+        """Test array AACGMV2 calculation for unequal sized input"""
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr([60, 61], 0, 300,
+                                                      self.dtime)
+        assert isinstance(mlat, np.ndarray)
+        assert isinstance(mlon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
+            mlt.shape[0] == 2
+        np.testing.assert_allclose(mlat, [58.2247, 59.3165], rtol=1e-4)
+        np.testing.assert_allclose(mlon, [81.1761, 81.6228], rtol=1e-4)
+        np.testing.assert_allclose(mlt, [0.1889, 0.2187], rtol=1e-4)
 
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr(np.array([60, 61]), 0,
+                                                      300, self.dtime)
+        assert isinstance(mlat, np.ndarray)
+        assert isinstance(mlon, np.ndarray)
+        assert isinstance(r, np.ndarray)
+        assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
+            mlt.shape[0] == 2
+        np.testing.assert_allclose(mlat, [58.2247, 59.3165], rtol=1e-4)
+        np.testing.assert_allclose(mlon, [81.1761, 81.6228], rtol=1e-4)
+        np.testing.assert_allclose(mlt, [0.1889, 0.2187], rtol=1e-4)
 
-def test_MLT_forward_backward():
-    mlon = aacgmv2.convert_mlt(12, dtObj, m2a=True)
-    mlt = aacgmv2.convert_mlt(mlon, dtObj)
-    np.testing.assert_allclose(mlt, 12)
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr(np.array([[60, 61, 62],
+                                                           [63, 64, 65]]), 0,
+                                                 300, self.dtime)
+        assert isinstance(mlat, np.ndarray)
+        assert isinstance(mlon, np.ndarray)
+        assert isinstance(mlt, np.ndarray)
+        assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
+            mlt.shape == (2, 3)
+        np.testing.assert_allclose(mlat, [[58.2247, 59.3165, 60.4009],
+                                          [61.4781, 62.5482, 63.6114]],
+                                   rtol=1e-4)
+        np.testing.assert_allclose(mlon, [[81.1761, 81.6228, 82.0970],
+                                          [82.6014, 83.1394, 83.7146]],
+                                   rtol=1e-4)
+        np.testing.assert_allclose(mlt, [[0.1889, 0.2187, 0.2503],
+                                         [0.2839, 0.3198, 0.3582]], rtol=1e-4)
 
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr(np.array([[60, 61, 62],
+                                                                [63, 64, 65]]),
+                                                      [0], [300], self.dtime)
+        assert isinstance(mlat, np.ndarray)
+        assert isinstance(mlon, np.ndarray)
+        assert isinstance(mlt, np.ndarray)
+        assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
+            mlt.shape == (2, 3)
+        np.testing.assert_allclose(mlat, [[58.2247, 59.3165, 60.4009],
+                                          [61.4781, 62.5482, 63.6114]],
+                                   rtol=1e-4)
+        np.testing.assert_allclose(mlon, [[81.1761, 81.6228, 82.0970],
+                                          [82.6014, 83.1394, 83.7146]],
+                                   rtol=1e-4)
+        np.testing.assert_allclose(mlt, [[0.1889, 0.2187, 0.2503],
+                                         [0.2839, 0.3198, 0.3582]], rtol=1e-4)
 
-def test_MLT_a2m():
-    mlt = aacgmv2.convert_mlt([1, 12, 23], dt.datetime(2015, 2, 24, 14, 0, 15))
-    np.testing.assert_allclose(mlt, [9.056476, 9.78981 , 10.523143], rtol=1e-6)
+    def test_get_aacgm_coord_arr_badidea_failure(self):
+        """Test array AACGMV2 calculation failure for BADIDEA"""
+        method = "BADIDEA"
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr([60], [0], [3000],
+                                                      self.dtime, method=method)
+        assert isinstance(mlat, np.ndarray)
+        assert isinstance(mlon, np.ndarray)
+        assert isinstance(mlt, np.ndarray)
+        assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
+            mlt.shape == (1,)
+        assert np.all(np.isnan(mlat), np.isnan(mlon), np.isnan(mlt)])
 
+    def test_get_aacgm_coord_arr_location_failure(self):
+        """Test array AACGMV2 calculation with a bad location"""
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr([0], [0], [0], self.dtime)
+        assert isinstance(mlat, np.ndarray)
+        assert isinstance(mlon, np.ndarray)
+        assert isinstance(mlt, np.ndarray)
+        assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
+            mlt.shape == (1,)
+        assert np.all([np.isnan(mlat), np.isnan(mlon), np.isnan(mlt)])
 
-def test_MLT_m2a():
-    mlon = aacgmv2.convert_mlt([1, 12, 23], dt.datetime(2015, 2, 24, 14, 0, 15), m2a=True)
-    np.testing.assert_allclose(mlon, [240.152854, 45.152854, 210.152854], rtol=1e-6)
+    def test_get_aacgm_coord_arr_time_failure(self):
+        """Test array AACGMV2 calculation with a bad time"""
+        import testfixtures
+        lerr_1 = u"time must be specified as datetime object"
+        lerr_2 = u"Unable to get magnetic lat/lon"
+
+        with testfixtures.LogCapture() as l:
+            mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr([60], [0], [300],
+                                                          None)
+
+        assert l.check(("root", "ERROR", lerr_1),
+                       ("root", "ERROR", lerr_2)) is None
+        l.uninstall()
+
+    def test_get_aacgm_coord_datetime_date(self):
+        """Test single AACGMV2 calculation with date and datetime input"""
+        mlat_1, mlon_1, mlt_1 = aacgmv2.get_aacgm_coord(60, 0, 300, self.ddate)
+        mlat_2, mlon_2, mlt_2 = aacgmv2.get_aacgm_coord(60, 0, 300, self.dtime)
+        assert mlat_1 == mlat_2
+        assert mlon_1 == mlon_2
+        assert r_1 == r_2
+
+    def test_get_aacgm_coord_datetime_date(self):
+        """Test array AACGMV2 calculation with date and datetime input"""
+        mlat_1, mlon_1, mlt_1 = aacgmv2.get_aacgm_coord_arr([60], [0], [300],
+                                                       self.ddate)
+        mlat_2, mlon_2, mlt_2 = aacgmv2.get_aacgm_coord_arr([60], [0], [300],
+                                                       self.dtime)
+        assert mlat_1 == mlat_2
+        assert mlon_1 == mlon_2
+        assert r_1 == r_2
+
+    def test_warning_below_ground_get_aacgm_coord(self):
+        """ Test that a warning is issued if altitude is below zero"""
+        import testfixtures
+        lwarn = u"conversion not intended for altitudes < 0 km"
+
+        with testfixtures.LogCapture() as l:
+            mlat, mlon, mlt = aacgmv2.get_aacgm_coord(60, 0, -1, self.dtime)
+
+        assert l.check(("root", "WARNING", lwarn)) is None
+        l.uninstall()
+        
+    def test_warning_below_ground_get_aacgm_coord_arr(self):
+        """ Test that a warning is issued if altitude is below zero"""
+        import testfixtures
+        lwarn = u"conversion not intended for altitudes < 0 km"
+
+        with testfixtures.LogCapture() as l:
+            mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr([60], [0], [-1],
+                                                     self.dtime)
+
+        assert l.check(("root", "WARNING", lwarn)) is None
+        l.uninstall()
+
+    def test_get_aacgm_coord_maxalt_failure(self):
+        """For a single value, test failure for an altitude too high for
+        coefficients"""
+        method = ""
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord(60, 0, 2001, self.dtime,
+                                                  method=method)
+        assert np.isnan(mlat) & np.isnan(mlon) & np.isnan(mlt)
+
+    def test_get_aacgm_coord_arr_maxalt_failure(self):
+        """For an array, test failure for an altitude too high for
+        coefficients"""
+        method = ""
+        mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr([60], [0], [2001],
+                                                      self.dtime, method=method)
+        assert np.all([np.isnan(mlat), np.isnan(mlon), np.isnan(mlt)])
+
+    def test_get_aacgm_coord_mlat_failure(self):
+        """Test error return for co-latitudes above 90 for a single value"""
+        import testfixtures
+        lerr_1 = u"unrealistic latitude"
+        lerr_2 = u"Unable to get magnetic lat/lon"
+
+        with testfixtures.LogCapture() as lhigh:
+            mlat, mlon, mlt = aacgmv2.get_aacgm_coord(91, 0, 300, self.dtime)
+
+        assert lhigh.check(("root", "ERROR", lerr_1),
+                           ("root", "ERROR", lerr_2)) is None
+
+        with testfixtures.LogCapture() as llow:
+            mlat, mlon, mlt = aacgmv2.get_aacgm_coord(-91, 0, 300, self.dtime)
+
+        assert llow.check(("root", "ERROR", lerr_1),
+                          ("root", "ERROR", lerr_2)) is None
+
+        lhigh.uninstall()
+        llow.uninstall()
+
+    def test_get_aacgm_coord_arr_mlat_failure(self):
+        """Test error return for co-latitudes above 90 for an array"""
+        import testfixtures
+        lerr_1 = u"unrealistic latitude"
+        lerr_2 = u"Unable to get magnetic lat/lon"
+
+        with testfixtures.LogCapture() as l:
+            aacgmv2.get_aacgm_coord_arr([91, 60, -91], 0, 300, self.dtime)
+
+        assert l.check(("root", "ERROR", lerr_1),
+                       ("root", "ERROR", lerr_2)) is None
+        l.uninstall()
+
+    def test_convert_str_to_bit_g2a(self):
+        """Test conversion from string code to bit G2A"""
+        assert aacgmv2.convert_str_to_bit("G2A") == aacgmv2._aacgmv2.G2A
+
+    def test_convert_str_to_bit_a2g(self):
+        """Test conversion from string code to bit A2G"""
+        assert aacgmv2.convert_str_to_bit("A2G") == aacgmv2._aacgmv2.A2G
+
+    def test_convert_str_to_bit_trace(self):
+        """Test conversion from string code to bit TRACE"""
+        assert aacgmv2.convert_str_to_bit("TRACE") == aacgmv2._aacgmv2.TRACE
+
+    def test_convert_str_to_bit_allowtrace(self):
+        """Test conversion from string code to bit ALLOWTRACE"""
+        assert aacgmv2.convert_str_to_bit("ALLOWTRACE") == \
+            aacgmv2._aacgmv2.ALLOWTRACE
+
+    def test_convert_str_to_bit_badidea(self):
+        """Test conversion from string code to bit BADIDEA"""
+        assert aacgmv2.convert_str_to_bit("BADIDEA") == aacgmv2._aacgmv2.BADIDEA
+
+    def test_convert_str_to_bit_geocentric(self):
+        """Test conversion from string code to bit GEOCENTRIC"""
+        assert aacgmv2.convert_str_to_bit("GEOCENTRIC") == \
+            aacgmv2._aacgmv2.GEOCENTRIC
+
+    def test_convert_bool_to_bit_g2a(self):
+        """Test conversion from string code to bit G2A"""
+        assert aacgmv2.convert_bool_to_bit(g2a=True) == aacgmv2._aacgmv2.G2A
+
+    def test_convert_bool_to_bit_a2g(self):
+        """Test conversion from string code to bit A2G"""
+        assert aacgmv2.convert_bool_to_bit(a2g=True) == aacgmv2._aacgmv2.A2G
+
+    def test_convert_bool_to_bit_trace(self):
+        """Test conversion from string code to bit TRACE"""
+        assert aacgmv2.convert_bool_to_bit(trace=True) == aacgmv2._aacgmv2.TRACE
+
+    def test_convert_bool_to_bit_allowtrace(self):
+        """Test conversion from string code to bit ALLOWTRACE"""
+        assert aacgmv2.convert_bool_to_bit(allowtrace=True) == \
+            aacgmv2._aacgmv2.ALLOWTRACE
+
+    def test_convert_bool_to_bit_badidea(self):
+        """Test conversion from string code to bit BADIDEA"""
+        assert aacgmv2.convert_bool_to_bit(badidea=True) == \
+            aacgmv2._aacgmv2.BADIDEA
+
+    def test_convert_bool_to_bit_geocentric(self):
+        """Test conversion from string code to bit GEOCENTRIC"""
+        assert aacgmv2.convert_bool_to_bit(geocentric=True) == \
+            aacgmv2._aacgmv2.GEOCENTRIC
