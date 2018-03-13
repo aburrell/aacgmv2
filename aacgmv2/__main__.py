@@ -110,6 +110,7 @@ def main():
                                                dtime.day, dtime.hour,
                                                dtime.minute, dtime.second,
                                                array[:,1],
+                                               aacgmv2.AACGM_v2_DAT_PREFIX,
                                                aacgmv2.IGRF_12_COEFFS)
         np.savetxt(args.file_out, out, fmt='%.8f')
 

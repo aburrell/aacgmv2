@@ -67,7 +67,7 @@ class TestPyAACGMV2:
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
         assert isinstance(r, np.ndarray)
-        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 1
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (1,)
         np.testing.assert_allclose(lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685], rtol=1e-4)
         np.testing.assert_allclose(r, [1.0457], rtol=1e-4)
@@ -78,7 +78,7 @@ class TestPyAACGMV2:
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
         assert isinstance(r, np.ndarray)
-        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 1
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (1,)
         np.testing.assert_allclose(lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685], rtol=1e-4)
         np.testing.assert_allclose(r, [1.0457], rtol=1e-4)
@@ -88,7 +88,7 @@ class TestPyAACGMV2:
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
         assert isinstance(r, np.ndarray)
-        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 2
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (2,)
         np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
         np.testing.assert_allclose(r, [1.0457, 1.0456], rtol=1e-4)
@@ -100,7 +100,7 @@ class TestPyAACGMV2:
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
         assert isinstance(r, np.ndarray)
-        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 1
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (1,)
         np.testing.assert_allclose(lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685], rtol=1e-4)
         np.testing.assert_allclose(r, [1.0457], rtol=1e-4)
@@ -112,7 +112,7 @@ class TestPyAACGMV2:
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
         assert isinstance(r, np.ndarray)
-        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 2
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (2,)
         np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
         np.testing.assert_allclose(r, [1.0457, 1.0456], rtol=1e-4)
@@ -123,7 +123,7 @@ class TestPyAACGMV2:
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
         assert isinstance(r, np.ndarray)
-        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 2
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (2,)
         np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
         np.testing.assert_allclose(r, [1.0457, 1.0456], rtol=1e-4)
@@ -133,7 +133,7 @@ class TestPyAACGMV2:
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
         assert isinstance(r, np.ndarray)
-        assert r.shape == lon.shape & lat.shape == r.shape & r.shape[0] == 2
+        assert r.shape == lon.shape & lat.shape == r.shape & r.shape == (2,)
         np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
         np.testing.assert_allclose(r, [1.0457, 1.0456], rtol=1e-4)
@@ -264,7 +264,7 @@ class TestPyAACGMV2:
     def test_get_aacgm_coord(self):
         """Test single value AACGMV2 calculation, defaults to TRACE"""
         mlat, mlon, mlt = aacgmv2.get_aacgm_coord(60, 0, 300, self.dtime)
-        np.testing.assert_almost_equal(mlat, 58.2257, decimal=4)
+        np.testing.assert_almost_equal(mlat, 58.2247, decimal=4)
         np.testing.assert_almost_equal(mlon, 81.1761, decimal=4)
         np.testing.assert_almost_equal(mlt, 0.1889, decimal=4)
 
@@ -300,7 +300,7 @@ class TestPyAACGMV2:
         assert isinstance(mlon, np.ndarray)
         assert isinstance(mlt, np.ndarray)
         assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
-            mlt.shape[0] == 1
+            mlt.shape == (1,)
         np.testing.assert_allclose(mlat, [58.2247], rtol=1e-4)
         np.testing.assert_allclose(mlon, [81.1761], rtol=1e-4)
         np.testing.assert_allclose(mlt, [0.1889], rtol=1e-4)
@@ -313,7 +313,7 @@ class TestPyAACGMV2:
         assert isinstance(mlon, np.ndarray)
         assert isinstance(mlt, np.ndarray)
         assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
-            mlt.shape[0] == 1
+            mlt.shape == (1,)
         np.testing.assert_allclose(mlat, [58.2247], rtol=1e-4)
         np.testing.assert_allclose(mlon, [81.1761], rtol=1e-4)
         np.testing.assert_allclose(mlt, [0.1889], rtol=1e-4)
@@ -324,7 +324,7 @@ class TestPyAACGMV2:
         assert isinstance(mlon, np.ndarray)
         assert isinstance(r, np.ndarray)
         assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
-            mlt.shape[0] == 2
+            mlt.shape == (2,)
         np.testing.assert_allclose(mlat, [58.2247, 59.3165], rtol=1e-4)
         np.testing.assert_allclose(mlon, [81.1761, 81.6228], rtol=1e-4)
         np.testing.assert_allclose(mlt, [0.1889, 0.2187], rtol=1e-4)
@@ -337,9 +337,9 @@ class TestPyAACGMV2:
                                                       self.dtime)
         assert isinstance(mlat, np.ndarray)
         assert isinstance(mlon, np.ndarray)
-        assert isinstance(r, np.ndarray)
+        assert isinstance(mlt, np.ndarray)
         assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
-            mlt.shape[0] == 1
+            mlt.shape == (1,)
         np.testing.assert_allclose(mlat, [58.2247], rtol=1e-4)
         np.testing.assert_allclose(mlon, [81.1761], rtol=1e-4)
         np.testing.assert_allclose(mlt, [0.1889], rtol=1e-4)
@@ -350,9 +350,9 @@ class TestPyAACGMV2:
                                                  self.dtime)
         assert isinstance(mlat, np.ndarray)
         assert isinstance(mlon, np.ndarray)
-        assert isinstance(r, np.ndarray)
+        assert isinstance(mlt, np.ndarray)
         assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
-            mlt.shape[0] == 2
+            mlt.shape == (2,)
         np.testing.assert_allclose(mlat, [58.2247, 59.3165], rtol=1e-4)
         np.testing.assert_allclose(mlon, [81.1761, 81.6228], rtol=1e-4)
         np.testing.assert_allclose(mlt, [0.1889, 0.2187], rtol=1e-4)
@@ -363,9 +363,9 @@ class TestPyAACGMV2:
                                                       self.dtime)
         assert isinstance(mlat, np.ndarray)
         assert isinstance(mlon, np.ndarray)
-        assert isinstance(r, np.ndarray)
+        assert isinstance(mlt, np.ndarray)
         assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
-            mlt.shape[0] == 2
+            mlt.shape == (2,)
         np.testing.assert_allclose(mlat, [58.2247, 59.3165], rtol=1e-4)
         np.testing.assert_allclose(mlon, [81.1761, 81.6228], rtol=1e-4)
         np.testing.assert_allclose(mlt, [0.1889, 0.2187], rtol=1e-4)
@@ -374,9 +374,9 @@ class TestPyAACGMV2:
                                                       300, self.dtime)
         assert isinstance(mlat, np.ndarray)
         assert isinstance(mlon, np.ndarray)
-        assert isinstance(r, np.ndarray)
+        assert isinstance(mlt, np.ndarray)
         assert mlt.shape == mlon.shape & mlat.shape == mlt.shape & \
-            mlt.shape[0] == 2
+            mlt.shape == (2,)
         np.testing.assert_allclose(mlat, [58.2247, 59.3165], rtol=1e-4)
         np.testing.assert_allclose(mlon, [81.1761, 81.6228], rtol=1e-4)
         np.testing.assert_allclose(mlt, [0.1889, 0.2187], rtol=1e-4)
@@ -568,9 +568,22 @@ class TestPyAACGMV2:
         assert aacgmv2.convert_str_to_bit("GEOCENTRIC") == \
             aacgmv2._aacgmv2.GEOCENTRIC
 
+    def test_convert_str_to_bit_lowercase(self):
+        """Test conversion from string code to bit for a lowercase code"""
+        assert aacgmv2.convert_str_to_bit("g2a") == aacgmv2._aacgmv2.G2A
+
+    def test_convert_str_to_bit_spaces(self):
+        """Test conversion from string code to bit for a code with spaces"""
+        assert aacgmv2.convert_str_to_bit("G2A | trace") == \
+            aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE
+
+    def test_convert_str_to_bit_invalid(self):
+        """Test conversion from string code to bit for an invalid code"""
+        assert aacgmv2.convert_str_to_bit("ggoogg|") == aacgmv2._aacgmv2.G2A
+
     def test_convert_bool_to_bit_g2a(self):
         """Test conversion from string code to bit G2A"""
-        assert aacgmv2.convert_bool_to_bit(g2a=True) == aacgmv2._aacgmv2.G2A
+        assert aacgmv2.convert_bool_to_bit() == aacgmv2._aacgmv2.G2A
 
     def test_convert_bool_to_bit_a2g(self):
         """Test conversion from string code to bit A2G"""

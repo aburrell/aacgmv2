@@ -68,7 +68,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
 
     # Test time
     if isinstance(dtime, dt.date):
-        date = dt.datetime.combine(dtime, dt.time(0))
+        dtime = dt.datetime.combine(dtime, dt.time(0))
 
     assert isinstance(dtime, dt.datetime), \
         logging.error('time must be specified as datetime object')
@@ -212,7 +212,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
 
     # Test time
     if isinstance(dtime, dt.date):
-        date = dt.datetime.combine(dtime, dt.time(0))
+        dtime = dt.datetime.combine(dtime, dt.time(0))
 
     assert isinstance(dtime, dt.datetime), \
         logging.error('time must be specified as datetime object')
@@ -423,16 +423,22 @@ def convert_str_to_bit(code):
     --------
     bit_code : (int)
         code specification in bits
+
+    Notes
+    --------
+    Multiple codes should be seperated by pipes '|'.  Invalid parts of the code
+    are ignored and no code defaults to 'G2A'.
     """
     convert_code = {"G2A": c_aacgmv2.G2A, "A2G": c_aacgmv2.A2G,
                     "TRACE": c_aacgmv2.TRACE, "BADIDEA": c_aacgmv2.BADIDEA,
                     "GEOCENTRIC": c_aacgmv2.GEOCENTRIC,
                     "ALLOWTRACE": c_aacgmv2.ALLOWTRACE}
 
-    code = code.upper()
+    # Force upper case, remove any spaces, and split along pipes
+    codes = code.upper().replace(" ", "").split("|")
 
-    bit_code = sum([convert_code[k] for k in convert_code.keys()
-                    if code.find(k) >= 0])
+    # Add the valid parts of the code, invalid elements are ignored
+    bit_code = sum([convert_code[k] for k in convert_code.keys() if k in codes])
 
     return bit_code
 

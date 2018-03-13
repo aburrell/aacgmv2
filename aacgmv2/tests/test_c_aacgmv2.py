@@ -213,29 +213,30 @@ class TestCAACGMV2:
 
     def test_inv_mlt_convert(self):
         """Test MLT inversion"""
-        mlt_args_1 = list(flatten([long_date, 12.0, aacgmv2.IGRF_12_COEFFS]))
-        mlt_args_2 = list(flatten([long_date, 25.0, aacgmv2.IGRF_12_COEFFS]))
-        mlt_args_3 = list(flatten([long_date, -1.0, aacgmv2.IGRF_12_COEFFS]))
-        
-        mlon_1 = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args_1)
-        mlon_2 = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args_2)
-        mlon_3 = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args_3)
+        mlt_args = list(self.long_date)
+        mlt_args.extend([12.0, aacgmv2.IGRF_12_COEFFS])
+        mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
+        np.testing.assert_almost_equal(mlon, -153.5339, decimal=4)
 
-        np.testing.assert_almost_equal(mlon_1, -153.5339, decimal=4)
-        np.testing.assert_almost_equal(mlon_2, 41.4661, decimal=4)
-        np.testing.assert_almost_equal(mlon_2, 11.4661, decimal=4)
+        mlt_args[-2] = 25.0
+        mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
+        np.testing.assert_almost_equal(mlon, 41.4661, decimal=4)
+
+        mlt_args[-2] = -1.0
+        mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
+        np.testing.assert_almost_equal(mlon, 11.4661, decimal=4)
 
     def test_inv_mlt_convert_yrsec(self):
         """Test MLT inversion with year and seconds of year"""
         import datetime as dt
-        dtime = dt.datetime(*long_date)
+        dtime = dt.datetime(*self.long_date)
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
               dtime.minute * 60 + dtime.second
         
         mlt_args_1 = [dtime.year, soy, 12.0, aacgmv2.IGRF_12_COEFFS]
         mlt_args_2 = [dtime.year, soy, 25.0, aacgmv2.IGRF_12_COEFFS]
         mlt_args_3 = [dtime.year, soy, -1.0, aacgmv2.IGRF_12_COEFFS]
-        
+
         mlon_1 = aacgmv2._aacgmv2.inv_mlt_convert_yrsec(*mlt_args_1)
         mlon_2 = aacgmv2._aacgmv2.inv_mlt_convert_yrsec(*mlt_args_2)
         mlon_3 = aacgmv2._aacgmv2.inv_mlt_convert_yrsec(*mlt_args_3)
@@ -246,28 +247,24 @@ class TestCAACGMV2:
 
     def test_mlt_convert(self):
         """Test MLT calculation"""
-        mlt_args_1 = list(flatten([long_date, 270.0,
-                                   aacgmv2.AACGM_v2_DAT_PREFIX,
-                                   aacgmv2.IGRF_12_COEFFS]))
-        mlt_args_2 = list(flatten([long_date, 80.0,
-                                   aacgmv2.AACGM_v2_DAT_PREFIX,
-                                   aacgmv2.IGRF_12_COEFFS]))
-        mlt_args_3 = list(flatten([long_date, -90.0,
-                                   aacgmv2.AACGM_v2_DAT_PREFIX,
-                                   aacgmv2.IGRF_12_COEFFS]))
-        
-        mlt_1 = aacgmv2._aacgmv2.mlt_convert(*mlt_args_1)
-        mlt_2 = aacgmv2._aacgmv2.mlt_convert(*mlt_args_2)
-        mlt_3 = aacgmv2._aacgmv2.mlt_convert(*mlt_args_3)
+        mlt_args = list(self.long_date)
+        mlt_args.extend([270.0, aacgmv2.AACGM_v2_DAT_PREFIX,
+                         aacgmv2.IGRF_12_COEFFS])
+        mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
+        np.testing.assert_almost_equal(mlt, 16.2356, decimal=4)
 
-        np.testing.assert_almost_equal(mlt_1, 16.2356, decimal=4)
-        np.testing.assert_almost_equal(mlt_2, 3.5689, decimal=4)
-        np.testing.assert_equal(mlt_1, mlt_3)
+        mlt_args[-3] = 80.0
+        mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
+        np.testing.assert_almost_equal(mlt, 3.5689, decimal=4)
+
+        mlt_args[-3] = -90.0
+        mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
+        np.testing.assert_almost_equal(mlt, 16.2356, decimal=4)
 
     def test_mlt_convert_yrsec(self):
         """Test MLT calculation using year and seconds of year"""
         import datetime as dt
-        dtime = dt.datetime(*long_date)
+        dtime = dt.datetime(*self.long_date)
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
               dtime.minute * 60 + dtime.second
         mlt_args_1 = [dtime.year, soy, 270.0, aacgmv2.AACGM_v2_DAT_PREFIX,

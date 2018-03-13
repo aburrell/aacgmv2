@@ -103,6 +103,7 @@ def convert_mlt(arr, dtime, m2a=False):
         out = aacgmv2._aacgmv2.mlt_convert(dtime.year, dtime.month, dtime.day,
                                            dtime.hour, dtime.minute,
                                            dtime.second, arr,
+                                           aacgmv2.AACGM_v2_DAT_PREFIX,
                                            aacgmv2.IGRF_12_COEFFS)
 
     return out
