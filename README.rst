@@ -19,29 +19,29 @@ Install (requires NumPy and logging)::
 
 Convert between AACGM and geographic coordinates::
 
-    >>> from aacgmv2 import convert
-    >>> from datetime import date
+    >>> import aacgmv2
+    >>> import datetime as dt
     >>> # geo to AACGM, single numbers
-    >>> mlat, mlon = convert(60, 15, 300, date(2013, 11, 3))
-    >>> mlat
-    array(57.47207691280528)
-    >>> mlon
-    array(93.62138045643167)
+    >>> dtime = dt.datetime(2013, 11, 3)
+    >>> mlat, mlon, mlt = aacgmv2.get_aacgm_coord(60, 15, 300, dtime)
+    >>> "{:.4f} {:.4f} {:.4f}".format(mlat, mlon, mlt)
+    '58.2247 81.1761 0.1889'
     >>> # AACGM to geo, mix arrays/numbers
-    >>> glat, glon = convert([90, -90], 0, 0, date(2013, 11, 3), a2g=True)
-    >>> glat
-    array([ 82.96656071, -74.33854592])
-    >>> glon
-    array([ -84.66516034,  125.84014944])
+    >>> glat, glon alt = aacgmv2.convert_latlon_arr([90, -90], 0, 0, dtime, code="A2G")
+    >>> ["{:.4f} {:.4f} {:.4f}".format(lat, glon[i], alt[i]) for i,lat in enumerate(glat)]
+    ['82.9666 -84.6652 14.1244', '-74.3385 125.8401 12.8771']
 
 Convert between AACGM and MLT::
 
-    >>> from aacgmv2 import convert_mlt
-    >>> from datetime import datetime
+    >>> import aacgmv2
+    >>> import datetime as dt
     >>> # MLT to AACGM
-    >>> mlon = convert_mlt([0, 12], datetime(2013, 11, 3, 18, 0), m2a=True)
-    >>> mlon
-    array([ 159.08967974,  339.08967974])
+    >>> dtime = dt.datetime(2013, 11, 3, 0, 0, 0)
+    >>> mlon_check = aacgmv2.convert_mlt([mlt, 12], dtime, m2a=True)
+    >>> abs(mlon_check[0] - mlon) < 1.0e-4
+    True
+    >>> ["{:.4f}".format(lon) for lon in mlon_check]
+    ['81.1761', '-101.6577']
 
 If you don't know or use Python, you can also use the command line. See details
 in the full documentation.
