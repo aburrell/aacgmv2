@@ -9,6 +9,7 @@ get_aacgm_coord : Get scalar magnetic lat, lon, mlt from geographic location
 get_aacgm_coord_arr : Get array magnetic lat, lon, mlt from geographic location
 convert_str_to_bit : Convert human readible AACGM flag to bits
 convert_bool_to_bit : Convert boolian flags to bits
+convert_mlt : Get array mlt
 --------------
 """
 
@@ -316,23 +317,19 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE",
     if igrf_file is None:
         igrf_file = aacgmv2.IGRF_12_COEFFS
 
-    # Initialize return values
-    mlat = None
-    mlon = None
-    mlt = None
+    # Initialize code
+    code = "G2A|{:s}".format(method)
 
-    try:
-        # Get magnetic lat and lon.
-        mlat, mlon, mr = convert_latlon(glat, glon, height, dtime,
-                                        code="G2A|{:s}".format(method),
-                                        igrf_file=igrf_file,
-                                        coeff_prefix=coeff_prefix)
-        # Get magnetic local time
-        mlt = c_aacgmv2.mlt_convert(dtime.year, dtime.month, dtime.day,
-                                    dtime.hour, dtime.minute, dtime.second,
-                                    mlon, coeff_prefix, igrf_file)
-    except:
-        logging.error("Unable to get magnetic lat/lon")
+    # Get magnetic lat and lon.
+    mlat, mlon, mr = convert_latlon(glat, glon, height, dtime, code=code,
+                                    igrf_file=igrf_file,
+                                    coeff_prefix=coeff_prefix)
+    # Get magnetic local time
+    if np.isnan(mlon):
+        mlt = np.nan
+    else:
+        mlt = convert_mlt(mlon, dtime, m2a=False, coeff_prefix=coeff_prefix,
+                          igrf_file=igrf_file)
 
     return mlat, mlon, mlt
 
@@ -382,26 +379,20 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE",
     if igrf_file is None:
         igrf_file = aacgmv2.IGRF_12_COEFFS
 
-    # Initialize return values
-    mlat = None
-    mlon = None
-    mlt = None
+    # Initialize code
+    code = "G2A|{:s}".format(method)
 
-    try:
-        # Get magnetic lat and lon.
-        mlat, mlon, mr = convert_latlon_arr(glat, glon, height, dtime,
-                                            code="G2A|{:s}".format(method),
-                                            igrf_file=igrf_file,
-                                            coeff_prefix=coeff_prefix)
+    # Get magnetic lat and lon.
+    mlat, mlon, mr = convert_latlon_arr(glat, glon, height, dtime, code=code,
+                                        igrf_file=igrf_file,
+                                        coeff_prefix=coeff_prefix)
 
-        if mlon is not None:
-            # Get magnetic local time
-            mlt_vectorised = np.vectorize(c_aacgmv2.mlt_convert)
-            mlt = mlt_vectorised(dtime.year, dtime.month, dtime.day,
-                                 dtime.hour, dtime.minute, dtime.second, mlon,
-                                 coeff_prefix, igrf_file)
-    except:
-        logging.error("Unable to get magnetic lat/lon")
+    if np.all(np.isnan(mlon)):
+        mlt = np.nan
+    else:
+        # Get magnetic local time
+        mlt = convert_mlt(mlon, dtime, m2a=False, igrf_file=igrf_file,
+                          coeff_prefix=coeff_prefix)
 
     return mlat, mlon, mlt
 
@@ -477,3 +468,53 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
         bit_code += c_aacgmv2.GEOCENTRIC
 
     return bit_code
+
+def convert_mlt(arr, dtime, m2a=False, igrf_file=None, coeff_prefix=None):
+    """Converts between magnetic local time (MLT) and AACGM-v2 longitude
+
+    Parameters
+    ------------
+    arr : (array_line or float)
+        Magnetic longitudes or MLTs to convert
+    dtime : (datetime.datetime)
+        Date and time for MLT conversion in Universal Time (UT).
+    m2a : (bool)
+        Convert MLT to AACGM-v2 longitude (True) or magnetic longitude to MLT 
+        (False).  (default=False)
+    igrf_file : (str or NoneType)
+        Full filename of IGRF coefficient file or None to use
+        aacgmv2.IGRF_12_COEFFS. (default=None)
+    coeff_prefix : (str or NoneType)
+        Location and file prefix for aacgm coefficient files or None to use
+        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+
+    Returns
+    --------
+    out : (np.ndarray)
+        Converted coordinates/MLT
+
+    Notes
+    -------
+    This routine previously based on Laundal et al. 2016, but now uses the
+    improved calculation available in AACGM-V2.4.
+    """
+    # Define coefficient file prefix if not supplied
+    if coeff_prefix is None:
+        coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
+
+    # Define IGRF file if not supplied
+    if igrf_file is None:
+        igrf_file = aacgmv2.IGRF_12_COEFFS
+
+    if m2a:
+        inv_vectorised = np.vectorize(c_aacgmv2.inv_mlt_convert)
+        out = inv_vectorised(dtime.year, dtime.month, dtime.day, dtime.hour,
+                             dtime.minute, dtime.second, arr, igrf_file)
+    else:
+        # Get magnetic local time
+        mlt_vectorised = np.vectorize(c_aacgmv2.mlt_convert)
+        out = mlt_vectorised(dtime.year, dtime.month, dtime.day, dtime.hour,
+                             dtime.minute, dtime.second, arr, coeff_prefix,
+                             igrf_file)
+
+    return out

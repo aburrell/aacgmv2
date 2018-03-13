@@ -20,7 +20,6 @@ class TestDepAACGMV2:
         """Test module structure for depricated routines"""
         assert aacgmv2
         assert aacgmv2.convert
-        assert aacgmv2.convert_mlt
         assert aacgmv2.set_coeff_path
         assert aacgmv2.subsol
         assert aacgmv2.depricated
@@ -170,56 +169,6 @@ class TestDepAACGMV2:
         """Test error return for co-latitudes above 90 for an array"""
         with pytest.raises(AssertionError):
             aacgmv2.convert([91, 60, -91], 0, 300, self.dtime)
-
-    def test_inv_convert_mlt_single(self):
-        """Test MLT inversion for a single value"""
-        mlon_1 = aacgmv2.convert_mlt(12.0, self.dtime, m2a=True)
-        mlon_2 = aacgmv2.convert_mlt(25.0, self.dtime, m2a=True)
-        mlon_3 = aacgmv2.convert_mlt(-1.0, self.dtime, m2a=True)
-
-        np.testing.assert_almost_equal(mlon_1, -153.5339, decimal=4)
-        np.testing.assert_almost_equal(mlon_2, 41.4661, decimal=4)
-        np.testing.assert_almost_equal(mlon_2, 11.4661, decimal=4)
-
-    def test_inv_convert_mlt_list(self):
-        """Test MLT inversion for a list"""
-        mlt_list = [12.0, 25.0, -1.0]
-        mlon = aacgmv2.convert_mlt(mlt_list, self.dtime, m2a=True)
-
-        np.testing.assert_allclose(mlon, [-153.5339, 41.4661, 11.4661],
-                                   rtol=1.0e-4)
-
-    def test_inv_convert_mlt_arr(self):
-        """Test MLT inversion for an array"""
-        mlt_arr = np.array([12.0, 25.0, -1.0])
-        mlon = aacgmv2.convert_mlt(mlt_arr, self.dtime, m2a=True)
-
-        np.testing.assert_allclose(mlon, [-153.5339, 41.4661, 11.4661],
-                                   rtol=1.0e-4)
-
-    def test_mlt_convert_single(self):
-        """Test MLT calculation for a single value"""
-        mlt_1 = aacgmv2.convert_mlt(270.0, self.dtime, m2a=False)
-        mlt_2 = aacgmv2.convert_mlt(80.0, self.dtime, m2a=False)
-        mlt_3 = aacgmv2.convert_mlt(-90.0, self.dtime, m2a=False)
-
-        np.testing.assert_almost_equal(mlt_1, 16.2356, decimal=4)
-        np.testing.assert_almost_equal(mlt_2, 3.5689, decimal=4)
-        np.testing.assert_equal(mlt_1, mlt_3)
-
-    def test_mlt_convert_list(self):
-        """Test MLT calculation for a list"""
-        mlt_list = [270.0, 80.0, -90.0]
-        mlt = aacgmv2.convert_mlt(mlt_list, self.dtime, m2a=False)
-
-        np.testing.assert_allclose(mlt, [16.2356, 3.5689, 16.2356], rtol=1.0e-4)
-
-    def test_mlt_convert_arr(self):
-        """Test MLT calculation for an array"""
-        mlt_arr = np.array([270.0, 80.0, -90.0])
-        mlt = aacgmv2.convert_mlt(mlt_arr, self.dtime, m2a=False)
-
-        np.testing.assert_allclose(mlt, [16.2356, 3.5689, 16.2356], rtol=1.0e-4)
 
     def test_subsol(self):
         """Test the subsolar calculation"""

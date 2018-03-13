@@ -5,7 +5,6 @@ change from version 2.0.0 to version 2.0.2
 Functions
 -------------------------------------------------------------------------------
 convert : Converts array location
-convert_mlt : Get array mlt
 set_coeff_path : Previously set environment variables, no longer used
 subsol : finds subsolar geocentric longitude and latitude
 gc2gd_lat : Convert between geocentric and geodetic coordinates
@@ -68,45 +67,6 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
                                                          code=bit_code)
 
     return lat_out, lon_out
-
-def convert_mlt(arr, dtime, m2a=False):
-    """Converts between magnetic local time (MLT) and AACGM-v2 longitude
-
-    Parameters
-    ------------
-    arr : (array_line or float)
-        Magnetic longitudes or MLTs to convert
-    dtime : (datetime.datetime)
-        Date and time for MLT conversion in Universal Time (UT).
-    m2a : (bool)
-        Convert MLT to AACGM-v2 longitude (True) or magnetic longitude to MLT 
-        (False).  (default=False)
-
-    Returns
-    --------
-    out : (np.ndarray)
-        Converted coordinates/MLT
-
-    Notes
-    -------
-    This routine previously based on Laundal et al. 2016, but now uses the
-    improved calculation available in AACGM-V2.4.
-    """
-    import aacgmv2._aacgmv2 as c_aacgmv2
-
-    if m2a:
-        out = aacgmv2._aacgmv2.inv_mlt_convert(dtime.year, dtime.month,
-                                               dtime.day, dtime.hour,
-                                               dtime.minute, dtime.second,
-                                               arr, aacgmv2.IGRF_12_COEFFS)
-    else:
-        out = aacgmv2._aacgmv2.mlt_convert(dtime.year, dtime.month, dtime.day,
-                                           dtime.hour, dtime.minute,
-                                           dtime.second, arr,
-                                           aacgmv2.AACGM_v2_DAT_PREFIX,
-                                           aacgmv2.IGRF_12_COEFFS)
-
-    return out
 
 def set_coeff_path():
     """This depricated routine used to set environment variables, and now is

@@ -57,7 +57,7 @@ IGRF_12_COEFFS = _path.join(_path.realpath(_path.dirname(__file__)),
 #---------------------------------------------------------------------
 
 try:
-    from aacgmv2.wrapper import (convert_latlon, get_aacgm_coord)
+    from aacgmv2.wrapper import (convert_latlon, convert_mlt, get_aacgm_coord)
     from aacgmv2.wrapper import (convert_latlon_arr, get_aacgm_coord_arr)
     from aacgmv2.wrapper import (convert_bool_to_bit, convert_str_to_bit)
 except Exception as err:
@@ -65,8 +65,7 @@ except Exception as err:
 
 try:
     from aacgmv2 import (depricated)
-    from aacgmv2.depricated import (convert, convert_mlt, subsol)
-    from aacgmv2.depricated import (set_coeff_path)
+    from aacgmv2.depricated import (convert, subsol, set_coeff_path)
 except Exception as err:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(err))
 
