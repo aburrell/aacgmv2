@@ -17,6 +17,7 @@ import numpy as np
 import datetime as dt
 import logging
 import aacgmv2
+import aacgmv2._aacgmv2 as c_aacgmv2
 
 def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
                    coeff_prefix=None):
@@ -76,8 +77,13 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
     if height < 0:
         logging.warn('conversion not intended for altitudes < 0 km')
 
+    # Initialise output
+    lat_out = np.nan
+    lon_out = np.nan
+    r_out = np.nan
+
     # Test code
-    if isinstance(code, str):
+    try:
         code = code.upper()
 
         if(height > 2000 and code.find("TRACE") < 0 and
@@ -87,10 +93,11 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
             estr += 'or allowtrace=True) or indicate you know this '
             estr += 'is a bad idea'
             logging.error(estr)
+            return lat_out, lon_out, r_out
 
         # make flag
         bit_code = convert_str_to_bit(code)
-    else:
+    except:
         bit_code = code
 
     assert isinstance(bit_code, int), \
@@ -105,29 +112,29 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
     in_lon = ((in_lon + 180.0) % 360.0) - 180.0
 
     # Set current date and time
-    aacgmv2._aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day,
-                                  dtime.hour, dtime.minute, dtime.second,
-                                  coeff_prefix)
+    c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
+                           dtime.minute, dtime.second, coeff_prefix)
 
-
-    # convert
-    lat_out, lon_out, r_out = aacgmv2._aacgmv2.convert(in_lat, in_lon, height,
-                                                       bit_code, igrf_file)
+    # convert location
+    try:
+        lat_out, lon_out, r_out = c_aacgmv2.convert(in_lat, in_lon, height,
+                                                    bit_code, igrf_file)
+    except: pass
 
     return lat_out, lon_out, r_out
 
-
 def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
                        igrf_file=None, coeff_prefix=None):
-    """Converts between geomagnetic coordinates and AACGM coordinates
+    """Converts between geomagnetic coordinates and AACGM coordinates.  At least
+    one of in_lat, in_lon, and height must be a list or array
 
     Parameters
     ------------
-    in_lat : (np.ndarray)
+    in_lat : (np.ndarray or list or float)
         Input latitude in degrees N (code specifies type of latitude)
-    in_lon : (np.ndarray)
+    in_lon : (np.ndarray or list or float)
         Input longitude in degrees E (code specifies type of longitude)
-    height : (np.ndarray)
+    height : (np.ndarray or list or float)
         Altitude above the surface of the earth in km
     dtime : (datetime)
         Single datetime object for magnetic field
@@ -156,9 +163,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
     out_r : (np.ndarray)
         Geocentric radial distances in R
     """
-    # If someone was lazy and entered a list instead of a numpy array,
-    # recast it here
-
+    # If a list was entered instead of a numpy array, recast it here
     if isinstance(in_lat, list):
         in_lat = np.array(in_lat)
 
@@ -168,12 +173,34 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
     if isinstance(height, list):
         height = np.array(height)
 
+    # If one or two of these elements is a float or int, create an array
+    test_array = np.array([hasattr(in_lat, "shape"), hasattr(in_lon, "shape"),
+                           hasattr(height, "shape")])
+    if not test_array.all():
+        if test_array.any():
+            arr_shape = in_lat.shape if test_array.argmax() == 0 else \
+                        (in_lon.shape if test_array.argmax() == 1 else
+                         height.shape)
+            if not test_array[0]:
+                in_lat = np.ones(shape=arr_shape, dtype=float) * in_lat
+            if not test_array[1]:
+                in_lon = np.ones(shape=arr_shape, dtype=float) * in_lon
+            if not test_array[2]:
+                height = np.ones(shape=arr_shape, dtype=float) * height
+        else:
+            logging.info("for a single location, consider using convert_latlon")
+            in_lat = np.array([in_lat])
+            in_lon = np.array([in_lon])
+            height = np.array([height])
+
     # Ensure that lat, lon, and height are the same length or if the lengths
     # differ that the different ones contain only a single value
-    ulen = np.unique([height.shape, in_lat.shape, in_lon.shape])
-    if ulen.shape[0] > 2 or (ulen.shape[0] == 2 and ulen[0] > 1):
-        logging.error("mismatched input arrays")
-        return None, None, None
+    if not (in_lat.shape == in_lon.shape and in_lat.shape == height.shape):
+        ulen = np.unique([in_lat.shape, in_lon.shape, height.shape])
+        if ulen.min() != (1,):
+            logging.error("mismatched input arrays")
+            sys.exit(1)
+            return None, None, None
 
     # Define coefficient file prefix if not supplied
     if coeff_prefix is None:
@@ -194,21 +221,27 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
     if np.min(height) < 0:
         logging.warn('conversion not intended for altitudes < 0 km')
 
+    # Initialise output
+    lat_out = np.empty(shape=in_lat.shape, dtype=float) * np.nan
+    lon_out = np.empty(shape=in_lon.shape, dtype=float) * np.nan
+    r_out = np.empty(shape=height.shape, dtype=float) * np.nan
+        
     # Test code
-    if isinstance(code, str):
+    try:
         code = code.upper()
 
-        if(np.max(height) > 2000 and code.find("TRACE") < 0 and
+        if(np.nanmax(height) > 2000 and code.find("TRACE") < 0 and
            code.find("ALLOWTRACE") < 0 and code.find("BADIDEA")):
             estr = 'coefficients are not valid for altitudes above 2000 km. You'
             estr += ' must either use field-line tracing (trace=True '
             estr += 'or allowtrace=True) or indicate you know this '
             estr += 'is a bad idea'
             logging.error(estr)
+            return lat_out, lon_out, r_out
 
         # make flag
         bit_code = convert_str_to_bit(code)
-    else:
+    except:
         bit_code = code
 
     assert isinstance(bit_code, int), \
@@ -224,16 +257,17 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
     in_lon = ((in_lon + 180.0) % 360.0) - 180.0
 
     # Set current date and time
-    aacgmv2._aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day,
-                                  dtime.hour, dtime.minute, dtime.second,
-                                  coeff_prefix)
+    c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
+                           dtime.minute, dtime.second, coeff_prefix)
 
     # Vectorise the AACGM code
-    convert_vectorised = np.vectorize(aacgmv2._aacgmv2.convert)
+    convert_vectorised = np.vectorize(c_aacgmv2.convert)
 
     # convert
-    lat_out, lon_out, r_out = convert_vectorised(in_lat, in_lon, height,
-                                                 bit_code, igrf_file)
+    try:
+        lat_out, lon_out, r_out = convert_vectorised(in_lat, in_lon, height,
+                                                     bit_code, igrf_file)
+    except: pass
 
     return lat_out, lon_out, r_out
 
@@ -294,10 +328,9 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE",
                                         igrf_file=igrf_file,
                                         coeff_prefix=coeff_prefix)
         # Get magnetic local time
-        mlt = aacgmv2._aacgmv2.mlt_convert(dtime.year, dtime.month, dtime.day,
-                                           dtime.hour, dtime.minute,
-                                           dtime.second, mlon,
-                                           coeff_prefix, igrf_file)
+        mlt = c_aacgmv2.mlt_convert(dtime.year, dtime.month, dtime.day,
+                                    dtime.hour, dtime.minute, dtime.second,
+                                    mlon, coeff_prefix, igrf_file)
     except:
         logging.error("Unable to get magnetic lat/lon")
 
@@ -363,7 +396,7 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE",
 
         if mlon is not None:
             # Get magnetic local time
-            mlt_vectorised = np.vectorize(aacgmv2._aacgmv2.mlt_convert)
+            mlt_vectorised = np.vectorize(c_aacgmv2.mlt_convert)
             mlt = mlt_vectorised(dtime.year, dtime.month, dtime.day,
                                  dtime.hour, dtime.minute, dtime.second, mlon,
                                  coeff_prefix, igrf_file)
@@ -391,11 +424,10 @@ def convert_str_to_bit(code):
     bit_code : (int)
         code specification in bits
     """
-    convert_code = {"G2A": aacgmv2._aacgmv2.G2A, "A2G": aacgmv2._aacgmv2.A2G,
-                    "TRACE": aacgmv2._aacgmv2.TRACE,
-                    "GEOCENTRIC": aacgmv2._aacgmv2.GEOCENTRIC,
-                    "ALLOWTRACE": aacgmv2._aacgmv2.ALLOWTRACE,
-                    "BADIDEA": aacgmv2._aacgmv2.BADIDEA}
+    convert_code = {"G2A": c_aacgmv2.G2A, "A2G": c_aacgmv2.A2G,
+                    "TRACE": c_aacgmv2.TRACE, "BADIDEA": c_aacgmv2.BADIDEA,
+                    "GEOCENTRIC": c_aacgmv2.GEOCENTRIC,
+                    "ALLOWTRACE": c_aacgmv2.ALLOWTRACE}
 
     code = code.upper()
 
@@ -427,15 +459,15 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
     bit_code : (int)
         code specification in bits
     """
-    bit_code = aacgmv2._aacgmv2.A2G if a2g else aacgmv2._aacgmv2.G2A
+    bit_code = c_aacgmv2.A2G if a2g else c_aacgmv2.G2A
 
     if trace:
-        bit_code += aacgmv2._aacgmv2.TRACE
+        bit_code += c_aacgmv2.TRACE
     if allowtrace:
-        bit_code += aacgmv2._aacgmv2.ALLOWTRACE
+        bit_code += c_aacgmv2.ALLOWTRACE
     if badidea:
-        bit_code += aacgmv2._aacgmv2.BADIDEA
+        bit_code += c_aacgmv2.BADIDEA
     if geocentric:
-        bit_code += aacgmv2._aacgmv2.GEOCENTRIC
+        bit_code += c_aacgmv2.GEOCENTRIC
 
     return bit_code
