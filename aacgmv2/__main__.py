@@ -8,9 +8,7 @@ from __future__ import division, print_function, absolute_import
 import sys
 import argparse
 import datetime as dt
-
 import numpy as np
-
 import aacgmv2
 
 try:
@@ -40,7 +38,7 @@ def main():
     
     desc = 'convert between magnetic local time (MLT) and AACGM-v2 longitude. '
     desc += 'Input file must have a single number on each line.'
-    parser_convert_mlt = subparsers.add_parser('mlt_convert', help=(desc))
+    parser_convert_mlt = subparsers.add_parser('convert_mlt', help=(desc))
 
     desc = 'input file (stdin if none specified)'
     for p in [parser_convert, parser_convert_mlt]:
@@ -93,25 +91,13 @@ def main():
                                            allowtrace=args.allowtrace,
                                            badidea=args.badidea,
                                            geocentric=args.geocentric)
-        lats, lons = aacgmv2.convert_latlon_arr(array[:,0], array[:,1],
-                                                array[:,2], dtime=date,
-                                                code=code)
-        np.savetxt(args.file_out, np.column_stack((lats, lons)), fmt='%.8f')
-    elif args.subcommand == 'mlt_convert':
+        lats, lons, rs = aacgmv2.convert_latlon_arr(array[:,0], array[:,1],
+                                                    array[:,2], dtime=date,
+                                                    code=code)
+        np.savetxt(args.file_out, np.column_stack((lats, lons, rs)), fmt='%.8f')
+    elif args.subcommand == 'convert_mlt':
         dtime = dt.datetime.strptime(args.datetime, '%Y%m%d%H%M%S')
-        if args.m2a:
-            out = aacgmv2._aacgmv2.inv_mlt_convert(dtime.year, dtime.month,
-                                                   dtime.day, dtime.hour,
-                                                   dtime.minute, dtime.second,
-                                                   array[:,1],
-                                                   aacgmv2.IGRF_12_COEFFS)
-        else:
-            out = aacgmv2._aacgmv2.mlt_convert(dtime.year, dtime.month,
-                                               dtime.day, dtime.hour,
-                                               dtime.minute, dtime.second,
-                                               array[:,1],
-                                               aacgmv2.AACGM_v2_DAT_PREFIX,
-                                               aacgmv2.IGRF_12_COEFFS)
+        out = aacgmv2.convert_mlt(array[:,0], dtime, m2a=args.m2a)
         np.savetxt(args.file_out, out, fmt='%.8f')
 
 
