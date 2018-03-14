@@ -36,6 +36,11 @@
 ;                    case the AACGM-v2 coefficients are loaded and interpolated
 ;                    which could impact other calls to AACGM_v2_Convert() if
 ;                    the date/time is not reset.
+; 20180314 AGB v1.2a Changed inv_MLTConvert_v2 to call AACGM_v2_SetDateTime() if
+;                    the AACGM-v2 date/time is not currently set OR if the
+;                    date/time passed into one of the public functions differs
+;                    from the AACGM-v2 date/time by more than 30 days.  This way
+;                    it has the same behaviour as MLTConvert_v2
 
 ; Changes
 
@@ -173,12 +178,30 @@ double MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
 
 /* inverse function: MLT to AACGM-v2 magnetic longitude */
 double inv_MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
-			 double mlt, char *igrf_filename)
+			 double mlt, char *root, char *igrf_filename)
 {
   int err;
-  double dd,jd,eqt,dec,ut,at;
+  int ayr,amo,ady,ahr,amt,asc,adyn;
+  double dd,jd,eqt,dec,ut,at,ajd;
   double slon,mlat,r;
   double hgt,aacgm_mlon;
+
+  err = 0;
+  AACGM_v2_GetDateTime(&ayr, &amo, &ady, &ahr, &amt, &asc, &adyn);
+  if (ayr < 0) { 
+    /* AACGM date/time not set so set it to the date/time passed in */
+    err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc,root);
+    if (err != 0) return (err);
+  } else {
+    /* If date/time passed into function differs from AACGM data/time by more
+     * than 30 days, recompute the AACGM-v2 coefficients */
+    ajd = TimeYMDHMSToJulian(ayr,amo,ady,ahr,amt,asc);
+    jd =  TimeYMDHMSToJulian(yr,mo,dy,hr,mt,sc);
+    if (fabs(jd-ajd) > 30.0) {
+      err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc, root);
+    }
+    if (err != 0) return (err);
+  }
 
 /* check for bad input, which should not happen for MLT, and return NAN */
   if (!isfinite(mlt)) {
@@ -235,9 +258,9 @@ double MLTConvertYMDHMS_v2(int yr, int mo, int dy, int hr, int mt, int sc,
 }
 
 double inv_MLTConvertYMDHMS_v2(int yr, int mo, int dy, int hr, int mt, int sc,
-			       double mlt, char *igrf_filename)
+			       double mlt, char *root, char *igrf_filename)
 {
-  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlt,igrf_filename));
+  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlt,root,igrf_filename));
 }
 
 double MLTConvertYrsec_v2(int yr,int yr_sec, double mlon, char *root,
@@ -250,14 +273,14 @@ double MLTConvertYrsec_v2(int yr,int yr_sec, double mlon, char *root,
   return (MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlon,root,igrf_filename));
 }
 
-double inv_MLTConvertYrsec_v2(int yr, int yr_sec, double mlt,
+double inv_MLTConvertYrsec_v2(int yr, int yr_sec, double mlt, char *root,
 			      char *igrf_filename)
 {
   int mo,dy,hr,mt,sc;
 
   TimeYrsecToYMDHMS(yr_sec,yr,&mo,&dy,&hr,&mt,&sc);
 
-  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlt,igrf_filename));
+  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlt,root,igrf_filename));
 }
 
 double MLTConvertEpoch_v2(double epoch, double mlon, char *root,
@@ -271,13 +294,14 @@ double MLTConvertEpoch_v2(double epoch, double mlon, char *root,
   return (MLTConvert_v2(yr,mo,dy,hr,mt,(int)sc, mlon, root, igrf_filename));
 }
 
-double inv_MLTConvertEpoch_v2(double epoch, double mlt, char *igrf_filename)
+double inv_MLTConvertEpoch_v2(double epoch, double mlt, char *root,
+			      char *igrf_filename)
 {
   int yr,mo,dy,hr,mt;
   double sc;
 
   TimeEpochToYMDHMS(epoch,&yr,&mo,&dy,&hr,&mt,&sc);
 
-  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,(int)sc, mlt, igrf_filename));
+  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,(int)sc, mlt, root, igrf_filename));
 }
 
