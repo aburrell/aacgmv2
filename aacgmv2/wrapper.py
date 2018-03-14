@@ -506,7 +506,12 @@ def convert_mlt(arr, dtime, m2a=False, igrf_file=None, coeff_prefix=None):
     if igrf_file is None:
         igrf_file = aacgmv2.IGRF_12_COEFFS
 
+    # Set current date and time
+    c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
+                           dtime.minute, dtime.second, coeff_prefix)
+
     if m2a:
+        # Get the magnetic longitude
         inv_vectorised = np.vectorize(c_aacgmv2.inv_mlt_convert)
         out = inv_vectorised(dtime.year, dtime.month, dtime.day, dtime.hour,
                              dtime.minute, dtime.second, arr, igrf_file)
