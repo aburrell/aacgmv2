@@ -388,11 +388,11 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE",
                                         coeff_prefix=coeff_prefix)
 
     if np.all(np.isnan(mlon)):
-        mlt = np.nan
+        mlt = np.empty(shape=mlat.shape, dtype=float) * np.nan
     else:
         # Get magnetic local time
-        mlt = convert_mlt(mlon, dtime, m2a=False, igrf_file=igrf_file,
-                          coeff_prefix=coeff_prefix)
+        mlt = convert_mlt(mlon, dtime, m2a=False, coeff_prefix=coeff_prefix,
+                          igrf_file=igrf_file)
 
     return mlat, mlon, mlt
 
@@ -469,7 +469,7 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
 
     return bit_code
 
-def convert_mlt(arr, dtime, m2a=False, igrf_file=None, coeff_prefix=None):
+def convert_mlt(arr, dtime, m2a=False, coeff_prefix=None, igrf_file=None):
     """Converts between magnetic local time (MLT) and AACGM-v2 longitude
 
     Parameters
@@ -481,12 +481,12 @@ def convert_mlt(arr, dtime, m2a=False, igrf_file=None, coeff_prefix=None):
     m2a : (bool)
         Convert MLT to AACGM-v2 longitude (True) or magnetic longitude to MLT 
         (False).  (default=False)
-    igrf_file : (str or NoneType)
-        Full filename of IGRF coefficient file or None to use
-        aacgmv2.IGRF_12_COEFFS. (default=None)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
         aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+    igrf_file : (str or NoneType)
+        Full filename of IGRF coefficient file or None to use
+        aacgmv2.IGRF_12_COEFFS. (default=None)
 
     Returns
     --------
@@ -506,15 +506,20 @@ def convert_mlt(arr, dtime, m2a=False, igrf_file=None, coeff_prefix=None):
     if igrf_file is None:
         igrf_file = aacgmv2.IGRF_12_COEFFS
 
-    # Set current date and time
-    c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
-                           dtime.minute, dtime.second, coeff_prefix)
+    # Test time
+    if isinstance(dtime, dt.date):
+        dtime = dt.datetime.combine(dtime, dt.time(0))
 
+    assert isinstance(dtime, dt.datetime), \
+        logging.error('time must be specified as datetime object')
+
+    # Calculate desired location, C routines set date and time
     if m2a:
         # Get the magnetic longitude
         inv_vectorised = np.vectorize(c_aacgmv2.inv_mlt_convert)
         out = inv_vectorised(dtime.year, dtime.month, dtime.day, dtime.hour,
-                             dtime.minute, dtime.second, arr, igrf_file)
+                             dtime.minute, dtime.second, arr, coeff_prefix,
+                             igrf_file)
     else:
         # Get magnetic local time
         mlt_vectorised = np.vectorize(c_aacgmv2.mlt_convert)

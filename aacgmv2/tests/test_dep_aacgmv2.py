@@ -42,7 +42,7 @@ class TestDepAACGMV2:
         lat, lon = aacgmv2.convert(60, 0, 300, self.dtime)
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
-        assert lat.shape == lon.shape & lat.shape == (1,)
+        assert lat.shape == lon.shape and lat.shape == (1,)
         np.testing.assert_allclose(lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685], rtol=1e-4)
 
@@ -51,14 +51,14 @@ class TestDepAACGMV2:
         lat, lon = aacgmv2.convert([60], [0], [300], self.dtime)
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
-        assert lat.shape == lon.shape & lat.shape == (1,)
+        assert lat.shape == lon.shape and lat.shape == (1,)
         np.testing.assert_allclose(lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685], rtol=1e-4)
 
         lat, lon = aacgmv2.convert([60, 61], [0, 0], [300, 300], self.dtime)
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
-        assert lat.shape == lon.shape & lat.shape == (2,)
+        assert lat.shape == lon.shape and lat.shape == (2,)
         np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
 
@@ -68,7 +68,7 @@ class TestDepAACGMV2:
                                    np.array([300]), self.dtime)
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
-        assert lat.shape == lon.shape & lat.shape == (1,)
+        assert lat.shape == lon.shape and lat.shape == (1,)
         np.testing.assert_allclose(lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685], rtol=1e-4)
 
@@ -76,7 +76,7 @@ class TestDepAACGMV2:
                                    np.array([300, 300]), self.dtime)
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
-        assert lat.shape == lon.shape & lat.shape == (2,)
+        assert lat.shape == lon.shape and lat.shape == (2,)
         np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
 
@@ -85,14 +85,14 @@ class TestDepAACGMV2:
         lat, lon = aacgmv2.convert([60, 61], 0, 300, self.dtime)
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
-        assert lat.shape == lon.shape & lat.shape == (2,)
+        assert lat.shape == lon.shape and lat.shape == (2,)
         np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
 
         lat, lon = aacgmv2.convert(np.array([60, 61]), 0, 300, self.dtime)
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
-        assert lat.shape == lon.shape & lat.shape == (2,)
+        assert lat.shape == lon.shape and lat.shape == (2,)
         np.testing.assert_allclose(lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(lon, [81.1685, 81.6140], rtol=1e-4)
 
@@ -100,7 +100,7 @@ class TestDepAACGMV2:
                                    300, self.dtime)
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
-        assert lat.shape == lon.shape & lat.shape == (2, 3)
+        assert lat.shape == lon.shape and lat.shape == (2, 3)
         np.testing.assert_allclose(lat, [[58.2258, 59.3186, 60.4040],
                                          [61.4820, 62.5528, 63.6164]],
                                    rtol=1e-4)
@@ -112,7 +112,7 @@ class TestDepAACGMV2:
                                    [300], self.dtime)
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
-        assert lat.shape == lon.shape & lat.shape == (2, 3)
+        assert lat.shape == lon.shape and lat.shape == (2, 3)
         np.testing.assert_allclose(lat, [[58.2258, 59.3186, 60.4040],
                                          [61.4820, 62.5528, 63.6164]],
                                    rtol=1e-4)
@@ -122,18 +122,16 @@ class TestDepAACGMV2:
 
     def test_convert_badidea_failure(self):
         """Test conversion failure for BADIDEA"""
-        lat, lon = aacgmv2.convert([60], [0], [3000], self.dtime, badidea=True)
-        assert isinstance(lat, np.ndarray)
-        assert isinstance(lon, np.ndarray)
-        assert lat.shape == lon.shape & lat.shape == (1,)
-        assert np.all([np.isnan(lat), np.isnan(lon)])
+        with pytest.raises(ValueError):
+            lat, lon = aacgmv2.convert([60], [0], [3000], self.dtime,
+                                       badidea=True)
 
     def test_convert_location_failure(self):
         """Test conversion with a bad location"""
         lat, lon = aacgmv2.convert([0], [0], [0], self.dtime)
         assert isinstance(lat, np.ndarray)
         assert isinstance(lon, np.ndarray)
-        assert lat.shape == lon.shape & lat.shape == (1,)
+        assert lat.shape == lon.shape and lat.shape == (1,)
         assert np.all([np.isnan(lat), np.isnan(lon)])
 
     def test_convert_time_failure(self):
@@ -204,4 +202,5 @@ class TestDepAACGMV2:
         """Test the IGRF dipole axis calculation"""
         m = aacgmv2.depricated.igrf_dipole_axis(self.dtime)
 
-        np.testing.assert_allclose(m, [0.0503, -0.1606, 0.9857], rtol=1.0e-4)
+        np.testing.assert_allclose(m, [0.050253, -0.160608, 0.985738],
+                                   rtol=1.0e-4)

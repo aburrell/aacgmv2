@@ -56,6 +56,14 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
     lon_out : (float)
         Output longitude in degrees E
     """
+    if(np.array(height).max() > 2000 and not trace and not allowtrace and
+       badidea):
+        estr = 'coefficients are not valid for altitudes above 2000 km. You'
+        estr += ' must either use field-line tracing (trace=True '
+        estr += 'or allowtrace=True) or indicate you know this is a bad idea'
+        logging.error(estr)
+        raise ValueError
+    
     # construct a code from the boolian flags
     bit_code = aacgmv2.convert_bool_to_bit(a2g=a2g, trace=trace,
                                            allowtrace=allowtrace,

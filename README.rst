@@ -25,9 +25,9 @@ Convert between AACGM and geographic coordinates::
     >>> dtime = dt.datetime(2013, 11, 3)
     >>> mlat, mlon, mlt = aacgmv2.get_aacgm_coord(60, 15, 300, dtime)
     >>> "{:.4f} {:.4f} {:.4f}".format(mlat, mlon, mlt)
-    '58.2247 81.1761 0.1889'
+    '57.4698 93.6300 1.4822'
     >>> # AACGM to geo, mix arrays/numbers
-    >>> glat, glon alt = aacgmv2.convert_latlon_arr([90, -90], 0, 0, dtime, code="A2G")
+    >>> glat, glon, alt = aacgmv2.convert_latlon_arr([90, -90], 0, 0, dtime, code="A2G")
     >>> ["{:.4f} {:.4f} {:.4f}".format(lat, glon[i], alt[i]) for i,lat in enumerate(glat)]
     ['82.9666 -84.6652 14.1244', '-74.3385 125.8401 12.8771']
 
@@ -37,11 +37,9 @@ Convert between AACGM and MLT::
     >>> import datetime as dt
     >>> # MLT to AACGM
     >>> dtime = dt.datetime(2013, 11, 3, 0, 0, 0)
-    >>> mlon_check = aacgmv2.convert_mlt([mlt, 12], dtime, m2a=True)
-    >>> abs(mlon_check[0] - mlon) < 1.0e-4
-    True
+    >>> mlon_check = aacgmv2.convert_mlt([1.4822189, 12], dtime, m2a=True)
     >>> ["{:.4f}".format(lon) for lon in mlon_check]
-    ['81.1761', '-101.6577']
+    ['93.6300', '-108.6033']
 
 If you don't know or use Python, you can also use the command line. See details
 in the full documentation.

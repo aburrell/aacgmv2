@@ -85,7 +85,7 @@ static PyObject *mltconvert_v2(PyObject *self, PyObject *args)
     return(NULL);
 
   /* Call the AACGM routine */
-  mlt = MLTConvert_v2(yr, mo, dy, hr, mt, sc, mlon, root, igrf_file);
+  mlt = MLTConvertYMDHMS_v2(yr, mo, dy, hr, mt, sc, mlon, root, igrf_file);
     
   return Py_BuildValue("d", mlt);
 }
@@ -114,15 +114,15 @@ static PyObject *inv_mltconvert_v2(PyObject *self, PyObject *args)
 
   double mlon, mlt;
 
-  char *igrf_file;
+  char *root, *igrf_file;
 
   /* Parse the input as a tupple */
-  if(!PyArg_ParseTuple(args, "iiiiiids", &yr, &mo, &dy, &hr, &mt, &sc, &mlt,
-		       &igrf_file))
+  if(!PyArg_ParseTuple(args, "iiiiiidss", &yr, &mo, &dy, &hr, &mt, &sc, &mlt,
+		       &root, &igrf_file))
     return(NULL);
 
   /* Call the AACGM routine */
-  mlon = inv_MLTConvert_v2(yr, mo, dy, hr, mt, sc, mlt, igrf_file);
+  mlon = inv_MLTConvertYMDHMS_v2(yr, mo, dy, hr, mt, sc, mlt, root, igrf_file);
     
   return Py_BuildValue("d", mlon);
 }
@@ -133,14 +133,14 @@ static PyObject *inv_mltconvert_yrsec_v2(PyObject *self, PyObject *args)
 
   double mlon, mlt;
 
-  char *igrf_file;
+  char *root, *igrf_file;
 
   /* Parse the input as a tupple */
-  if(!PyArg_ParseTuple(args, "iidss", &yr, &yr_sec, &mlt, &igrf_file))
+  if(!PyArg_ParseTuple(args, "iidss", &yr, &yr_sec, &mlt, &root, &igrf_file))
     return(NULL);
 
   /* Call the AACGM routine */
-  mlon = inv_MLTConvertYrsec_v2(yr, yr_sec, mlt, igrf_file);
+  mlon = inv_MLTConvertYrsec_v2(yr, yr_sec, mlt, root, igrf_file);
 
   return Py_BuildValue("d", mlon);
 }
@@ -167,7 +167,7 @@ second : (int)\n\
     Seconds of minute (0-59)\n\
 root : (str)\n\
     AACGM coefficient filename root\n\
-    (e.g. /davitpydir/tables/aacgm/aacgm_coeffs-12-)\n\
+    (e.g. ~/aacgmv2/aacgmv2/aacgm_coeff/aacgm_coeffs-12-)\n\
 \n\
 Returns\n\
 -------------\n\
@@ -227,7 +227,7 @@ mlon : (float)\n\
     Magnetic longitude\n\
 root : (str)\n\
     Root of the AACGM coefficient files\n\
-    (e.g. /davitpydir/tables/aacgm/aacgm_coeffs-12-)\n\
+    (e.g. ~/aacgmv2/aacgmv2/aacgm_coeff/aacgm_coeffs-12-)\n\
 igrf_file : (str)\n\
     Full filename of IGRF coefficient file\n\
 \n\
@@ -251,7 +251,7 @@ mlon : (float)\n\
     Magnetic longitude\n\
 root : (str)\n\
     Root of the AACGM coefficient files\n\
-    (e.g. /davitpydir/tables/aacgm/aacgm_coeffs-12-)\n\
+    (e.g. ~/aacgmv2/aacgmv2/aacgm_coeff/aacgm_coeffs-12-)\n\
 igrf_file : (str)\n\
     Full filename of IGRF coefficient file\n\
 \n\
@@ -260,7 +260,7 @@ Returns	\n\
 mlt : (float)\n\
     Magnetic local time (hours)\n" },
   {"inv_mlt_convert", inv_mltconvert_v2, METH_VARARGS,
-    "inv_mlt_convert(yr, mo, dy, hr, mt, sc, mlt, igrf_file)\n\
+    "inv_mlt_convert(yr, mo, dy, hr, mt, sc, mlt, root, igrf_file)\n\
 \n\
 Converts from universal time and magnetic local time to magnetic longitude.\n\
 \n\
@@ -280,6 +280,9 @@ sc : (int)\n\
     Seconds of minute (0-59)\n\
 mlt : (float)\n\
     Magnetic local time\n\
+root : (str)\n\
+    Root of the AACGM coefficient files\n\
+    (e.g. ~/aacgmv2/aacgmv2/aacgm_coeff/aacgm_coeffs-12-)\n\
 igrf_file : (str)\n\
     Full filename of IGRF coefficient file\n\
 \n\
@@ -289,7 +292,7 @@ mlon : (float)\n\
     Magnetic longitude (degrees)\n" },
 
   {"inv_mlt_convert_yrsec", inv_mltconvert_yrsec_v2, METH_VARARGS,
-    "inv_mlt_convert_yrsec(yr, yr_sec, mlt, igrf_file)\n\
+    "inv_mlt_convert_yrsec(yr, yr_sec, mlt, root, igrf_file)\n\
 \n\
 Converts from universal time and magnetic local time to magnetic longitude.\n\
 \n\
@@ -301,6 +304,9 @@ yr_sec : (int)\n\
     Seconds of year (0-31622400)\n\
 mlt : (float)\n\
     Magnetic local time\n\
+root : (str)\n\
+    Root of the AACGM coefficient files\n\
+    (e.g. ~/aacgmv2/aacgmv2/aacgm_coeff/aacgm_coeffs-12-)\n\
 igrf_file : (str)\n\
     Full filename of IGRF coefficient file\n\
 \n\
