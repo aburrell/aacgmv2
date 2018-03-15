@@ -42,7 +42,7 @@ if __name__ == "__main__":
     for (alias, conf) in matrix.from_file(os.path.join(base_path,
                                                        "setup.cfg")).items():
         python = conf["python_versions"]
-        deps = conf["dependencies"]
+        #deps = conf["dependencies"]
         if "coverage_flags" in conf:
             cover = {"false": False,
                      "true": True}[conf["coverage_flags"].lower()]
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
         tox_envs[alias] = {
             "python": "python" + python if "py" not in python else python,
-            "deps": deps.split(),
+            #"deps": deps.split(),
         }
         if "coverage_flags" in conf:
             tox_envs[alias].update(cover=cover)
