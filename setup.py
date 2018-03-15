@@ -79,6 +79,10 @@ setup(
         'numpy',
         'logging',
     ],
+    test_requires=[
+        'pytest',
+        'testfixtures'
+    ],
     ext_modules=[
         Extension('_aacgmv2',
                   sources=['aacgmv2/aacgmv2module.c',
