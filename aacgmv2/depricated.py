@@ -56,7 +56,7 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
     lon_out : (float)
         Output longitude in degrees E
     """
-    if(np.array(height).max() > 2000 and not trace and not allowtrace and
+    if(np.array(alt).max() > 2000 and not trace and not allowtrace and
        badidea):
         estr = 'coefficients are not valid for altitudes above 2000 km. You'
         estr += ' must either use field-line tracing (trace=True '
