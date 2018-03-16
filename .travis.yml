@@ -15,10 +15,6 @@ before_install:
   - lsb_release -a
 install:
   - pip install coveralls
-  - virtualenv --version
-  - easy_install --version
-  - pip --version
-  - tox --version
   - "python setup.py install"
 script:
   - "coverage run --source=aacgmv2 setup.py test"
