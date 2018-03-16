@@ -7,7 +7,7 @@
 #include "astalg.h"
 
 #ifndef isfinite
-#include <cmath.h>
+#define isfinite(fpclassify(x) != FP_NAN && fpclassify(x) != FP_INFINITE)
 #endif
 
 /*-----------------------------------------------------------------------------
