@@ -12,7 +12,7 @@ from setuptools import find_packages
 from setuptools import setup
 from distutils.core import Extension
 
-def read(fname):
+def read(fname, **kwargs):
     return io.open(
         path.join(path.dirname(__file__), fname),
         encoding=kwargs.get('encoding', 'utf8')
