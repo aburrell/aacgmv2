@@ -12,9 +12,9 @@ from setuptools import find_packages
 from setuptools import setup
 from distutils.core import Extension
 
-def read(*names, **kwargs):
+def read(fname):
     return io.open(
-        path.join(path.dirname(__file__), *names),
+        path.join(path.dirname(__file__), fname),
         encoding=kwargs.get('encoding', 'utf8')
     ).read()
 
@@ -79,10 +79,9 @@ setup(
         'numpy',
         'logging',
     ],
-    test_requires=[
-        'pytest',
-        'testfixtures'
-    ],
+    extra_requires={'test':['pytest',
+                            'testfixtures'],
+    },
     ext_modules=[
         Extension('_aacgmv2',
                   sources=['aacgmv2/aacgmv2module.c',
