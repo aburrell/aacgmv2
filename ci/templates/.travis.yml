@@ -1,34 +1,25 @@
 language: python
-python: '3.5'
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
 sudo: false
 env:
   global:
     LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
-  matrix:
-    - TOXENV=check
-{% for env, config in tox_environments|dictsort %}
-    - TOXENV={{ env }}{% if config.cover %},extension-coveralls,coveralls,codecov{% endif %}
-
-{% endfor %}
 before_install:
   - python --version
   - uname -a
   - lsb_release -a
 install:
-  - pip install tox
-  - virtualenv --version
-  - easy_install --version
-  - pip --version
-  - tox --version
+  - pip install coveralls
+  - "python setup.py install"
 script:
-  - tox -v
-after_failure:
-  - more .tox/log/* | cat
-  - more .tox/*/log/* | cat
+  - "coverage run --source=aacgmv2 setup.py test"
+after_sucess: coveralls
 notifications:
   email:
     on_success: never
     on_failure: always
-matrix:
-  allow_failures:
-    - env: "TOXENV=check"
