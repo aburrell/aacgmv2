@@ -20,7 +20,7 @@ Laundal, K. M. and A. D. Richmond (2016), Magnetic Coordinate Systems, Space
 
 from __future__ import division, absolute_import, unicode_literals
 import numpy as np
-import logging
+import logbook as logging
 import aacgmv2
 
 def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,

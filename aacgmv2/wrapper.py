@@ -16,7 +16,7 @@ convert_mlt : Get array mlt
 from __future__ import division, absolute_import, unicode_literals
 import numpy as np
 import datetime as dt
-import logging
+import logbook as logging
 import aacgmv2
 import aacgmv2._aacgmv2 as c_aacgmv2
 

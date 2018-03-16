@@ -77,7 +77,7 @@ setup(
     ],
     install_requires=[
         'numpy',
-        'logging',
+        'logbook',
     ],
     extras_require={'test':['pytest',
                             'testfixtures'],

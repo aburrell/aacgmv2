@@ -44,7 +44,7 @@ _aacgmv2
 ---------------------------------------------------------------------------
 """
 import os.path as _path
-import logging
+import logbook as logging
 __version__ = "2.0.1"
 
 # path and filename prefix for the IGRF coefficients
