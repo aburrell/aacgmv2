@@ -79,7 +79,7 @@ setup(
         'numpy',
         'logging',
     ],
-    extra_requires={'test':['pytest',
+    extras_require={'test':['pytest',
                             'testfixtures'],
     },
     ext_modules=[
