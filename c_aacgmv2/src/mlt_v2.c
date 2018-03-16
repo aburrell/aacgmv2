@@ -6,6 +6,10 @@
 #include "rtime.h"
 #include "astalg.h"
 
+#ifndef isfinite
+#include <cmath.h>
+#endif
+
 /*-----------------------------------------------------------------------------
   MLT functions for use with AACGM-v2
 ;
