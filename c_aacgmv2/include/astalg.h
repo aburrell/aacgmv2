@@ -64,6 +64,10 @@ The book will be referred to as "Meeus" for short.
 
 #include <math.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 #define AstAlg_DTOR (M_PI/180.0)
  
 /* we need a floating point version of the % binary operator */
