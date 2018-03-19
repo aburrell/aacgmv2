@@ -14,9 +14,64 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include <errno.h>
 #include "rtime.h"
 
 #define DAY_SEC 86400
+
+/* For windows, define setenv */
+#if defined(_WIN32) || defined(_WIN64)
+int setenv(const char *name, const char *value, int overwrite)
+{
+  int setsize;
+  char envset[1000], *testenv;
+
+  if(!overwrite)
+    {
+      testenv = getenv(name);
+      setsize = strlen(testenv);
+      if(setsize > 0) return -1;
+    }
+
+  sprintf(envset, "%s=%s", name, value);
+  return putenv(envset);
+}
+#endif
+
+/* For windows, define unsetenv */
+#if  defined(_WIN32) || defined(_WIN64)
+int unsetenv(const char *name)
+{
+  extern char **environ;
+  char **ep, **sp;
+  size_t len;
+
+  if (name == NULL || name[0] == '\0' || strchr(name, '=') != NULL)
+    {
+      errno = EINVAL;
+      return -1;
+    }
+
+  len = strlen(name);
+
+  for (ep = environ; *ep != NULL; )
+    {
+      if (strncmp(*ep, name, len) == 0 && (*ep)[len] == '=')
+	{
+	  /* Remove found entry by shifting all successive entries */
+	  /* back one element                                      */
+	  for (sp = ep; *sp != NULL; sp++)
+	    *sp = *(sp + 1);
+
+	  /* Continue around the loop to further instances of 'name' */
+
+        }
+      else ep++;
+    }
+
+  return 0;
+}
+#endif
 
 int TimeYMDHMSToYrsec(int yr,int mo,int dy,int hr,int mn,int sc) {
 
@@ -112,7 +167,7 @@ double TimeYMDHMSToEpoch(int yr,int mo,int dy,int hr,int mn,double sc) {
   if (tz) setenv("TZ", tz, 1);
   else unsetenv("TZ");
   tzset();
-               
+
   return clock+(sc-floor(sc));
 }
 
