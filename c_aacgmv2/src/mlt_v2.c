@@ -11,7 +11,7 @@
 #endif
 
 /* Macro infinite cannot be defined by systems that don't have it */
-#ifndef isfinite
+#ifndef isfinite(x)
 #define isfinite 1 ? x != NAN : 0
 #endif
 
