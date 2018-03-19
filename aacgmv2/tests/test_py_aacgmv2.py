@@ -40,8 +40,6 @@ class TestPyAACGMV2:
         path2 = path.join("aacgmv2", "aacgmv2", "igrf12coeffs.txt")
         assert aacgmv2.IGRF_12_COEFFS.find(path2) >= 0
 
-        assert arg1 & arg2
-
     def test_convert_latlon(self):
         """Test single value latlon conversion"""
         lat, lon, r = aacgmv2.convert_latlon(60, 0, 300, self.dtime)
