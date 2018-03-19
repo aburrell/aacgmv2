@@ -16,18 +16,6 @@ environment:
       PYTHON_HOME: C:\python27-x64
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '64'
-    - TOXENV: '3.3-buildonly-nocover'
-      TOXPYTHON: C:\python33\python.exe
-      WINDOWS_SDK_VERSION: v7.1
-      PYTHON_HOME: C:\python33
-      PYTHON_VERSION: '3.3'
-      PYTHON_ARCH: '32'
-    - TOXENV: '3.3-buildonly-nocover'
-      TOXPYTHON: C:\python33-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.1
-      PYTHON_HOME: C:\python33-x64
-      PYTHON_VERSION: '3.3'
-      PYTHON_ARCH: '64'
     - TOXENV: '3.4-buildonly-nocover'
       TOXPYTHON: C:\python34\python.exe
       WINDOWS_SDK_VERSION: v7.1
@@ -68,7 +56,7 @@ environment:
       PYTHON_HOME: C:\Python27
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '32'
-{% for env, config in tox_environments|dictsort %}{% if config.python in ('python2.6', 'python2.7', 'python3.3', 'python3.4', 'python3.5', 'python3.6') and not config.cover %}
+{% for env, config in tox_environments|dictsort %}{% if config.python in ('python2.6', 'python2.7', 'python3.4', 'python3.5', 'python3.6') and not config.cover %}
     - TOXENV: '{{ env }}{% if config.cover %},codecov{% endif %}'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}\python.exe
       {%- if config.python != 'python3.5' %}
@@ -122,7 +110,6 @@ matrix:
     - TOXENV: '3.5-nocover'
     - TOXENV: '3.5,codecov'
     - TOXENV: '2.7-buildonly-nocover'
-    - TOXENV: '3.3-buildonly-nocover'
     - TOXENV: '3.4-buildonly-nocover'
     - TOXENV: '3.5-buildonly-nocover'
     - TOXENV: '3.6-buildonly-nocover'

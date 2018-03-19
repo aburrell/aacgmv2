@@ -16,18 +16,6 @@ environment:
       PYTHON_HOME: C:\python27-x64
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '64'
-    - TOXENV: '3.3-buildonly-nocover'
-      TOXPYTHON: C:\python33\python.exe
-      WINDOWS_SDK_VERSION: v7.1
-      PYTHON_HOME: C:\python33
-      PYTHON_VERSION: '3.3'
-      PYTHON_ARCH: '32'
-    - TOXENV: '3.3-buildonly-nocover'
-      TOXPYTHON: C:\python33-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.1
-      PYTHON_HOME: C:\python33-x64
-      PYTHON_VERSION: '3.3'
-      PYTHON_ARCH: '64'
     - TOXENV: '3.4-buildonly-nocover'
       TOXPYTHON: C:\python34\python.exe
       WINDOWS_SDK_VERSION: v7.1
@@ -79,18 +67,6 @@ environment:
       WINDOWS_SDK_VERSION: v7.0
       PYTHON_HOME: C:\python27-x64
       PYTHON_VERSION: '2.7'
-      PYTHON_ARCH: '64'
-    - TOXENV: '3.3-nocover'
-      TOXPYTHON: C:\python33\python.exe
-      WINDOWS_SDK_VERSION: v7.1
-      PYTHON_HOME: C:\python33
-      PYTHON_VERSION: '3.3'
-      PYTHON_ARCH: '32'
-    - TOXENV: '3.3-nocover'
-      TOXPYTHON: C:\python33-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.1
-      PYTHON_HOME: C:\python33-x64
-      PYTHON_VERSION: '3.3'
       PYTHON_ARCH: '64'
     - TOXENV: '3.4-nocover'
       TOXPYTHON: C:\python34\python.exe
@@ -155,7 +131,6 @@ matrix:
     - TOXENV: '3.5-nocover'
     - TOXENV: '3.5,codecov'
     - TOXENV: '2.7-buildonly-nocover'
-    - TOXENV: '3.3-buildonly-nocover'
     - TOXENV: '3.4-buildonly-nocover'
     - TOXENV: '3.5-buildonly-nocover'
     - TOXENV: '3.6-buildonly-nocover'

@@ -22,9 +22,6 @@ GET_PIP_PATH = "C:\get-pip.py"
 URLS = {
     ("2.7", "64"): BASE_URL + "2.7.14/python-2.7.14.amd64.msi",
     ("2.7", "32"): BASE_URL + "2.7.14/python-2.7.14.msi",
-    # NOTE: IF FAILS, USE 3.3.3
-    ("3.3", "64"): BASE_URL + "3.3.7/python-3.3.7.amd64.msi",
-    ("3.3", "32"): BASE_URL + "3.3.7/python-3.3.7.msi",
     ("3.4", "64"): BASE_URL + "3.4.8/python-3.4.8.amd64.msi",
     ("3.4", "32"): BASE_URL + "3.4.8/python-3.4.8.msi",
     ("3.5", "64"): BASE_URL + "3.5.5/python-3.5.5-amd64.exe",
@@ -39,9 +36,6 @@ INSTALL_CMD = {
     #         ["msiexec.exe", "/L*+!", "install.log", "/qn", "/i", "{path}",
     #          "TARGETDIR={home}"]],
     "2.7": [["msiexec.exe", "/L*+!", "install.log", "/qn", "/x", "{path}"],
-            ["msiexec.exe", "/L*+!", "install.log", "/qn", "/i", "{path}",
-             "TARGETDIR={home}"]],
-    "3.3": [["msiexec.exe", "/L*+!", "install.log", "/qn", "/x", "{path}"],
             ["msiexec.exe", "/L*+!", "install.log", "/qn", "/i", "{path}",
              "TARGETDIR={home}"]],
     "3.4": [["msiexec.exe", "/L*+!", "install.log", "/qn", "/x", "{path}"],
