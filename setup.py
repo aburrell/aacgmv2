@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- encoding: utf-8 -*-
+#-*- encoding: utf-8 -*-
 from __future__ import absolute_import
 
 import io
@@ -13,10 +13,8 @@ from setuptools import setup
 from distutils.core import Extension
 
 def read(fname, **kwargs):
-    return io.open(
-        path.join(path.dirname(__file__), fname),
-        encoding=kwargs.get('encoding', 'utf8')
-    ).read()
+    return io.open(path.join(path.dirname(__file__), fname),
+                   encoding=kwargs.get('encoding', 'utf8')).read()
 
 # enable code coverage for C code
 # We can't use CFLAGS=-coverage in tox.ini, since that may mess with
