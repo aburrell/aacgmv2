@@ -10,9 +10,9 @@
 #define NAN sqrt(-1)
 #endif
 
-/* Macro infinite cannot be defined by systems that don't have it */
-#ifndef isfinite(x)
-#define isfinite 1 ? x != NAN : 0
+/* Macro infinite can't be defined, limit to NAN */
+#if  defined(_WIN32) || defined(_WIN64)
+#define isfinite(x) 1 ? x != NAN : 0
 #endif
 
 /*-----------------------------------------------------------------------------
