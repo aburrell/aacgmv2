@@ -221,26 +221,26 @@ class TestPyAACGMV2:
 
     def test_warning_below_ground_convert_latlon(self):
         """ Test that a warning is issued if altitude is below zero"""
-        import testfixtures
+        import logbook
         lwarn = u"conversion not intended for altitudes < 0 km"
 
-        with testfixtures.LogCapture() as l:
+        with logbook.TestHandler() as handler:
             lat, lon, r = aacgmv2.convert_latlon(60, 0, -1, self.dtime)
+            assert handler.has_warning(lwarn)
 
-        assert l.check(("root", "WARNING", lwarn)) is None
-        l.uninstall()
+        handler.close()
 
     def test_warning_below_ground_convert_latlon_arr(self):
         """ Test that a warning is issued if altitude is below zero"""
-        import testfixtures
+        import logbook
         lwarn = u"conversion not intended for altitudes < 0 km"
 
-        with testfixtures.LogCapture() as l:
+        with logbook.TestHandler() as handler:
             lat, lon, r = aacgmv2.convert_latlon_arr([60], [0], [-1],
                                                      self.dtime)
+            assert handler.has_warning(lwarn)
 
-        assert l.check(("root", "WARNING", lwarn)) is None
-        l.uninstall()
+        handler.close()
 
     def test_convert_latlon_maxalt_failure(self):
         """For a single value, test failure for an altitude too high for
@@ -463,26 +463,26 @@ class TestPyAACGMV2:
 
     def test_warning_below_ground_get_aacgm_coord(self):
         """ Test that a warning is issued if altitude is below zero"""
-        import testfixtures
+        import logbook
         lwarn = u"conversion not intended for altitudes < 0 km"
 
-        with testfixtures.LogCapture() as l:
+        with logbook.TestHandler() as handler:
             mlat, mlon, mlt = aacgmv2.get_aacgm_coord(60, 0, -1, self.dtime)
+            assert handler.has_warning(lwarn)
 
-        assert l.check(("root", "WARNING", lwarn)) is None
-        l.uninstall()
+        handler.close()
         
     def test_warning_below_ground_get_aacgm_coord_arr(self):
         """ Test that a warning is issued if altitude is below zero"""
-        import testfixtures
+        import logbook
         lwarn = u"conversion not intended for altitudes < 0 km"
 
-        with testfixtures.LogCapture() as l:
+        with logbook.TestHandler() as handler:
             mlat, mlon, mlt = aacgmv2.get_aacgm_coord_arr([60], [0], [-1],
                                                      self.dtime)
+            assert handler.has_warning(lwarn)
 
-        assert l.check(("root", "WARNING", lwarn)) is None
-        l.uninstall()
+        handler.close()
 
     def test_get_aacgm_coord_maxalt_failure(self):
         """For a single value, test failure for an altitude too high for
@@ -502,37 +502,35 @@ class TestPyAACGMV2:
 
     def test_get_aacgm_coord_mlat_failure(self):
         """Test error return for co-latitudes above 90 for a single value"""
-        import testfixtures
+        import logbook
         lerr = u"unrealistic latitude"
 
-        with testfixtures.LogCapture() as lhigh:
+        with logbook.TestHandler() as hhigh:
             with pytest.raises(AssertionError):
                 mlat, mlon, mlt = aacgmv2.get_aacgm_coord(91, 0, 300,
                                                           self.dtime)
+                assert hhigh.has_error(lerr)
 
-        assert lhigh.check(("root", "ERROR", lerr)) is None
-
-        with testfixtures.LogCapture() as llow:
+        with logbook.TestHandler() as hlow:
             with pytest.raises(AssertionError):
                 mlat, mlon, mlt = aacgmv2.get_aacgm_coord(-91, 0, 300,
                                                           self.dtime)
+                assert hlow.has_error(lerr)
 
-        assert llow.check(("root", "ERROR", lerr)) is None
-
-        lhigh.uninstall()
-        llow.uninstall()
+        hhigh.close()
+        hlow.close()
 
     def test_get_aacgm_coord_arr_mlat_failure(self):
         """Test error return for co-latitudes above 90 for an array"""
-        import testfixtures
+        import logbook
         lerr = u"unrealistic latitude"
 
-        with testfixtures.LogCapture() as l:
+        with logbook.TestHandler() as handler:
             with pytest.raises(AssertionError):
                 aacgmv2.get_aacgm_coord_arr([91, 60, -91], 0, 300, self.dtime)
+                assert handler.has_error(lerr)
 
-        assert l.check(("root", "ERROR", lerr)) is None
-        l.uninstall()
+        handler.close()
 
     def test_convert_str_to_bit_g2a(self):
         """Test conversion from string code to bit G2A"""

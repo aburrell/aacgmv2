@@ -28,14 +28,14 @@ class TestDepAACGMV2:
 
     def test_set_coeff_path(self):
         """Test the depricated routine for appropriate warning"""
-        import testfixtures
+        import logbook
         lwarn = u"this routine is no longer needed"
 
-        with testfixtures.LogCapture() as l:
+        with logbook.TestHandler() as handler:
             aacgmv2.set_coeff_path()
+            assert handler.has_warning(lwarn)
 
-        assert l.check(("root", "WARNING", lwarn)) is None
-        l.uninstall()
+        handler.close()
 
     def test_convert_single_val(self):
         """Test conversion for a single value"""
@@ -148,14 +148,14 @@ class TestDepAACGMV2:
 
     def test_warning_below_ground_convert(self):
         """ Test that a warning is issued if altitude is below zero"""
-        import testfixtures
+        import logbook
         lwarn = u"conversion not intended for altitudes < 0 km"
 
-        with testfixtures.LogCapture() as l:
+        with logbook.TestHandler() as handler:
             lat, lon = aacgmv2.convert([60], [0], [-1], self.dtime)
+            assert handler.has_warning(lwarn)
 
-        assert l.check(("root", "WARNING", lwarn)) is None
-        l.uninstall()
+        handler.close()
 
     def test_convert_maxalt_failure(self):
         """For an array, test failure for an altitude too high for

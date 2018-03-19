@@ -77,8 +77,7 @@ setup(
         'numpy',
         'logbook',
     ],
-    extras_require={'test':['pytest',
-                            'testfixtures'],
+    extras_require={'test':['pytest'],
     },
     ext_modules=[
         Extension('_aacgmv2',
