@@ -10,12 +10,9 @@
 #define NAN sqrt(-1)
 #endif
 
-#ifndef INFINITE
-#define INFINITE 1/0
-#endif
-
+/* Macro infinite cannot be defined by systems that don't have it */
 #ifndef isfinite
-#define isfinite 1 ? float(x) != NAN && float(x) != INFINITE : 0
+#define isfinite 1 ? x != NAN : 0
 #endif
 
 /*-----------------------------------------------------------------------------
@@ -133,8 +130,8 @@ double MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
     return (NAN);
   }
 
-  hgt = 700.;   /* AACGM-v2 coefficients are defined everywhere above this
-                 * altitude. */
+  hgt = 700.0;   /* AACGM-v2 coefficients are defined everywhere above this
+		  * altitude. */
 
   if (mlt_date.yr != yr || mlt_date.mo != mo || mlt_date.dy != dy ||
       mlt_date.hr != hr || mlt_date.mt != mt || mlt_date.sc != sc) {
@@ -178,12 +175,12 @@ double MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
   }
 /*printf("** %lf\n", mlon_ref);*/
 
-  aacgm_mlt = 12. + (mlon - mlon_ref)/15.;  /* MLT based on subsolar point */
+  aacgm_mlt = 12.0 + (mlon - mlon_ref)/15.0;  /* MLT based on subsolar point */
 
   /* comparision with IDL version is exact */
 
-  while (aacgm_mlt > 24.) aacgm_mlt -= 24.;
-  while (aacgm_mlt <  0.) aacgm_mlt += 24.;
+  while (aacgm_mlt > 24.0) aacgm_mlt -= 24.0;
+  while (aacgm_mlt <  0.0) aacgm_mlt += 24.0;
 
   return (aacgm_mlt);
 }
