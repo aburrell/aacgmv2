@@ -31,11 +31,14 @@ class TestPyAACGMV2:
 
     def test_module_parameters(self):
         """Test module constants"""
-        path1 = "aacgmv2/aacgmv2/aacgm_coeffs/aacgm_coeffs-12-"
-        arg1 = aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) >= 0
+        from os import path
 
-        path2 = "aacgmv2/aacgmv2/igrf12coeffs.txt"
-        arg2 = aacgmv2.IGRF_12_COEFFS.find(path2) >= 0
+        path1 = path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
+                          "aacgm_coeffs-12-")
+        assert aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) >= 0
+
+        path2 = path.join("aacgmv2", "aacgmv2", "igrf12coeffs.txt")
+        assert aacgmv2.IGRF_12_COEFFS.find(path2) >= 0
 
         assert arg1 & arg2
 
