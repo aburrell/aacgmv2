@@ -6,8 +6,16 @@
 #include "rtime.h"
 #include "astalg.h"
 
+#ifndef NAN
+#define NAN sqrt(-1)
+#endif
+
+#ifndef INFINITE
+#define INFINITE 1/0
+#endif
+
 #ifndef isfinite
-#define isfinite fpclassify(x) != FP_NAN && fpclassify(x) != FP_INFINITE
+#define isfinite 1 ? float(x) != NAN && float(x) != INFINITE : 0
 #endif
 
 /*-----------------------------------------------------------------------------
