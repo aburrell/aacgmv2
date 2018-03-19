@@ -92,11 +92,13 @@ environment:
       PYTHON_ARCH: '64'
     - TOXENV: '3.6-nocover'
       TOXPYTHON: C:\python36\python.exe
+      WINDOWS_SDK_VERSION: v7.0
       PYTHON_HOME: C:\python36
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '32'
     - TOXENV: '3.6-nocover'
       TOXPYTHON: C:\python36-x64\python.exe
+      WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python36-x64
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '64'
@@ -128,6 +130,7 @@ artifacts:
   - path: dist\*
 matrix:
   allow_failures:
+    - TOXENV: 'check'
     - TOXENV: '3.5-nocover'
     - TOXENV: '3.5,codecov'
     - TOXENV: '2.7-buildonly-nocover'
