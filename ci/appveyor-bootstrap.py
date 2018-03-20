@@ -52,13 +52,13 @@ INSTALL_CMD = {
 
 def download_file(url, path):
     print("Downloading: {} (into {})".format(url, path))
-    progress = [0, 0]
+    progress = 0
 
     def report(count, size, total):
-        progress[0] = count * size
-        if progress[0] - progress[1] > 1000000:
-            progress[1] = progress[0]
-            print("Downloaded {:,}/{:,} ...".format(progress[1], total))
+        progress_total = count * size
+        if progress_total - progress > 1000000:
+            progress = progress_total
+            print("Downloaded {:,}/{:,} ...".format(progress, total))
 
     dest, _ = urlretrieve(url, path, reporthook=report)
     return dest
