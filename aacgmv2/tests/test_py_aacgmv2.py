@@ -19,6 +19,7 @@ class TestPyAACGMV2:
         assert aacgmv2.get_aacgm_coord
         assert aacgmv2.get_aacgm_coord_arr
         assert aacgmv2.wrapper
+        assert aacgmv2.wrapper.set_coeff_path
 
     def test_module_parameters(self):
         """Test module constants"""
@@ -935,14 +936,15 @@ class TestCoeffPath:
 
     def test_set_coeff_path_default(self):
         """Test the coefficient path setting using defaults"""
-        self.igrf_out, self.coeff_out = aacgmv2.set_coeff_path()
+        self.igrf_out, self.coeff_out = aacgmv2.wrapper.set_coeff_path()
 
         assert self.igrf_out == aacgmv2.IGRF_12_COEFFS
         assert self.coeff_out == aacgmv2.AACGM_V2_DAT_PREFIX
 
     def test_set_coeff_path_different(self):
         """Test the coefficient path setting"""
-        self.igrf_out, self.coeff_out = aacgmv2.set_coeff_path("hi", "bye")
+        self.igrf_out, self.coeff_out = aacgmv2.wrapper.set_coeff_path("hi",
+                                                                       "bye")
 
         assert self.igrf_out == "hi"
         assert self.coeff_out == "bye"
@@ -950,7 +952,7 @@ class TestCoeffPath:
     def test_set_coeff_path_mix(self):
         """Test the coefficient path setting using a mix of input"""
         (self.igrf_out,
-         self.coeff_out) = aacgmv2.set_coeff_path(coeff_prefix="hi")
+         self.coeff_out) = aacgmv2.wrapper.set_coeff_path(coeff_prefix="hi")
 
         assert self.igrf_out == aacgmv2.IGRF_12_COEFFS
         assert self.coeff_out == "hi"

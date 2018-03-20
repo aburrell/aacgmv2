@@ -22,8 +22,7 @@ class TestDepAACGMV2:
         """Test module structure for deprecated routines"""
         assert aacgmv2
         assert aacgmv2.convert
-        assert aacgmv2.set_coeff_path
-        assert aacgmv2.subsol
+        assert aacgmv2.deprecated.subsol
         assert aacgmv2.deprecated
         assert aacgmv2.deprecated.gc2gd_lat
         assert aacgmv2.deprecated.igrf_dipole_axis
