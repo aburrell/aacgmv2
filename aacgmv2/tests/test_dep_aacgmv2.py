@@ -176,7 +176,7 @@ class TestDepAACGMV2:
         doy = int(self.dtime.strftime("%j"))
         ut = self.dtime.hour * 3600.0 + self.dtime.minute * 60.0 + \
              self.dtime.second
-        self.lon, self.lat = aacgmv2.subsol(self.dtime.year, doy, ut)
+        self.lon, self.lat = aacgmv2.deprecated.subsol(self.dtime.year, doy, ut)
 
         np.testing.assert_almost_equal(self.lon, -179.2004, decimal=4)
         np.testing.assert_almost_equal(self.lat, -23.0431, decimal=4)
