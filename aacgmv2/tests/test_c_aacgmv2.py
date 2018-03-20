@@ -85,7 +85,7 @@ class TestCAACGMV2:
         r_comp = [1133.6241, 305.7138]
 
         for i,darg in enumerate(self.date_args):
-            aacgmv2._aacgmv2.set_datetime(*self.date1_args)
+            aacgmv2._aacgmv2.set_datetime(*self.date_args[i])
             (self.mlat, self.mlon,
              self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[i],
                                                      self.lon_in[i],
@@ -255,8 +255,6 @@ class TestCAACGMV2:
         with pytest.raises(RuntimeError):
             mloc = aacgmv2._aacgmv2.convert(7, 0, 0, aacgmv2._aacgmv2.G2A,
                                             aacgmv2.IGRF_12_COEFFS)
-
-        del mloc
 
     def test_inv_mlt_convert(self):
         """Test MLT inversion"""

@@ -60,7 +60,7 @@ try:
     from aacgmv2.wrapper import (convert_latlon, convert_mlt, get_aacgm_coord)
     from aacgmv2.wrapper import (convert_latlon_arr, get_aacgm_coord_arr)
     from aacgmv2.wrapper import (convert_bool_to_bit, convert_str_to_bit)
-    from aacgmv2.wrapper import (et_coeff_path)
+    from aacgmv2.wrapper import (set_coeff_path)
 except Exception as err:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(err))
 

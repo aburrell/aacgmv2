@@ -28,17 +28,6 @@ class TestDepAACGMV2:
         assert aacgmv2.deprecated.gc2gd_lat
         assert aacgmv2.deprecated.igrf_dipole_axis
 
-    def test_set_coeff_path(self):
-        """Test the deprecated routine for appropriate warning"""
-        import logbook
-        lwarn = u"this routine is no longer needed"
-
-        with logbook.TestHandler() as handler:
-            aacgmv2.set_coeff_path()
-            assert handler.has_warning(lwarn)
-
-        handler.close()
-
     def test_convert_single_val(self):
         """Test conversion for a single value"""
         self.lat, self.lon = aacgmv2.convert(60, 0, 300, self.dtime)

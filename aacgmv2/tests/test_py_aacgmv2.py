@@ -7,12 +7,6 @@ import pytest
 import aacgmv2
 
 class TestPyAACGMV2:
-    def setup(self):
-        """Runs before every method to create a clean testing setup"""
-
-    def teardown(self):
-        """Runs after every method to clean up previous testing"""
-        del self.date_args, self.dtime, self.ddate
 
     def test_module_structure(self):
         """Test module structure"""
@@ -39,7 +33,7 @@ class TestPyAACGMV2:
 
         del path1, path2
 
-class TestConvertLatLon(TestPyAACGMV2):
+class TestConvertLatLon:
 
     def setup(self):
         """Runs before every method to create a clean testing setup"""
@@ -123,7 +117,7 @@ class TestConvertLatLon(TestPyAACGMV2):
         with pytest.raises(AssertionError):
             aacgmv2.convert_latlon(-91, 0, 300, self.dtime)
 
-class TestConvertLatLonArr(TestPyAACGMV2):
+class TestConvertLatLonArr:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
@@ -394,7 +388,7 @@ class TestConvertLatLonArr(TestPyAACGMV2):
         with pytest.raises(AssertionError):
             aacgmv2.convert_latlon_arr([91, 60, -91], 0, 300, self.dtime)
 
-class TestGetAACGMCoord(TestPyAACGMV2):
+class TestGetAACGMCoord:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
@@ -495,16 +489,18 @@ class TestGetAACGMCoord(TestPyAACGMV2):
         hhigh.close()
         hlow.close()
 
-class TestGetAACGMCoordArr(TestPyAACGMV2):
+class TestGetAACGMCoordArr:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
+        self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
+        self.ddate = dt.date(2015, 1, 1)
         self.mlat_out = None
         self.mlon_out = None
         self.mlt_out = None
 
     def teardown(self):
         """Runs after every method to clean up previous testing"""
-        del self.mlat_out, self.mlon_out, self.mlt_out
+        del self.mlat_out, self.mlon_out, self.mlt_out, self.dtime, self.ddate
 
     def test_get_aacgm_coord_arr_single_val(self):
         """Test array AACGMV2 calculation for a single value"""
@@ -743,7 +739,7 @@ class TestGetAACGMCoordArr(TestPyAACGMV2):
 
         np.testing.assert_almost_equal(self.mlat_out, mlat_2, decimal=6)
         np.testing.assert_almost_equal(self.mlon_out, mlon_2, decimal=6)
-        np.testing.assert_almost_equal(self.mlt_1, mlt_2, decimal=6)
+        np.testing.assert_almost_equal(self.mlt_out, mlt_2, decimal=6)
 
         del mlat_2, mlon_2, mlt_2
 
@@ -784,7 +780,7 @@ class TestGetAACGMCoordArr(TestPyAACGMV2):
 
         handler.close()
 
-class TestConvertCode(TestPyAACGMV2):
+class TestConvertCode:
     def test_convert_str_to_bit_g2a(self):
         """Test conversion from string code to bit G2A"""
         assert aacgmv2.convert_str_to_bit("G2A") == aacgmv2._aacgmv2.G2A
@@ -852,7 +848,7 @@ class TestConvertCode(TestPyAACGMV2):
         assert aacgmv2.convert_bool_to_bit(geocentric=True) == \
             aacgmv2._aacgmv2.GEOCENTRIC
 
-class TestMLTConvert(TestPyAACGMV2):
+class TestMLTConvert:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
@@ -872,9 +868,9 @@ class TestMLTConvert(TestPyAACGMV2):
     def test_inv_convert_mlt_single(self):
         """Test MLT inversion for a single value"""
         for i,mlt in enumerate(self.mlt_list):
-        self.mlon_out = aacgmv2.convert_mlt(mlt, self.dtime, m2a=True)
-        np.testing.assert_almost_equal(self.mlon_out, self.mlon_comp[i],
-                                       decimal=4)
+            self.mlon_out = aacgmv2.convert_mlt(mlt, self.dtime, m2a=True)
+            np.testing.assert_almost_equal(self.mlon_out, self.mlon_comp[i],
+                                           decimal=4)
 
     def test_inv_convert_mlt_list(self):
         """Test MLT inversion for a list"""
@@ -927,7 +923,7 @@ class TestMLTConvert(TestPyAACGMV2):
                                            self.dtime, m2a=False)
         np.testing.assert_allclose(self.mlt_out, self.mlt_comp, rtol=1.0e-4)
 
-class TestCoeffPath(TestPyAACGMV2):
+class TestCoeffPath:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
         self.igrf_out = None
@@ -941,7 +937,7 @@ class TestCoeffPath(TestPyAACGMV2):
         """Test the coefficient path setting using defaults"""
         self.igrf_out, self.coeff_out = aacgmv2.set_coeff_path()
 
-        assert self.igrf_out == aacgmv2.IGRF_12_COEFF
+        assert self.igrf_out == aacgmv2.IGRF_12_COEFFS
         assert self.coeff_out == aacgmv2.AACGM_V2_DAT_PREFIX
 
     def test_set_coeff_path_different(self):
@@ -956,5 +952,5 @@ class TestCoeffPath(TestPyAACGMV2):
         (self.igrf_out,
          self.coeff_out) = aacgmv2.set_coeff_path(coeff_prefix="hi")
 
-        assert self.igrf_out == aacgmv2.IGRF_12_COEFF
+        assert self.igrf_out == aacgmv2.IGRF_12_COEFFS
         assert self.coeff_out == "hi"

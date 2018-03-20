@@ -444,7 +444,7 @@ def convert_str_to_bit(code):
     codes = code.upper().replace(" ", "").split("|")
 
     # Add the valid parts of the code, invalid elements are ignored
-    bit_code = sum([convert_code[k] for k in codes])
+    bit_code = sum([convert_code[k] for k in codes if k in convert_code.keys()])
 
     return bit_code
 
