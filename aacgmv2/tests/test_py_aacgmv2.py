@@ -664,3 +664,35 @@ class TestPyAACGMV2:
 
         np.testing.assert_allclose(mlt, [12.77717927, 0.1105126, 12.44384593],
                                    rtol=1.0e-4)
+
+    class TestCoeffPath:
+        def setup(self):
+            """Runs before every method to create a clean testing setup"""
+            self.igrf_out = None
+            self.aacgm_out = None
+
+        def teardown(self):
+            """Runs after every method to clean up previous testing"""
+            del self.igrf_out, self.aacgm_out
+
+        def test_set_coeff_path_default(self):
+            """Test the coefficient path setting using defaults"""
+            self.igrf_out, self.coeff_out = aacgmv2.set_coeff_path()
+
+            assert self.igrf_out == aacgmv2.IGRF_12_COEFF
+            assert self.coeff_out == aacgmv2.AACGM_v2_DAT_PREFIX
+
+        def test_set_coeff_path_different(self):
+            """Test the coefficient path setting"""
+            self.igrf_out, self.coeff_out = aacgmv2.set_coeff_path("hi", "bye")
+
+            assert self.igrf_out == "hi"
+            assert self.coeff_out == "bye"
+
+        def test_set_coeff_path_mix(self):
+            """Test the coefficient path setting using a mix of input"""
+            self.igrf_out, self.coeff_out = aacgmv2.set_coeff_path( \
+                                                        coeff_prefix="hi")
+
+            assert self.igrf_out == aacgmv2.IGRF_12_COEFF
+            assert self.coeff_out == "hi"

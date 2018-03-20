@@ -5,7 +5,6 @@ change from version 2.0.0 to version 2.0.2
 Functions
 -------------------------------------------------------------------------------
 convert : Converts array location
-set_coeff_path : Previously set environment variables, no longer used
 subsol : finds subsolar geocentric longitude and latitude
 gc2gd_lat : Convert between geocentric and geodetic coordinates
 igrf_dipole_axis : Get Cartesian unit vector pointing at the IGRF north dipole
@@ -75,14 +74,6 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
                                                          code=bit_code)
 
     return lat_out, lon_out
-
-def set_coeff_path():
-    """This depricated routine used to set environment variables, and now is
-    not needed.
-    """
-
-    logging.warning("this routine is no longer needed")
-    return
 
 def subsol(year, doy, ut):
     """Finds subsolar geocentric longitude and latitude.
