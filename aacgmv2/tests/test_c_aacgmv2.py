@@ -8,8 +8,8 @@ import aacgmv2
 class TestCAACGMV2:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
-        self.date_args = [(2014, 3, 22, 3, 11, 0, aacgmv2.AACGM_v2_DAT_PREFIX),
-                          (2018, 1, 1, 0, 0, 0, aacgmv2.AACGM_v2_DAT_PREFIX)]
+        self.date_args = [(2014, 3, 22, 3, 11, 0, aacgmv2.AACGM_V2_DAT_PREFIX),
+                          (2018, 1, 1, 0, 0, 0, aacgmv2.AACGM_V2_DAT_PREFIX)]
         self.long_date = [2014, 3, 22, 3, 11, 0]
         self.mlat = None
         self.mlon = None
@@ -56,7 +56,7 @@ class TestCAACGMV2:
         """Test unsuccessful set_datetime"""
         with pytest.raises(RuntimeError):
             aacgmv2._aacgmv2.set_datetime(1013, 1, 1, 0, 0, 0,
-                                          aacgmv2.AACGM_v2_DAT_PREFIX)
+                                          aacgmv2.AACGM_V2_DAT_PREFIX)
 
     def test_convert_G2A_coeff(self):
         """Test convert from geographic to magnetic coordinates"""
@@ -261,7 +261,7 @@ class TestCAACGMV2:
     def test_inv_mlt_convert(self):
         """Test MLT inversion"""
         mlt_args = list(self.long_date)
-        mlt_args.extend([12.0, aacgmv2.AACGM_v2_DAT_PREFIX,
+        mlt_args.extend([12.0, aacgmv2.AACGM_V2_DAT_PREFIX,
                          aacgmv2.IGRF_12_COEFFS])
         self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlon, -153.5931, decimal=4)
@@ -283,11 +283,11 @@ class TestCAACGMV2:
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
               dtime.minute * 60 + dtime.second
         
-        mlt_args_1 = [dtime.year, soy, 12.0, aacgmv2.AACGM_v2_DAT_PREFIX,
+        mlt_args_1 = [dtime.year, soy, 12.0, aacgmv2.AACGM_V2_DAT_PREFIX,
                       aacgmv2.IGRF_12_COEFFS]
-        mlt_args_2 = [dtime.year, soy, 25.0, aacgmv2.AACGM_v2_DAT_PREFIX,
+        mlt_args_2 = [dtime.year, soy, 25.0, aacgmv2.AACGM_V2_DAT_PREFIX,
                       aacgmv2.IGRF_12_COEFFS]
-        mlt_args_3 = [dtime.year, soy, -1.0, aacgmv2.AACGM_v2_DAT_PREFIX,
+        mlt_args_3 = [dtime.year, soy, -1.0, aacgmv2.AACGM_V2_DAT_PREFIX,
                       aacgmv2.IGRF_12_COEFFS]
 
         mlon_1 = aacgmv2._aacgmv2.inv_mlt_convert_yrsec(*mlt_args_1)
@@ -304,7 +304,7 @@ class TestCAACGMV2:
     def test_mlt_convert(self):
         """Test MLT calculation"""
         mlt_args = list(self.long_date)
-        mlt_args.extend([270.0, aacgmv2.AACGM_v2_DAT_PREFIX,
+        mlt_args.extend([270.0, aacgmv2.AACGM_V2_DAT_PREFIX,
                          aacgmv2.IGRF_12_COEFFS])
         self.mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlt, 16.2395, decimal=4)
@@ -325,11 +325,11 @@ class TestCAACGMV2:
         dtime = dt.datetime(*self.long_date)
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
               dtime.minute * 60 + dtime.second
-        mlt_args_1 = [dtime.year, soy, 270.0, aacgmv2.AACGM_v2_DAT_PREFIX,
+        mlt_args_1 = [dtime.year, soy, 270.0, aacgmv2.AACGM_V2_DAT_PREFIX,
                       aacgmv2.IGRF_12_COEFFS]
-        mlt_args_2 = [dtime.year, soy, 80.0, aacgmv2.AACGM_v2_DAT_PREFIX,
+        mlt_args_2 = [dtime.year, soy, 80.0, aacgmv2.AACGM_V2_DAT_PREFIX,
                       aacgmv2.IGRF_12_COEFFS]
-        mlt_args_3 = [dtime.year, soy, -90.0, aacgmv2.AACGM_v2_DAT_PREFIX,
+        mlt_args_3 = [dtime.year, soy, -90.0, aacgmv2.AACGM_V2_DAT_PREFIX,
                       aacgmv2.IGRF_12_COEFFS]
         
         mlt_1 = aacgmv2._aacgmv2.mlt_convert_yrsec(*mlt_args_1)
