@@ -1,8 +1,10 @@
 graft docs
-graft examples
-graft src
 graft ci
-graft tests
+graft aacgmv2/tests
+graft c_aacgmv2
+
+recursive-include aacgmv2 *.asc
+recursive-include aacgmv2 *.txt
 
 include .bumpversion.cfg
 include .coveragerc
@@ -14,8 +16,9 @@ include AUTHORS.rst
 include CHANGELOG.rst
 include CONTRIBUTING.rst
 include LICENSE
+include LICENSE-AstAlg.txt
 include README.rst
 
 include tox.ini .travis.yml appveyor.yml .codeclimate.yml .landscape.yaml
 
-global-exclude *.py[cod] __pycache__ *.so *.dylib
+global-exclude *.py[cod] __pycache__ *.so *.dylib *.dSYM .pytest_cache

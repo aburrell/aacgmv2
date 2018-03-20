@@ -3,6 +3,6 @@ languages:
   Python: true
 exclude_paths:
   - "ci/"
-  - "tests/"
+  - "aacgmv2/tests/"
   - "docs/"
   - "setup.py"

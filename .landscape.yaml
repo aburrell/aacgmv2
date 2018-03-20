@@ -3,5 +3,5 @@ doc-warnings: yes
 ignore-paths:
     - docs
     - ci
-    - tests
+    - aacgmv2/tests
     - setup.py

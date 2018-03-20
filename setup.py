@@ -1,28 +1,20 @@
 #!/usr/bin/env python
-# -*- encoding: utf-8 -*-
-from __future__ import absolute_import, print_function
+#-*- encoding: utf-8 -*-
+from __future__ import absolute_import
 
 import io
 import os
 import re
 from glob import glob
-from os.path import basename
-from os.path import dirname
-from os.path import join
-from os.path import relpath
-from os.path import splitext
+from os import path
 
 from setuptools import find_packages
 from setuptools import setup
 from distutils.core import Extension
 
-
-def read(*names, **kwargs):
-    return io.open(
-        join(dirname(__file__), *names),
-        encoding=kwargs.get('encoding', 'utf8')
-    ).read()
-
+def read(fname, **kwargs):
+    return io.open(path.join(path.dirname(__file__), fname),
+                   encoding=kwargs.get('encoding', 'utf8')).read()
 
 # enable code coverage for C code
 # We can't use CFLAGS=-coverage in tox.ini, since that may mess with
@@ -34,25 +26,30 @@ if 'PY_CCOV' in os.environ.keys():
 
 setup(
     name='aacgmv2',
-    version='2.0.0',
+    version='2.0.1',
     license='MIT',
     description='A Python wrapper for AACGM-v2 magnetic coordinates',
-    long_description='%s\n%s' % (read('README.rst'), re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))),
-    author='Christer van der Meeren',
-    author_email='cmeeren@gmail.com',
-    url='https://github.com/cmeeren/aacgmv2',
-    packages=find_packages('src'),
-    package_dir={'': 'src'},
-    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
+    long_description='%s\n%s' % (read('README.rst'),
+                                 re.sub(':[a-z]+:`~?(.*?)`',
+                                        r'``\1``', read('CHANGELOG.rst'))),
+    author='Angeline G. Burrell, Christer van der Meeren',
+    author_email='agb073000@utdallas.edu',
+    url='https://github.com/aburrell/aacgmv2',
+    packages=find_packages('aacgmv2'),
+    package_dir={'': 'aacgmv2'},
+    py_modules=[path.splitext(path.basename(psrc))[0]
+                for psrc in glob('aacgmv2/*.py')],
     package_data={'aacgmv2': ['aacgm_coeffs/*.asc', 'igrf12coeffs.txt']},
     zip_safe=False,
     classifiers=[
-        # complete classifier list: http://pypi.python.org/pypi?%3Aaction=list_classifiers
+        # complete classifier list:
+        #   http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
         'Operating System :: Unix',
         'Operating System :: POSIX',
+        'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
@@ -60,6 +57,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Scientific/Engineering :: Physics',
         'Topic :: Utilities',
@@ -77,11 +75,20 @@ setup(
     ],
     install_requires=[
         'numpy',
+        'logbook',
     ],
+    extras_require={'test':['pytest'],
+    },
     ext_modules=[
-        Extension('aacgmv2._aacgmv2',
-                  sources=['src/aacgmv2/aacgmv2module.c', 'src/c_aacgm_v2/aacgmlib_v2.c', 'src/c_aacgm_v2/genmag.c', 'src/c_aacgm_v2/igrflib.c'],
-                  include_dirs=['src/c_aacgm_v2'])
+        Extension('_aacgmv2',
+                  sources=['aacgmv2/aacgmv2module.c',
+                           'c_aacgmv2/src/aacgmlib_v2.c',
+                           'c_aacgmv2/src/astalglib.c',
+                           'c_aacgmv2/src/genmag.c',
+                           'c_aacgmv2/src/igrflib.c',
+                           'c_aacgmv2/src/mlt_v2.c',
+                           'c_aacgmv2/src/rtime.c'],
+                  include_dirs=['c_aacgmv2/include'])
     ],
     entry_points={
         'console_scripts': [
