@@ -1,9 +1,13 @@
 [paths]
-source = src
+source =
+       aacgmv2
+       c_aacgmv2
 
 [run]
 branch = True
-source = src
+source =
+       aacgmv2
+       c_aacgmv2
 parallel = true
 
 [report]

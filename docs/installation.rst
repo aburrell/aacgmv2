@@ -10,8 +10,8 @@ When you have NumPy, install this package at the command line using ``pip`` [1]_
 
 The package has been tested with the following setups (others might work, too):
 
-* Windows (32/64 bit) and Linux (64 bit)
-* Python 2.7, 3.3, 3.4 and 3.5
-* NumPy 1.8, 1.9, 1.10
+* Mac (64 bit), Windows (32/64 bit), and Linux (64 bit)
+* Python 2.7, 3.3, 3.4, 3.5, and 3.6
+* NumPy 1.8, 1.9, 1.10, 1.14.1
 
 .. [1] pip is included with Python 2 from v2.7.9 and Python 3 from v3.4. If you don't have pip, `get it here <http://pip.readthedocs.org/en/stable/installing/>`_.
