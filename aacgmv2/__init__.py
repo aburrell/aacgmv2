@@ -45,7 +45,7 @@ _aacgmv2
 """
 import os.path as _path
 import logbook as logging
-__version__ = "2.0.1"
+__version__ = "2.4.0"
 
 # path and filename prefix for the IGRF coefficients
 AACGM_V2_DAT_PREFIX = _path.join(_path.realpath(_path.dirname(__file__)),
