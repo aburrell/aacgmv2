@@ -8,7 +8,7 @@ _aacgmv2 : Contains functions and variables from c code
 
 Parameters
 ---------------------------------------------------------------------------
-AACGM_v2_DAT_PREFIX
+AACGM_V2_DAT_PREFIX
 IGRF_12_COEFFS
 _aacgmv2.G2A
 _aacgmv2.A2G
@@ -48,7 +48,7 @@ import logbook as logging
 __version__ = "2.0.1"
 
 # path and filename prefix for the IGRF coefficients
-AACGM_v2_DAT_PREFIX = _path.join(_path.realpath(_path.dirname(__file__)),
+AACGM_V2_DAT_PREFIX = _path.join(_path.realpath(_path.dirname(__file__)),
                                  'aacgm_coeffs', 'aacgm_coeffs-12-')
 IGRF_12_COEFFS = _path.join(_path.realpath(_path.dirname(__file__)),
                             'igrf12coeffs.txt')

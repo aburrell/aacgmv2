@@ -31,7 +31,7 @@ def set_coeff_path(igrf_file=None, coeff_prefix=None):
         aacgmv2.IGRF_12_COEFFS. (default=None)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
-        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
 
     Returns
     ---------
@@ -42,7 +42,7 @@ def set_coeff_path(igrf_file=None, coeff_prefix=None):
     """
     # Define coefficient file prefix if not supplied
     if coeff_prefix is None:
-        coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
+        coeff_prefix = aacgmv2.AACGM_V2_DAT_PREFIX
 
     # Define IGRF file if not supplied
     if igrf_file is None:
@@ -78,7 +78,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
         aacgmv2.IGRF_12_COEFFS. (default=None)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
-        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
 
     Returns
     -------
@@ -180,7 +180,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
         aacgmv2.IGRF_12_COEFFS. (default=None)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
-        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
 
     Returns
     -------
@@ -321,7 +321,7 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE",
         aacgmv2.IGRF_12_COEFFS. (default=None)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
-        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
 
     Returns
     -------
@@ -379,7 +379,7 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE",
         aacgmv2.IGRF_12_COEFFS. (default=None)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
-        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
 
     Returns
     -------
@@ -498,7 +498,7 @@ def convert_mlt(arr, dtime, m2a=False, coeff_prefix=None, igrf_file=None):
         (False).  (default=False)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
-        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
     igrf_file : (str or NoneType)
         Full filename of IGRF coefficient file or None to use
         aacgmv2.IGRF_12_COEFFS. (default=None)

@@ -9,7 +9,7 @@ import aacgmv2
 class TestPyAACGMV2:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
-        self.date_args = (2015, 1, 1, 0, 0, 0, aacgmv2.AACGM_v2_DAT_PREFIX)
+        self.date_args = (2015, 1, 1, 0, 0, 0, aacgmv2.AACGM_V2_DAT_PREFIX)
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
         self.ddate = dt.date(2015, 1, 1)
 
@@ -35,7 +35,7 @@ class TestPyAACGMV2:
 
         path1 = path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
                           "aacgm_coeffs-12-")
-        assert aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) >= 0
+        assert aacgmv2.AACGM_V2_DAT_PREFIX.find(path1) >= 0
 
         path2 = path.join("aacgmv2", "aacgmv2", "igrf12coeffs.txt")
         assert aacgmv2.IGRF_12_COEFFS.find(path2) >= 0
@@ -955,7 +955,7 @@ class TestPyAACGMV2:
             self.igrf_out, self.coeff_out = aacgmv2.set_coeff_path()
 
             assert self.igrf_out == aacgmv2.IGRF_12_COEFF
-            assert self.coeff_out == aacgmv2.AACGM_v2_DAT_PREFIX
+            assert self.coeff_out == aacgmv2.AACGM_V2_DAT_PREFIX
 
         def test_set_coeff_path_different(self):
             """Test the coefficient path setting"""
