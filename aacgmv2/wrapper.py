@@ -539,4 +539,7 @@ def convert_mlt(arr, dtime, m2a=False, coeff_prefix=None, igrf_file=None):
                              dtime.minute, dtime.second, arr, coeff_prefix,
                              igrf_file)
 
+    if hasattr(out, "shape") and out.shape == ():
+        out = float(out)
+
     return out
