@@ -1,11 +1,13 @@
 /* rtime.c
    =======
    Author: R.J.Barnes
+           A.G.Burrell
 */
 
 /*
- (c) 2010 JHU/APL & Others - Please Consult LICENSE.superdarn-rst.3.2-beta-4-g32f7302.txt for more information.
- 
+ (c) 2010 JHU/APL & Others - Please Consult
+  LICENSE.superdarn-rst.3.2-beta-4-g32f7302.txt for more information.
+ Also LICENSE
 */
 
 #include <stdio.h>
@@ -19,7 +21,7 @@
 
 #define DAY_SEC 86400
 
-/* For windows, define setenv */
+/* For windows, define setenv and unsetenv */
 #if defined(_WIN32) || defined(_WIN64)
 int setenv(const char *name, const char *value, int overwrite)
 {
@@ -36,10 +38,7 @@ int setenv(const char *name, const char *value, int overwrite)
   sprintf(envset, "%s=%s", name, value);
   return putenv(envset);
 }
-#endif
 
-/* For windows, define unsetenv */
-#if  defined(_WIN32) || defined(_WIN64)
 int unsetenv(const char *name)
 {
   extern char **environ;
