@@ -62,7 +62,7 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
         estr += 'or allowtrace=True) or indicate you know this is a bad idea'
         logging.error(estr)
         raise ValueError
-    
+
     # construct a code from the boolian flags
     bit_code = aacgmv2.convert_bool_to_bit(a2g=a2g, trace=trace,
                                            allowtrace=allowtrace,
@@ -70,12 +70,12 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
                                            geocentric=geocentric)
 
     # convert location
-    lat_out, lon_out, r_out = aacgmv2.convert_latlon_arr(lat, lon, alt, date,
-                                                         code=bit_code)
+    lat_out, lon_out, _ = aacgmv2.convert_latlon_arr(lat, lon, alt, date,
+                                                     code=bit_code)
 
     return lat_out, lon_out
 
-def subsol(year, doy, ut):
+def subsol(year, doy, utime):
     """Finds subsolar geocentric longitude and latitude.
 
     Parameters
@@ -84,7 +84,7 @@ def subsol(year, doy, ut):
         Calendar year between 1601 and 2100
     doy : (int)
         Day of year between 1-365/366
-    ut : (float)
+    utime : (float)
         Seconds since midnight on the specified day
 
     Returns
@@ -107,7 +107,7 @@ def subsol(year, doy, ut):
     After Fortran code by A. D. Richmond, NCAR. Translated from IDL
     by K. Laundal.
     """
-    yr = year - 2000
+    yr2 = year - 2000
 
     if year >= 2101:
         logging.error('subsol invalid after 2100. Input year is:', year)
@@ -121,55 +121,44 @@ def subsol(year, doy, ut):
         ncent = 3 - ncent
         nleap = nleap + ncent
 
-    l0 = -79.549 + (-0.238699 * (yr - 4 * nleap) + 3.08514e-2 * nleap)
-    g0 = -2.472 + (-0.2558905 * (yr - 4 * nleap) - 3.79617e-2 * nleap)
+    l_0 = -79.549 + (-0.238699 * (yr2 - 4 * nleap) + 3.08514e-2 * nleap)
+    g_0 = -2.472 + (-0.2558905 * (yr2 - 4 * nleap) - 3.79617e-2 * nleap)
 
-    # Days (including fraction) since 12 UT on January 1 of IYR:
-    df = (ut / 86400 - 1.5) + doy
-
-    # Addition to Mean longitude of Sun since January 1 of IYR:
-    lf = 0.9856474 * df
-
-    # Addition to Mean anomaly since January 1 of IYR:
-    gf = 0.9856003 * df
+    # Days (including fraction) since 12 UT on January 1 of IYR2:
+    dfrac = (utime / 86400 - 1.5) + doy
 
     # Mean longitude of Sun:
-    l = l0 + lf
+    l_sun = l_0 + 0.9856474 * dfrac
 
     # Mean anomaly:
-    grad = np.radians(g0 + gf)
+    grad = np.radians(g_0 + 0.9856003 * dfrac)
 
     # Ecliptic longitude:
-    lmrad = np.radians(l + 1.915 * np.sin(grad) + 0.020 * np.sin(2 * grad))
+    lmrad = np.radians(l_sun + 1.915 * np.sin(grad) + 0.020 * np.sin(2 * grad))
     sinlm = np.sin(lmrad)
 
     # Days (including fraction) since 12 UT on January 1 of 2000:
-    n = df + 365.0 * yr + nleap
+    epoch_day = dfrac + 365.0 * yr2 + nleap
 
     # Obliquity of ecliptic:
-    epsrad = np.radians(23.439 - 4.0e-7 * n)
+    epsrad = np.radians(23.439 - 4.0e-7 * epoch_day)
 
     # Right ascension:
     alpha = np.degrees(np.arctan2(np.cos(epsrad) * sinlm, np.cos(lmrad)))
 
-    # Declination:
-    delta = np.degrees(np.arcsin(np.sin(epsrad) * sinlm))
-
-    # Subsolar latitude:
-    sbsllat = delta
+    # Declination, which is the subsolar latitude:
+    sbsllat = np.degrees(np.arcsin(np.sin(epsrad) * sinlm))
 
     # Equation of time (degrees):
-    etdeg = l - alpha
-    nrot = np.round(etdeg / 360.0)
-    etdeg = etdeg - 360.0 * nrot
+    etdeg = l_sun - alpha
+    etdeg = etdeg - 360.0 * np.round(etdeg / 360.0)
 
     # Apparent time (degrees):
-    aptime = ut / 240.0 + etdeg    # Earth rotates one degree every 240 s.
+    aptime = utime / 240.0 + etdeg    # Earth rotates one degree every 240 s.
 
     # Subsolar longitude:
     sbsllon = 180.0 - aptime
-    nrot = np.round(sbsllon / 360.0)
-    sbsllon = sbsllon - 360.0 * nrot
+    sbsllon = sbsllon - 360.0 * np.round(sbsllon / 360.0)
 
     return sbsllon, sbsllat
 
@@ -186,8 +175,8 @@ def gc2gd_lat(gc_lat):
     gd_lat : (same as input)
         Geodetic latitude in degrees N
     """
-    WGS84_e2 = 0.006694379990141317 - 1.0
-    return np.rad2deg(-np.arctan(np.tan(np.deg2rad(gc_lat)) / WGS84_e2))
+    wgs84_e2 = 0.006694379990141317 - 1.0
+    return np.rad2deg(-np.arctan(np.tan(np.deg2rad(gc_lat)) / wgs84_e2))
 
 def igrf_dipole_axis(date):
     """Get Cartesian unit vector pointing at dipole pole in the north,
@@ -219,8 +208,8 @@ def igrf_dipole_axis(date):
     year = year + doy / year_days
 
     # read the IGRF coefficients
-    with open(aacgmv2.IGRF_12_COEFFS, 'r') as f:
-        lines = f.readlines()
+    with open(aacgmv2.IGRF_12_COEFFS, 'r') as f_igrf:
+        lines = f_igrf.readlines()
 
     years = lines[3].split()[3:][:-1]
     years = np.array(years, dtype=float)  # time array
@@ -247,15 +236,15 @@ def igrf_dipole_axis(date):
         h11 = np.interp(year, years, h11)
     else:
         # extrapolation
-        dt = year - years[-1]
-        g10 = g10[-1] + g10sv * dt
-        g11 = g11[-1] + g11sv * dt
-        h11 = h11[-1] + h11sv * dt
+        dyear = year - years[-1]
+        g10 = g10[-1] + g10sv * dyear
+        g11 = g11[-1] + g11sv * dyear
+        h11 = h11[-1] + h11sv * dyear
 
     # calculate pole position
-    B0 = np.sqrt(g10**2 + g11**2 + h11**2)
+    B_0 = np.sqrt(g10**2 + g11**2 + h11**2)
 
     # Calculate output
-    m = -np.array([g11, h11, g10]) / B0
-    
-    return m
+    m_0 = -np.array([g11, h11, g10]) / B_0
+
+    return m_0
