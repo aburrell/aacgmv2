@@ -25,10 +25,10 @@ convert_str_to_bit
 convert_bool_to_bit
 get_aacgm_coord
 get_aacgm_coord_arr
-set_coeff_path
 convert
 convert_mlt
-subsol
+wrapper.set_coeff_path
+deprecated.subsol
 _aacgmv2.convert
 _aacgmv2.set_datetime
 _aacgmv2.mlt_convert
@@ -40,6 +40,7 @@ _aacgmv2.inv_mlt_convert_yrsec
 Modules
 ---------------------------------------------------------------------------
 deprecated
+wrapper
 _aacgmv2
 ---------------------------------------------------------------------------
 """
@@ -60,13 +61,12 @@ try:
     from aacgmv2.wrapper import (convert_latlon, convert_mlt, get_aacgm_coord)
     from aacgmv2.wrapper import (convert_latlon_arr, get_aacgm_coord_arr)
     from aacgmv2.wrapper import (convert_bool_to_bit, convert_str_to_bit)
-    from aacgmv2.wrapper import (set_coeff_path)
 except Exception as err:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(err))
 
 try:
     from aacgmv2 import (deprecated)
-    from aacgmv2.deprecated import (convert, subsol)
+    from aacgmv2.deprecated import (convert)
 except Exception as err:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(err))
 

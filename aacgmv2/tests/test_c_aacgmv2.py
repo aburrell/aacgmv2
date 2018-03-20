@@ -50,7 +50,8 @@ class TestCAACGMV2:
     def test_set_datetime(self):
         """Test set_datetime"""
         for darg in self.date_args:
-            assert aacgmv2._aacgmv2.set_datetime(*darg) is None
+            arg1 = aacgmv2._aacgmv2.set_datetime(*darg) is None
+            assert arg1
 
     def test_fail_set_datetime(self):
         """Test unsuccessful set_datetime"""
@@ -85,7 +86,7 @@ class TestCAACGMV2:
         r_comp = [1133.6241, 305.7138]
 
         for i,darg in enumerate(self.date_args):
-            aacgmv2._aacgmv2.set_datetime(*self.date_args[i])
+            aacgmv2._aacgmv2.set_datetime(*darg)
             (self.mlat, self.mlon,
              self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[i],
                                                      self.lon_in[i],

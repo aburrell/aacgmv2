@@ -34,7 +34,7 @@ def set_coeff_path(igrf_file=None, coeff_prefix=None):
     Returns
     ---------
     igrf_file : (str)
-        Full filename of IGRF coefficient file 
+        Full filename of IGRF coefficient file
     coeff_prefix : (str)
         Location and file prefix for aacgm coefficient files
     """

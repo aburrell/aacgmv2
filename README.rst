@@ -97,7 +97,7 @@ Badges
     :alt: Code Quality Status
 
 .. |codacy| image:: https://img.shields.io/codacy/af7fdf6be28841f283dfdbc1c01fa82a.svg?style=flat
-    :target: https://www.codacy.com/app/aburrell/aacgmv2
+    :target: https://app.codacy.com/aburrell/aacgmv2
     :alt: Codacy Code Quality Status
 
 .. |codeclimate| image:: https://codeclimate.com/github/aburrell/aacgmv2/badges/gpa.svg
