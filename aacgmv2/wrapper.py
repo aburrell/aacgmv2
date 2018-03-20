@@ -3,6 +3,7 @@
 
 Functions
 --------------
+set_coeff_path : Set the coefficient paths using default or supplied values
 convert_latlon : Converts scalar location
 convert_latlon_arr : Converts array location
 get_aacgm_coord : Get scalar magnetic lat, lon, mlt from geographic location
@@ -14,11 +15,40 @@ convert_mlt : Get array mlt
 """
 
 from __future__ import division, absolute_import, unicode_literals
-import numpy as np
 import datetime as dt
+import numpy as np
 import logbook as logging
-import aacgmv2
-import aacgmv2._aacgmv2 as c_aacgmv2
+
+def set_coeff_path(igrf_file=None, coeff_prefix=None):
+    """This routine sets the two path variables.
+
+    Parameters
+    -----------
+    igrf_file : (str or NoneType)
+        Full filename of IGRF coefficient file or None to use
+        aacgmv2.IGRF_12_COEFFS. (default=None)
+    coeff_prefix : (str or NoneType)
+        Location and file prefix for aacgm coefficient files or None to use
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
+
+    Returns
+    ---------
+    igrf_file : (str)
+        Full filename of IGRF coefficient file
+    coeff_prefix : (str)
+        Location and file prefix for aacgm coefficient files
+    """
+    import aacgmv2
+
+    # Define coefficient file prefix if not supplied
+    if coeff_prefix is None:
+        coeff_prefix = aacgmv2.AACGM_V2_DAT_PREFIX
+
+    # Define IGRF file if not supplied
+    if igrf_file is None:
+        igrf_file = aacgmv2.IGRF_12_COEFFS
+
+    return igrf_file, coeff_prefix
 
 def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
                    coeff_prefix=None):
@@ -48,7 +78,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
         aacgmv2.IGRF_12_COEFFS. (default=None)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
-        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
 
     Returns
     -------
@@ -59,13 +89,11 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
     out_r : (float)
         Geocentric radial distance in R
     """
-    # Define coefficient file prefix if not supplied
-    if coeff_prefix is None:
-        coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
+    import aacgmv2._aacgmv2 as c_aacgmv2
 
-    # Define IGRF file if not supplied
-    if igrf_file is None:
-        igrf_file = aacgmv2.IGRF_12_COEFFS
+    # Define coefficient file prefix if not supplied
+    igrf_file, coeff_prefix = set_coeff_path(igrf_file=igrf_file,
+                                             coeff_prefix=coeff_prefix)
 
     # Test time
     if isinstance(dtime, dt.date):
@@ -98,7 +126,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
 
         # make flag
         bit_code = convert_str_to_bit(code)
-    except:
+    except AttributeError:
         bit_code = code
 
     assert isinstance(bit_code, int), \
@@ -120,7 +148,8 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
     try:
         lat_out, lon_out, r_out = c_aacgmv2.convert(in_lat, in_lon, height,
                                                     bit_code, igrf_file)
-    except: pass
+    except:
+        pass
 
     return lat_out, lon_out, r_out
 
@@ -153,7 +182,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
         aacgmv2.IGRF_12_COEFFS. (default=None)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
-        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
 
     Returns
     -------
@@ -164,6 +193,8 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
     out_r : (np.ndarray)
         Geocentric radial distances in R
     """
+    import aacgmv2._aacgmv2 as c_aacgmv2
+
     # If a list was entered instead of a numpy array, recast it here
     if isinstance(in_lat, list):
         in_lat = np.array(in_lat)
@@ -200,16 +231,11 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
         ulen = np.unique([in_lat.shape, in_lon.shape, height.shape])
         if ulen.min() != (1,):
             logging.error("mismatched input arrays")
-            sys.exit(1)
             return None, None, None
 
     # Define coefficient file prefix if not supplied
-    if coeff_prefix is None:
-        coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
-
-    # Define IGRF file if not supplied
-    if igrf_file is None:
-        igrf_file = aacgmv2.IGRF_12_COEFFS
+    igrf_file, coeff_prefix = set_coeff_path(igrf_file=igrf_file,
+                                             coeff_prefix=coeff_prefix)
 
     # Test time
     if isinstance(dtime, dt.date):
@@ -226,7 +252,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
     lat_out = np.empty(shape=in_lat.shape, dtype=float) * np.nan
     lon_out = np.empty(shape=in_lon.shape, dtype=float) * np.nan
     r_out = np.empty(shape=height.shape, dtype=float) * np.nan
-        
+
     # Test code
     try:
         code = code.upper()
@@ -242,7 +268,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
 
         # make flag
         bit_code = convert_str_to_bit(code)
-    except:
+    except AttributeError:
         bit_code = code
 
     assert isinstance(bit_code, int), \
@@ -268,7 +294,8 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
     try:
         lat_out, lon_out, r_out = convert_vectorised(in_lat, in_lon, height,
                                                      bit_code, igrf_file)
-    except: pass
+    except:
+        pass
 
     return lat_out, lon_out, r_out
 
@@ -298,7 +325,7 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE",
         aacgmv2.IGRF_12_COEFFS. (default=None)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
-        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
 
     Returns
     -------
@@ -310,20 +337,16 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE",
         magnetic local time in hours
     """
     # Define coefficient file prefix if not supplied
-    if coeff_prefix is None:
-        coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
-
-    # Define IGRF file if not supplied
-    if igrf_file is None:
-        igrf_file = aacgmv2.IGRF_12_COEFFS
+    igrf_file, coeff_prefix = set_coeff_path(igrf_file=igrf_file,
+                                             coeff_prefix=coeff_prefix)
 
     # Initialize code
     code = "G2A|{:s}".format(method)
 
     # Get magnetic lat and lon.
-    mlat, mlon, mr = convert_latlon(glat, glon, height, dtime, code=code,
-                                    igrf_file=igrf_file,
-                                    coeff_prefix=coeff_prefix)
+    mlat, mlon, _ = convert_latlon(glat, glon, height, dtime, code=code,
+                                   igrf_file=igrf_file,
+                                   coeff_prefix=coeff_prefix)
     # Get magnetic local time
     if np.isnan(mlon):
         mlt = np.nan
@@ -360,7 +383,7 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE",
         aacgmv2.IGRF_12_COEFFS. (default=None)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
-        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
 
     Returns
     -------
@@ -372,20 +395,16 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE",
         magnetic local time in hours
     """
     # Define coefficient file prefix if not supplied
-    if coeff_prefix is None:
-        coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
-
-    # Define IGRF file if not supplied
-    if igrf_file is None:
-        igrf_file = aacgmv2.IGRF_12_COEFFS
+    igrf_file, coeff_prefix = set_coeff_path(igrf_file=igrf_file,
+                                             coeff_prefix=coeff_prefix)
 
     # Initialize code
     code = "G2A|{:s}".format(method)
 
     # Get magnetic lat and lon.
-    mlat, mlon, mr = convert_latlon_arr(glat, glon, height, dtime, code=code,
-                                        igrf_file=igrf_file,
-                                        coeff_prefix=coeff_prefix)
+    mlat, mlon, _ = convert_latlon_arr(glat, glon, height, dtime, code=code,
+                                       igrf_file=igrf_file,
+                                       coeff_prefix=coeff_prefix)
 
     if np.all(np.isnan(mlon)):
         mlt = np.empty(shape=mlat.shape, dtype=float) * np.nan
@@ -420,6 +439,8 @@ def convert_str_to_bit(code):
     Multiple codes should be seperated by pipes '|'.  Invalid parts of the code
     are ignored and no code defaults to 'G2A'.
     """
+    import aacgmv2._aacgmv2 as c_aacgmv2
+
     convert_code = {"G2A": c_aacgmv2.G2A, "A2G": c_aacgmv2.A2G,
                     "TRACE": c_aacgmv2.TRACE, "BADIDEA": c_aacgmv2.BADIDEA,
                     "GEOCENTRIC": c_aacgmv2.GEOCENTRIC,
@@ -429,7 +450,7 @@ def convert_str_to_bit(code):
     codes = code.upper().replace(" ", "").split("|")
 
     # Add the valid parts of the code, invalid elements are ignored
-    bit_code = sum([convert_code[k] for k in convert_code.keys() if k in codes])
+    bit_code = sum([convert_code[k] for k in codes if k in convert_code.keys()])
 
     return bit_code
 
@@ -456,6 +477,8 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
     bit_code : (int)
         code specification in bits
     """
+    import aacgmv2._aacgmv2 as c_aacgmv2
+
     bit_code = c_aacgmv2.A2G if a2g else c_aacgmv2.G2A
 
     if trace:
@@ -479,11 +502,11 @@ def convert_mlt(arr, dtime, m2a=False, coeff_prefix=None, igrf_file=None):
     dtime : (datetime.datetime)
         Date and time for MLT conversion in Universal Time (UT).
     m2a : (bool)
-        Convert MLT to AACGM-v2 longitude (True) or magnetic longitude to MLT 
+        Convert MLT to AACGM-v2 longitude (True) or magnetic longitude to MLT
         (False).  (default=False)
     coeff_prefix : (str or NoneType)
         Location and file prefix for aacgm coefficient files or None to use
-        aacgmv2.AACGM_v2_DAT_PREFIX. (default=None)
+        aacgmv2.AACGM_V2_DAT_PREFIX. (default=None)
     igrf_file : (str or NoneType)
         Full filename of IGRF coefficient file or None to use
         aacgmv2.IGRF_12_COEFFS. (default=None)
@@ -498,13 +521,12 @@ def convert_mlt(arr, dtime, m2a=False, coeff_prefix=None, igrf_file=None):
     This routine previously based on Laundal et al. 2016, but now uses the
     improved calculation available in AACGM-V2.4.
     """
+    import aacgmv2._aacgmv2 as c_aacgmv2
+    
     # Define coefficient file prefix if not supplied
-    if coeff_prefix is None:
-        coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
+    igrf_file, coeff_prefix = set_coeff_path(igrf_file=igrf_file,
+                                             coeff_prefix=coeff_prefix)
 
-    # Define IGRF file if not supplied
-    if igrf_file is None:
-        igrf_file = aacgmv2.IGRF_12_COEFFS
 
     # Test time
     if isinstance(dtime, dt.date):
@@ -526,5 +548,8 @@ def convert_mlt(arr, dtime, m2a=False, coeff_prefix=None, igrf_file=None):
         out = mlt_vectorised(dtime.year, dtime.month, dtime.day, dtime.hour,
                              dtime.minute, dtime.second, arr, coeff_prefix,
                              igrf_file)
+
+    if hasattr(out, "shape") and out.shape == ():
+        out = float(out)
 
     return out

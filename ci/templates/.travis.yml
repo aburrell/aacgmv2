@@ -16,7 +16,9 @@ install:
   - pip install coveralls
   - "python setup.py install"
   - pip install tox-travis
-script: tox
+script:
+  - tox
+  - coverage run --source aacgmv2 -m py.test
 after_sucess: coveralls
 notifications:
   email:
