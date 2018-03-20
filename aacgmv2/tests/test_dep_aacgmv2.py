@@ -17,17 +17,17 @@ class TestDepAACGMV2:
         del self.dtime, self.ddate
 
     def test_module_structure(self):
-        """Test module structure for depricated routines"""
+        """Test module structure for deprecated routines"""
         assert aacgmv2
         assert aacgmv2.convert
         assert aacgmv2.set_coeff_path
         assert aacgmv2.subsol
-        assert aacgmv2.depricated
-        assert aacgmv2.depricated.gc2gd_lat
-        assert aacgmv2.depricated.igrf_dipole_axis
+        assert aacgmv2.deprecated
+        assert aacgmv2.deprecated.gc2gd_lat
+        assert aacgmv2.deprecated.igrf_dipole_axis
 
     def test_set_coeff_path(self):
-        """Test the depricated routine for appropriate warning"""
+        """Test the deprecated routine for appropriate warning"""
         import logbook
         lwarn = u"this routine is no longer needed"
 
@@ -180,27 +180,27 @@ class TestDepAACGMV2:
 
     def test_gc2gd_lat(self):
         """Test the geocentric to geodetic conversion"""
-        gd_lat = aacgmv2.depricated.gc2gd_lat(45.0)
+        gd_lat = aacgmv2.deprecated.gc2gd_lat(45.0)
 
         np.testing.assert_almost_equal(gd_lat, 45.1924, decimal=4)
 
     def test_gc2gd_lat_list(self):
         """Test the geocentric to geodetic conversion"""
         gc_lat = [45.0, -45.0]
-        gd_lat = aacgmv2.depricated.gc2gd_lat(gc_lat)
+        gd_lat = aacgmv2.deprecated.gc2gd_lat(gc_lat)
 
         np.testing.assert_allclose(gd_lat, [45.1924, -45.1924], rtol=1.0e-4)
 
     def test_gc2gd_lat_arr(self):
         """Test the geocentric to geodetic conversion"""
         gc_lat = np.array([45.0, -45.0])
-        gd_lat = aacgmv2.depricated.gc2gd_lat(gc_lat)
+        gd_lat = aacgmv2.deprecated.gc2gd_lat(gc_lat)
 
         np.testing.assert_allclose(gd_lat, [45.1924, -45.1924], rtol=1.0e-4)
 
     def test_igrf_dipole_axis(self):
         """Test the IGRF dipole axis calculation"""
-        m = aacgmv2.depricated.igrf_dipole_axis(self.dtime)
+        m = aacgmv2.deprecated.igrf_dipole_axis(self.dtime)
 
         np.testing.assert_allclose(m, [0.050253, -0.160608, 0.985738],
                                    rtol=1.0e-4)

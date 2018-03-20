@@ -39,7 +39,7 @@ _aacgmv2.inv_mlt_convert_yrsec
 
 Modules
 ---------------------------------------------------------------------------
-depricated
+deprecated
 _aacgmv2
 ---------------------------------------------------------------------------
 """
@@ -65,8 +65,8 @@ except Exception as err:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(err))
 
 try:
-    from aacgmv2 import (depricated)
-    from aacgmv2.depricated import (convert, subsol)
+    from aacgmv2 import (deprecated)
+    from aacgmv2.deprecated import (convert, subsol)
 except Exception as err:
     logging.exception(__file__ + ' -> aacgmv2: ' + str(err))
 
