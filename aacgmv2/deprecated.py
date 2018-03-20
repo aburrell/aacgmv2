@@ -20,7 +20,6 @@ Laundal, K. M. and A. D. Richmond (2016), Magnetic Coordinate Systems, Space
 from __future__ import division, absolute_import, unicode_literals
 import numpy as np
 import logbook as logging
-import aacgmv2
 
 def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
             badidea=False, geocentric=False):
@@ -55,6 +54,8 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
     lon_out : (float)
         Output longitude in degrees E
     """
+    import aacgmv2
+
     if(np.array(alt).max() > 2000 and not trace and not allowtrace and
        badidea):
         estr = 'coefficients are not valid for altitudes above 2000 km. You'
@@ -200,6 +201,7 @@ def igrf_dipole_axis(date):
     date, or extrapolated if date > latest IGRF model
     """
     import datetime as dt
+    import aacgmv2
 
     # get time in years, as float:
     year = date.year

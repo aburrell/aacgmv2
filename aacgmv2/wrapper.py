@@ -18,8 +18,6 @@ from __future__ import division, absolute_import, unicode_literals
 import datetime as dt
 import numpy as np
 import logbook as logging
-import aacgmv2
-import aacgmv2._aacgmv2 as c_aacgmv2
 
 def set_coeff_path(igrf_file=None, coeff_prefix=None):
     """This routine sets the two path variables.
@@ -40,6 +38,8 @@ def set_coeff_path(igrf_file=None, coeff_prefix=None):
     coeff_prefix : (str)
         Location and file prefix for aacgm coefficient files
     """
+    import aacgmv2
+
     # Define coefficient file prefix if not supplied
     if coeff_prefix is None:
         coeff_prefix = aacgmv2.AACGM_V2_DAT_PREFIX
@@ -89,6 +89,8 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
     out_r : (float)
         Geocentric radial distance in R
     """
+    import aacgmv2._aacgmv2 as c_aacgmv2
+
     # Define coefficient file prefix if not supplied
     igrf_file, coeff_prefix = set_coeff_path(igrf_file=igrf_file,
                                              coeff_prefix=coeff_prefix)
@@ -191,6 +193,8 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
     out_r : (np.ndarray)
         Geocentric radial distances in R
     """
+    import aacgmv2._aacgmv2 as c_aacgmv2
+
     # If a list was entered instead of a numpy array, recast it here
     if isinstance(in_lat, list):
         in_lat = np.array(in_lat)
@@ -435,6 +439,8 @@ def convert_str_to_bit(code):
     Multiple codes should be seperated by pipes '|'.  Invalid parts of the code
     are ignored and no code defaults to 'G2A'.
     """
+    import aacgmv2._aacgmv2 as c_aacgmv2
+
     convert_code = {"G2A": c_aacgmv2.G2A, "A2G": c_aacgmv2.A2G,
                     "TRACE": c_aacgmv2.TRACE, "BADIDEA": c_aacgmv2.BADIDEA,
                     "GEOCENTRIC": c_aacgmv2.GEOCENTRIC,
@@ -471,6 +477,8 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
     bit_code : (int)
         code specification in bits
     """
+    import aacgmv2._aacgmv2 as c_aacgmv2
+
     bit_code = c_aacgmv2.A2G if a2g else c_aacgmv2.G2A
 
     if trace:
@@ -513,6 +521,8 @@ def convert_mlt(arr, dtime, m2a=False, coeff_prefix=None, igrf_file=None):
     This routine previously based on Laundal et al. 2016, but now uses the
     improved calculation available in AACGM-V2.4.
     """
+    import aacgmv2._aacgmv2 as c_aacgmv2
+    
     # Define coefficient file prefix if not supplied
     igrf_file, coeff_prefix = set_coeff_path(igrf_file=igrf_file,
                                              coeff_prefix=coeff_prefix)
