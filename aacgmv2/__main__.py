@@ -26,27 +26,27 @@ def main():
 
     desc = 'Converts between geographical coordinates, AACGM-v2, and MLT'
     parser = argparse.ArgumentParser(description=desc)
-    
+
     desc = 'for help, run %(prog)s SUBCOMMAND -h'
     subparsers = parser.add_subparsers(title='Subcommands', prog='aacgmv2',
                                        dest='subcommand', description=desc)
     subparsers.required = True
-    
+
     desc = 'convert to/from geomagnetic coordinates. Input file must have lines'
     desc += 'of the form "LAT LON ALT".'
     parser_convert = subparsers.add_parser('convert', help=(desc))
-    
+
     desc = 'convert between magnetic local time (MLT) and AACGM-v2 longitude. '
     desc += 'Input file must have a single number on each line.'
     parser_convert_mlt = subparsers.add_parser('convert_mlt', help=(desc))
 
     desc = 'input file (stdin if none specified)'
-    for p in [parser_convert, parser_convert_mlt]:
-        p.add_argument('-i', '--input', dest='file_in', metavar='FILE_IN',
-                       type=argparse.FileType('r'), default=STDIN, help=desc)
-        p.add_argument('-o', '--output', dest='file_out', metavar='FILE_OUT',
-                       type=argparse.FileType('wb'), default=STDOUT,
-                       help='output file (stdout if none specified)')
+    for pp in [parser_convert, parser_convert_mlt]:
+        pp.add_argument('-i', '--input', dest='file_in', metavar='FILE_IN',
+                        type=argparse.FileType('r'), default=STDIN, help=desc)
+        pp.add_argument('-o', '--output', dest='file_out', metavar='FILE_OUT',
+                        type=argparse.FileType('wb'), default=STDOUT,
+                        help='output file (stdout if none specified)')
 
     desc = 'date for magnetic field model (1900-2020, default: today)'
     parser_convert.add_argument('-d', '--date', dest='date', metavar='YYYYMMDD',
@@ -91,13 +91,14 @@ def main():
                                            allowtrace=args.allowtrace,
                                            badidea=args.badidea,
                                            geocentric=args.geocentric)
-        lats, lons, rs = aacgmv2.convert_latlon_arr(array[:,0], array[:,1],
-                                                    array[:,2], dtime=date,
-                                                    code=code)
-        np.savetxt(args.file_out, np.column_stack((lats, lons, rs)), fmt='%.8f')
+        lats, lons, alts = aacgmv2.convert_latlon_arr(array[:, 0], array[:, 1],
+                                                      array[:, 2], dtime=date,
+                                                      code=code)
+        np.savetxt(args.file_out, np.column_stack((lats, lons, alts)),
+                   fmt='%.8f')
     elif args.subcommand == 'convert_mlt':
         dtime = dt.datetime.strptime(args.datetime, '%Y%m%d%H%M%S')
-        out = aacgmv2.convert_mlt(array[:,0], dtime, m2a=args.m2a)
+        out = aacgmv2.convert_mlt(array[:, 0], dtime, m2a=args.m2a)
         np.savetxt(args.file_out, out, fmt='%.8f')
 
 
