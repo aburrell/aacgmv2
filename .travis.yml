@@ -19,7 +19,6 @@ install:
 script:
   - tox
   - coverage run --source aacgmv2 -m py.test
-  - coverage report -m
 after_sucess: coveralls
 notifications:
   email:
