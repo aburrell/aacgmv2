@@ -3,9 +3,14 @@ Command-line interface
 
 .. highlight:: none
 
-When you install this package you will get a command called ``aacgmv2``. It has two subcommands, ``convert`` and ``convert_mlt``, which correspond to the functions :py:func:`aacgmv2.convert` and :py:func:`aacgmv2.convert_mlt`. See the documentation for these functions for a more thorough explanation of arguments and behaviour.
+When you install this package you will get a command called ``aacgmv2``. It has
+two subcommands, ``convert`` and ``convert_mlt``, which correspond to the
+functions :py:func:`aacgmv2.convert_latlon_arr` and
+:py:func:`aacgmv2.convert_mlt`. See the documentation for these functions for a
+more thorough explanation of arguments and behaviour.
 
-You can get help on the two commands by running ``aacgmv2 convert -h`` and ``aacgmv2 convert_mlt -h``.
+You can get help on the two commands by running ``aacgmv2 convert -h`` and
+``aacgmv2 convert_mlt -h``.
 
 convert
 -------
