@@ -2,6 +2,18 @@
 Changelog
 =========
 
+2.4.0 (2017-03-21)
+-----------------------------------------
+
+* Update to use AACGM-v2.4, which includes changes to the inverse MLT and
+  dipole tilt functions and some minor bug fixes
+* Updated file structure
+* Updated methods, retaining old methods in deprecated module
+* Added testing for python 3.6
+* Updated dependencies, removing support for python 3.3
+* Tested on Mac OSX
+* Updated comments to include units for input and output
+  
 2.0.0 (2016-11-03)
 -----------------------------------------
 

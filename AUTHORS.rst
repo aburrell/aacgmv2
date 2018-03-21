@@ -2,5 +2,6 @@
 Authors
 =======
 
-* Christer van der Meeren - https://github.com/cmeeren
+* Angeline G. Burrell - https://github.com/aburrell
+* Christer van der Meeren
 * Karl M. Laundal

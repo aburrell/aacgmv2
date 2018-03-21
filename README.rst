@@ -5,47 +5,52 @@ Overview
 |docs| |version|
 
 This is a Python wrapper for the `AACGM-v2 C library
-<https://engineering.dartmouth.edu/superdarn/aacgm.html>`_, which allows converting between geographic and magnetic coordinates. The currently included version of the C library is 2.2. The wrapper is provided "as is" in the hopes that it will be useful to the space science community, and will not automatically be updated when new versions of the C library is released. MLT calculations are included in the wrapper (not part of the C library, please see the documentation for implementation details). The package is free software (MIT license).
+<http://superdarn.thayer.dartmouth.edu/aacgm.html>`_, which allows
+converting between geographic and magnetic coordinates. The currently included
+version of the C library is 2.4.  The package is free software
+(MIT license).
 
 Quick start
 ===========
 
-Install (requires NumPy)::
+Install (requires NumPy and logging)::
 
     pip install aacgmv2
 
 Convert between AACGM and geographic coordinates::
 
-    >>> from aacgmv2 import convert
-    >>> from datetime import date
+    >>> import aacgmv2
+    >>> import datetime as dt
+    >>> import numpy as np
+    >>> np.set_printoptions(formatter={'float_kind': lambda x:'{:.4f}'.format(x)})
     >>> # geo to AACGM, single numbers
-    >>> mlat, mlon = convert(60, 15, 300, date(2013, 11, 3))
-    >>> mlat
-    array(57.47207691280528)
-    >>> mlon
-    array(93.62138045643167)
+    >>> dtime = dt.datetime(2013, 11, 3)
+    >>> np.array(aacgmv2.get_aacgm_coord(60, 15, 300, dtime))
+    array([57.4698, 93.6300, 1.4822])
     >>> # AACGM to geo, mix arrays/numbers
-    >>> glat, glon = convert([90, -90], 0, 0, date(2013, 11, 3), a2g=True)
-    >>> glat
-    array([ 82.96656071, -74.33854592])
-    >>> glon
-    array([ -84.66516034,  125.84014944])
+    >>> aacgmv2.convert_latlon_arr([90, -90], 0, 0, dtime, code="A2G")
+    (array([82.9666, -74.3385]), array([-84.6652, 125.8401]), array([14.1244, 12.8771]))
 
 Convert between AACGM and MLT::
 
-    >>> from aacgmv2 import convert_mlt
-    >>> from datetime import datetime
+    >>> import aacgmv2
+    >>> import datetime as dt
+    >>> import numpy as np
+    >>> np.set_printoptions(formatter={'float_kind': lambda x:'{:.4f}'.format(x)})
     >>> # MLT to AACGM
-    >>> mlon = convert_mlt([0, 12], datetime(2013, 11, 3, 18, 0), m2a=True)
-    >>> mlon
-    array([ 159.08967974,  339.08967974])
+    >>> dtime = dt.datetime(2013, 11, 3, 0, 0, 0)
+    >>> aacgmv2.convert_mlt([1.4822189, 12], dtime, m2a=True)
+    array([93.6300, -108.6033])
 
-If you don't know or use Python, you can also use the command line. See details in the full documentation.
+If you don't know or use Python, you can also use the command line. See details
+in the full documentation.
 
 Documentation
 =============
 
 https://aacgmv2.readthedocs.org/
+
+http://superdarn.thayer.dartmouth.edu/aacgm.html
 
 Badges
 ======
@@ -57,7 +62,6 @@ Badges
       - |docs|
     * - tests
       - | |travis| |appveyor| |requires|
-        | |coveralls| |codecov|
         | |landscape|  |codeclimate|
         | |scrutinizer| |codacy|
     * - package
@@ -68,36 +72,36 @@ Badges
     :target: https://readthedocs.org/projects/aacgmv2
     :alt: Documentation Status
 
-.. |travis| image:: https://travis-ci.org/cmeeren/aacgmv2.svg?branch=master
+.. |travis| image:: https://travis-ci.org/aburrell/aacgmv2.svg?branch=master
     :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/cmeeren/aacgmv2
+    :target: https://travis-ci.org/aburrell/aacgmv2
 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/cmeeren/aacgmv2?branch=master&svg=true
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/aburrell/aacgmv2?branch=master&svg=true
     :alt: AppVeyor Build Status
-    :target: https://ci.appveyor.com/project/cmeeren/aacgmv2
+    :target: https://ci.appveyor.com/project/aburrell/aacgmv2
 
-.. |requires| image:: https://requires.io/github/cmeeren/aacgmv2/requirements.svg?branch=master
+.. |requires| image:: https://requires.io/github/aburrell/aacgmv2/requirements.svg?branch=master
     :alt: Requirements Status
-    :target: https://requires.io/github/cmeeren/aacgmv2/requirements/?branch=master
+    :target: https://requires.io/github/aburrell/aacgmv2/requirements/?branch=master
 
-.. |coveralls| image:: https://coveralls.io/repos/cmeeren/aacgmv2/badge.svg?branch=master&service=github
+.. |coveralls| image:: https://coveralls.io/repos/aburrell/aacgmv2/badge.svg?branch=master&service=github
     :alt: Coverage Status
-    :target: https://coveralls.io/github/cmeeren/aacgmv2
+    :target: https://coveralls.io/github/aburrell/aacgmv2
 
-.. |codecov| image:: https://codecov.io/github/cmeeren/aacgmv2/coverage.svg?branch=master
+.. |codecov| image:: https://codecov.io/github/aburrell/aacgmv2/coverage.svg?branch=master
     :alt: Coverage Status
-    :target: https://codecov.io/github/cmeeren/aacgmv2
+    :target: https://codecov.io/github/aburrell/aacgmv2
 
-.. |landscape| image:: https://landscape.io/github/cmeeren/aacgmv2/master/landscape.svg?style=flat
-    :target: https://landscape.io/github/cmeeren/aacgmv2/master
+.. |landscape| image:: https://landscape.io/github/aburrell/aacgmv2/master/landscape.svg?style=flat
+    :target: https://landscape.io/github/aburrell/aacgmv2/master
     :alt: Code Quality Status
 
-.. |codacy| image:: https://img.shields.io/codacy/af7fdf6be28841f283dfdbc1c01fa82a.svg?style=flat
-    :target: https://www.codacy.com/app/cmeeren/aacgmv2
-    :alt: Codacy Code Quality Status
+.. |codacy| image:: https://api.codacy.com/project/badge/Grade/b64ee44194f148f5bdb0f00c7cf16ab8
+    :target: https://www.codacy.com/app/aburrell/aacgmv2?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aburrell/aacgmv2&amp;utm_campaign=Badge_Grade
+   :alt: Codacy Code Quality Status
 
-.. |codeclimate| image:: https://codeclimate.com/github/cmeeren/aacgmv2/badges/gpa.svg
-   :target: https://codeclimate.com/github/cmeeren/aacgmv2
+.. |codeclimate| image:: https://codeclimate.com/github/aburrell/aacgmv2/badges/gpa.svg
+   :target: https://codeclimate.com/github/aburrell/aacgmv2
    :alt: CodeClimate Quality Status
 .. |version| image:: https://img.shields.io/pypi/v/aacgmv2.svg?style=flat
     :alt: PyPI Package latest release
@@ -119,6 +123,6 @@ Badges
     :alt: Supported implementations
     :target: https://pypi.python.org/pypi/aacgmv2
 
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/cmeeren/aacgmv2/master.svg?style=flat
+.. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/aburrell/aacgmv2/master.svg?style=flat
     :alt: Scrutinizer Status
-    :target: https://scrutinizer-ci.com/g/cmeeren/aacgmv2/
+    :target: https://scrutinizer-ci.com/g/aburrell/aacgmv2/
