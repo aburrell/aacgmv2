@@ -83,11 +83,12 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=None,
     Returns
     -------
     out_lat : (float)
-        Output latitude in degrees
+        Output latitude in degrees N
     out_lon : (float)
-        Output longitude in degrees
+        Output longitude in degrees E
     out_r : (float)
-        Geocentric radial distance in R
+        Geocentric radial distance (R_Earth) or altitude above the surface of
+        the Earth (km)
     """
     import aacgmv2._aacgmv2 as c_aacgmv2
 
@@ -187,11 +188,12 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
     Returns
     -------
     out_lat : (np.ndarray)
-        Output latitudes in degrees
+        Output latitudes in degrees N
     out_lon : (np.ndarray)
-        Output longitudes in degrees
+        Output longitudes in degrees E
     out_r : (np.ndarray)
-        Geocentric radial distances in R
+        Geocentric radial distance (R_Earth) or altitude above the surface of
+        the Earth (km)
     """
     import aacgmv2._aacgmv2 as c_aacgmv2
 
@@ -330,9 +332,9 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE",
     Returns
     -------
     mlat : (float)
-        magnetic latitude in degrees
+        magnetic latitude in degrees N
     mlon : (float)
-        magnetic longitude in degrees
+        magnetic longitude in degrees E
     mlt : (float)
         magnetic local time in hours
     """
@@ -388,9 +390,9 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE",
     Returns
     -------
     mlat : (float)
-        magnetic latitude in degrees
+        magnetic latitude in degrees N
     mlon : (float)
-        magnetic longitude in degrees
+        magnetic longitude in degrees E
     mlt : (float)
         magnetic local time in hours
     """
@@ -498,7 +500,7 @@ def convert_mlt(arr, dtime, m2a=False, coeff_prefix=None, igrf_file=None):
     Parameters
     ------------
     arr : (array_line or float)
-        Magnetic longitudes or MLTs to convert
+        Magnetic longitudes (degrees E) or MLTs (hours) to convert
     dtime : (datetime.datetime)
         Date and time for MLT conversion in Universal Time (UT).
     m2a : (bool)
@@ -514,7 +516,7 @@ def convert_mlt(arr, dtime, m2a=False, coeff_prefix=None, igrf_file=None):
     Returns
     --------
     out : (np.ndarray)
-        Converted coordinates/MLT
+        Converted coordinates/MLT in degrees E or hours (as appropriate)
 
     Notes
     -------

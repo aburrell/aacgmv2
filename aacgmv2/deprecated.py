@@ -91,9 +91,9 @@ def subsol(year, doy, utime):
     Returns
     ---------
     sbsllon : (float)
-        Subsolar longitude for the given date/time
+        Subsolar longitude in degrees E for the given date/time
     sbsllat : (float)
-        Subsolar lattude for the given date/time
+        Subsolar latitude in degrees N for the given date/time
 
     Notes
     --------
@@ -190,8 +190,8 @@ def igrf_dipole_axis(date):
 
     Returns
     ----------
-    m: (np.ndarray)
-        Cartesian 3 element vector pointing at dipole pole in the north
+    m_0: (np.ndarray)
+        Cartesian 3 element unit vector pointing at dipole pole in the north
         (geocentric coords)
 
     Notes
