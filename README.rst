@@ -62,7 +62,6 @@ Badges
       - |docs|
     * - tests
       - | |travis| |appveyor| |requires|
-        | |coveralls| |codecov|
         | |landscape|  |codeclimate|
         | |scrutinizer| |codacy|
     * - package
@@ -97,9 +96,9 @@ Badges
     :target: https://landscape.io/github/aburrell/aacgmv2/master
     :alt: Code Quality Status
 
-.. |codacy| image:: https://img.shields.io/codacy/af7fdf6be28841f283dfdbc1c01fa82a.svg?style=flat
-    :target: https://app.codacy.com/aburrell/aacgmv2
-    :alt: Codacy Code Quality Status
+.. |codacy| image:: https://api.codacy.com/project/badge/Grade/b64ee44194f148f5bdb0f00c7cf16ab8
+    :target: https://www.codacy.com/app/aburrell/aacgmv2?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aburrell/aacgmv2&amp;utm_campaign=Badge_Grade
+   :alt: Codacy Code Quality Status
 
 .. |codeclimate| image:: https://codeclimate.com/github/aburrell/aacgmv2/badges/gpa.svg
    :target: https://codeclimate.com/github/aburrell/aacgmv2

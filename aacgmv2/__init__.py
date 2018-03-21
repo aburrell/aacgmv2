@@ -4,6 +4,8 @@
 Modules
 ---------------------------------------------------------------------------
 _aacgmv2 : Contains functions and variables from c code
+deprecated : Contains deprecated functions from previous versions
+wrapper : Contains current python functions
 ---------------------------------------------------------------------------
 
 Parameters
@@ -35,13 +37,6 @@ _aacgmv2.mlt_convert
 _aacgmv2.mlt_convert_yrsec
 _aacgmv2.inv_mlt_convert
 _aacgmv2.inv_mlt_convert_yrsec
----------------------------------------------------------------------------
-
-Modules
----------------------------------------------------------------------------
-deprecated
-wrapper
-_aacgmv2
 ---------------------------------------------------------------------------
 """
 import os.path as _path
