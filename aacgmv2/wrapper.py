@@ -524,11 +524,10 @@ def convert_mlt(arr, dtime, m2a=False, coeff_prefix=None, igrf_file=None):
     improved calculation available in AACGM-V2.4.
     """
     import aacgmv2._aacgmv2 as c_aacgmv2
-    
+
     # Define coefficient file prefix if not supplied
     igrf_file, coeff_prefix = set_coeff_path(igrf_file=igrf_file,
                                              coeff_prefix=coeff_prefix)
-
 
     # Test time
     if isinstance(dtime, dt.date):
