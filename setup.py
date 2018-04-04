@@ -8,8 +8,7 @@ import re
 from glob import glob
 from os import path
 
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import setup, find_packages
 from distutils.core import Extension
 
 def read(fname, **kwargs):
@@ -35,11 +34,8 @@ setup(
     author='Angeline G. Burrell, Christer van der Meeren',
     author_email='agb073000@utdallas.edu',
     url='https://github.com/aburrell/aacgmv2',
-    packages=find_packages('aacgmv2'),
-    package_dir={'': 'aacgmv2'},
-    py_modules=[path.splitext(path.basename(psrc))[0]
-                for psrc in glob('aacgmv2/*.py')],
-    package_data={'aacgmv2': ['aacgm_coeffs/*.asc', 'igrf12coeffs.txt']},
+    packages=find_packages(),
+    include_package_data=True,
     zip_safe=False,
     classifiers=[
         # complete classifier list:
@@ -80,7 +76,7 @@ setup(
     extras_require={'test':['pytest'],
     },
     ext_modules=[
-        Extension('_aacgmv2',
+        Extension('aacgmv2._aacgmv2',
                   sources=['aacgmv2/aacgmv2module.c',
                            'c_aacgmv2/src/aacgmlib_v2.c',
                            'c_aacgmv2/src/astalglib.c',
