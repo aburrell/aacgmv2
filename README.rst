@@ -8,7 +8,12 @@ This is a Python wrapper for the `AACGM-v2 C library
 <http://superdarn.thayer.dartmouth.edu/aacgm.html>`_, which allows
 converting between geographic and magnetic coordinates. The currently included
 version of the C library is 2.4.  The package is free software
-(MIT license).
+(MIT license).  When referencing this package, please cite both the package DOI
+and the AACGM-v2 journal article:
+
+Shepherd, S. G. (2014), Altitude‐adjusted corrected geomagnetic coordinates:
+Definition and functional approximations, Journal of Geophysical Research:
+Space Physics, 119, 7501–7521, doi:10.1002/2014JA020264.
 
 Quick start
 ===========
