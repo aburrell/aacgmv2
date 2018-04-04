@@ -5,7 +5,6 @@ from __future__ import absolute_import
 import io
 import os
 import re
-from glob import glob
 from os import path
 
 from setuptools import setup, find_packages
