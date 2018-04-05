@@ -2,6 +2,12 @@
 Changelog
 =========
 
+2.4.1 (2017-04-04)
+-----------------------------------------
+* Fix bug in installation, that caused files to be placed in the wrong
+  directory
+* Added DOI
+
 2.4.0 (2017-03-21)
 -----------------------------------------
 

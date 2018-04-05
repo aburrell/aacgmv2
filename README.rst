@@ -2,7 +2,7 @@
 Overview
 ========
 
-|docs| |version|
+|docs| |version| |doi|
 
 This is a Python wrapper for the `AACGM-v2 C library
 <http://superdarn.thayer.dartmouth.edu/aacgm.html>`_, which allows
@@ -131,3 +131,6 @@ Badges
 .. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/aburrell/aacgmv2/master.svg?style=flat
     :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/aburrell/aacgmv2/
+
+.. |doi| image:: https://zenodo.org/badge/42864636.svg
+   :target: https://zenodo.org/badge/latestdoi/42864636
