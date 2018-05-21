@@ -853,18 +853,32 @@ class TestMLTConvert:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
+        self.dtime2 = dt.datetime(2015, 1, 1, 10, 0, 0)
         self.ddate = dt.date(2015, 1, 1)
         self.mlon_out = None
         self.mlt_out = None
+        self.mlt_diff = None
         self.mlon_list = [270.0, 80.0, -95.0]
         self.mlt_list = [12.0, 25.0, -1.0]
         self.mlon_comp = [-101.657689, 93.34231102, 63.34231102]
         self.mlt_comp = [12.77717927, 0.1105126, 12.44384593]
+        self.diff_comp = np.ones(shape=(3,)) * -10.52411552
 
     def teardown(self):
         """Runs after every method to clean up previous testing"""
         del self.mlon_out, self.mlt_out, self.mlt_list, self.mlon_list
-        del self.mlon_comp, self.mlt_comp
+        del self.mlon_comp, self.mlt_comp, self.mlt_diff, self.diff_comp
+
+    def test_date_input(self):
+        """Test to see that the date input works"""
+        self.mlt_out = aacgmv2.convert_mlt(self.mlon_list, self.ddate,
+                                           m2a=False)
+        np.testing.assert_allclose(self.mlt_out, self.mlt_comp, rtol=1.0e-4)
+
+    def test_datetime_exception(self):
+        """Test to see that a value error is raised with bad time input"""
+        with pytest.raises(ValueError):
+            self.mlt_out = aacgmv2.wrapper.convert_mlt(mlon_list, 1997)
 
     def test_inv_convert_mlt_single(self):
         """Test MLT inversion for a single value"""
@@ -923,6 +937,14 @@ class TestMLTConvert:
         self.mlt_out = aacgmv2.convert_mlt(np.array(self.mlon_list),
                                            self.dtime, m2a=False)
         np.testing.assert_allclose(self.mlt_out, self.mlt_comp, rtol=1.0e-4)
+
+    def test_mlt_convert_change(self):
+        """Test that MLT changes with UT"""
+        self.mlt_out = aacgmv2.convert_mlt(self.mlon_list, self.dtime)
+        self.mlt_diff = self.mlt_out - aacgmv2.convert_mlt(self.mlon_list,
+                                                           self.dtime2)
+
+        np.testing.assert_allclose(self.mlt_diff, self.diff_comp, rtol=1.0e-4)
 
 class TestCoeffPath:
     def setup(self):
