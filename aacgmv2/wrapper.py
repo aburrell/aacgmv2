@@ -531,10 +531,10 @@ def convert_mlt(arr, dtime, m2a=False, coeff_prefix=None, igrf_file=None):
 
     # Test time
     if isinstance(dtime, dt.date):
-        dtime = dt.datetime.combine(dtime, dt.time(0))
-
-    assert isinstance(dtime, dt.datetime), \
-        logging.error('time must be specified as datetime object')
+        if not isinstance(dtime, dt.datetime):
+            dtime = dt.datetime.combine(dtime, dt.time(0))
+    else:
+        raise ValueError('time must be specified as datetime object')
 
     # Calculate desired location, C routines set date and time
     if m2a:
