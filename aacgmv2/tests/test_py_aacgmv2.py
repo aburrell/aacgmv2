@@ -878,7 +878,7 @@ class TestMLTConvert:
     def test_datetime_exception(self):
         """Test to see that a value error is raised with bad time input"""
         with pytest.raises(ValueError):
-            self.mlt_out = aacgmv2.wrapper.convert_mlt(mlon_list, 1997)
+            self.mlt_out = aacgmv2.wrapper.convert_mlt(self.mlon_list, 1997)
 
     def test_inv_convert_mlt_single(self):
         """Test MLT inversion for a single value"""
