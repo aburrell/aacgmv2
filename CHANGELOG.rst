@@ -1,14 +1,20 @@
 
 Changelog
 =========
-
-2.4.1 (2017-04-04)
+2.4.2 (2018-05-21)
 -----------------------------------------
-* Fix bug in installation, that caused files to be placed in the wrong
+* Fixed bug in convert_mlt that caused all time inputs to occur
+  at 00:00:00 UT
+* Fixed year of last two updates in changelog
+
+
+2.4.1 (2018-04-04)
+-----------------------------------------
+* Fix bug in installation that caused files to be placed in the wrong
   directory
 * Added DOI
 
-2.4.0 (2017-03-21)
+2.4.0 (2018-03-21)
 -----------------------------------------
 
 * Update to use AACGM-v2.4, which includes changes to the inverse MLT and
