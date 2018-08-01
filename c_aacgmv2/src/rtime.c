@@ -16,7 +16,6 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-#include <errno.h>
 #include "rtime.h"
 
 #define DAY_SEC 86400
