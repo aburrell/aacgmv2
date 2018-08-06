@@ -210,7 +210,7 @@ def igrf_dipole_axis(date):
     year = year + doy / year_days
 
     # read the IGRF coefficients
-    with open(aacgmv2.IGRF_12_COEFFS, 'r') as f_igrf:
+    with open(aacgmv2.IGRF_COEFFS, 'r') as f_igrf:
         lines = f_igrf.readlines()
 
     years = lines[3].split()[3:][:-1]
