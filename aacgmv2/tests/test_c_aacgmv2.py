@@ -8,8 +8,7 @@ import aacgmv2
 class TestCAACGMV2:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
-        self.date_args = [(2014, 3, 22, 3, 11, 0, aacgmv2.AACGM_V2_DAT_PREFIX),
-                          (2018, 1, 1, 0, 0, 0, aacgmv2.AACGM_V2_DAT_PREFIX)]
+        self.date_args = [(2014, 3, 22, 3, 11, 0), (2018, 1, 1, 0, 0, 0)]
         self.long_date = [2014, 3, 22, 3, 11, 0]
         self.mlat = None
         self.mlon = None
@@ -56,8 +55,7 @@ class TestCAACGMV2:
     def test_fail_set_datetime(self):
         """Test unsuccessful set_datetime"""
         with pytest.raises(RuntimeError):
-            aacgmv2._aacgmv2.set_datetime(1013, 1, 1, 0, 0, 0,
-                                          aacgmv2.AACGM_V2_DAT_PREFIX)
+            aacgmv2._aacgmv2.set_datetime(1013, 1, 1, 0, 0, 0)
 
     def test_convert_G2A_coeff(self):
         """Test convert from geographic to magnetic coordinates"""
@@ -71,8 +69,7 @@ class TestCAACGMV2:
              self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[i],
                                                      self.lon_in[i],
                                                      self.alt_in[i],
-                                                     aacgmv2._aacgmv2.G2A,
-                                                     aacgmv2.IGRF_12_COEFFS)
+                                                     aacgmv2._aacgmv2.G2A)
             np.testing.assert_almost_equal(self.mlat, lat_comp[i], decimal=4)
             np.testing.assert_almost_equal(self.mlon, lon_comp[i], decimal=4)
             np.testing.assert_almost_equal(self.rshell, r_comp[i], decimal=4)
@@ -91,8 +88,7 @@ class TestCAACGMV2:
              self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[i],
                                                      self.lon_in[i],
                                                      self.alt_in[i],
-                                                     aacgmv2._aacgmv2.A2G,
-                                                     aacgmv2.IGRF_12_COEFFS)
+                                                     aacgmv2._aacgmv2.A2G)
             np.testing.assert_almost_equal(self.mlat, lat_comp[i], decimal=4)
             np.testing.assert_almost_equal(self.mlon, lon_comp[i], decimal=4)
             np.testing.assert_almost_equal(self.rshell, r_comp[i], decimal=4)
@@ -111,8 +107,7 @@ class TestCAACGMV2:
             (self.mlat, self.mlon,
              self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[i],
                                                      self.lon_in[i],
-                                                     self.alt_in[i], code,
-                                                     aacgmv2.IGRF_12_COEFFS)
+                                                     self.alt_in[i], code)
             np.testing.assert_almost_equal(self.mlat, trace_lat[i], decimal=4)
             np.testing.assert_almost_equal(self.mlon, trace_lon[i], decimal=4)
             np.testing.assert_almost_equal(self.rshell, trace_r[i], decimal=4)
@@ -131,8 +126,7 @@ class TestCAACGMV2:
             (self.mlat, self.mlon,
              self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[i],
                                                      self.lon_in[i],
-                                                     self.alt_in[i], code,
-                                                     aacgmv2.IGRF_12_COEFFS)
+                                                     self.alt_in[i], code)
             np.testing.assert_almost_equal(self.mlat, trace_lat[i], decimal=4)
             np.testing.assert_almost_equal(self.mlon, trace_lon[i], decimal=4)
             np.testing.assert_almost_equal(self.rshell, trace_r[i], decimal=4)
@@ -145,8 +139,7 @@ class TestCAACGMV2:
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         with pytest.raises(RuntimeError):
             aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0], 5500,
-                                     aacgmv2._aacgmv2.G2A,
-                                     aacgmv2.IGRF_12_COEFFS)
+                                     aacgmv2._aacgmv2.G2A)
 
     def test_convert_high_TRACE(self):
         """Test convert from high altitude geodetic to magnetic coordinates
@@ -155,8 +148,7 @@ class TestCAACGMV2:
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon,
          self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 5500, code,
-                                                 aacgmv2.IGRF_12_COEFFS)
+                                                 5500, code)
         np.testing.assert_almost_equal(self.mlat, 59.9748, decimal=4)
         np.testing.assert_almost_equal(self.mlon, 57.7425, decimal=4)
         np.testing.assert_almost_equal(self.rshell, 1.8626, decimal=4)
@@ -170,8 +162,7 @@ class TestCAACGMV2:
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon,
          self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 5500, code,
-                                                 aacgmv2.IGRF_12_COEFFS)
+                                                 5500, code)
         np.testing.assert_almost_equal(self.mlat, 59.9748, decimal=4)
         np.testing.assert_almost_equal(self.mlon, 57.7425, decimal=4)
         np.testing.assert_almost_equal(self.rshell, 1.8626, decimal=4)
@@ -185,8 +176,7 @@ class TestCAACGMV2:
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon,
          self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 5500, code,
-                                                 aacgmv2.IGRF_12_COEFFS)
+                                                 5500, code)
         np.testing.assert_almost_equal(self.mlat, 58.7154, decimal=4)
         np.testing.assert_almost_equal(self.mlon, 56.5830, decimal=4)
         np.testing.assert_almost_equal(self.rshell, 1.8626, decimal=4)
@@ -199,8 +189,7 @@ class TestCAACGMV2:
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon,
          self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 self.alt_in[0], code,
-                                                 aacgmv2.IGRF_12_COEFFS)
+                                                 self.alt_in[0], code)
         np.testing.assert_almost_equal(self.mlat, 48.3779, decimal=4)
         np.testing.assert_almost_equal(self.mlon, 57.7974, decimal=4)
         np.testing.assert_almost_equal(self.rshell, 1.1781, decimal=4)
@@ -213,8 +202,7 @@ class TestCAACGMV2:
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon,
          self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 self.alt_in[0], code,
-                                                 aacgmv2.IGRF_12_COEFFS)
+                                                 self.alt_in[0], code)
         np.testing.assert_almost_equal(self.mlat, 30.6101, decimal=4)
         np.testing.assert_almost_equal(self.mlon, -94.1806, decimal=4)
         np.testing.assert_almost_equal(self.rshell, 1135.0000, decimal=4)
@@ -228,8 +216,7 @@ class TestCAACGMV2:
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon,
          self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 self.alt_in[0], code,
-                                                 aacgmv2.IGRF_12_COEFFS)
+                                                 self.alt_in[0], code)
         np.testing.assert_almost_equal(self.mlat, 48.3830, decimal=4)
         np.testing.assert_almost_equal(self.mlon, 57.7926, decimal=4)
         np.testing.assert_almost_equal(self.rshell, 1.1781, decimal=4)
@@ -243,8 +230,7 @@ class TestCAACGMV2:
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon,
          self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 self.alt_in[0], code,
-                                                 aacgmv2.IGRF_12_COEFFS)
+                                                 self.alt_in[0], code)
         np.testing.assert_almost_equal(self.mlat, 30.6211, decimal=4)
         np.testing.assert_almost_equal(self.mlon, -94.1809, decimal=4)
         np.testing.assert_almost_equal(self.rshell, 1135.0000, decimal=4)
@@ -254,14 +240,12 @@ class TestCAACGMV2:
     def test_forbidden(self):
         """Test convert failure"""
         with pytest.raises(RuntimeError):
-            mloc = aacgmv2._aacgmv2.convert(7, 0, 0, aacgmv2._aacgmv2.G2A,
-                                            aacgmv2.IGRF_12_COEFFS)
+            mloc = aacgmv2._aacgmv2.convert(7, 0, 0, aacgmv2._aacgmv2.G2A)
 
     def test_inv_mlt_convert(self):
         """Test MLT inversion"""
         mlt_args = list(self.long_date)
-        mlt_args.extend([12.0, aacgmv2.AACGM_V2_DAT_PREFIX,
-                         aacgmv2.IGRF_12_COEFFS])
+        mlt_args.extend([12.0])
         self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlon, -153.5931, decimal=4)
 
@@ -282,12 +266,9 @@ class TestCAACGMV2:
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
               dtime.minute * 60 + dtime.second
         
-        mlt_args_1 = [dtime.year, soy, 12.0, aacgmv2.AACGM_V2_DAT_PREFIX,
-                      aacgmv2.IGRF_12_COEFFS]
-        mlt_args_2 = [dtime.year, soy, 25.0, aacgmv2.AACGM_V2_DAT_PREFIX,
-                      aacgmv2.IGRF_12_COEFFS]
-        mlt_args_3 = [dtime.year, soy, -1.0, aacgmv2.AACGM_V2_DAT_PREFIX,
-                      aacgmv2.IGRF_12_COEFFS]
+        mlt_args_1 = [dtime.year, soy, 12.0]
+        mlt_args_2 = [dtime.year, soy, 25.0]
+        mlt_args_3 = [dtime.year, soy, -1.0]
 
         mlon_1 = aacgmv2._aacgmv2.inv_mlt_convert_yrsec(*mlt_args_1)
         mlon_2 = aacgmv2._aacgmv2.inv_mlt_convert_yrsec(*mlt_args_2)
@@ -303,8 +284,7 @@ class TestCAACGMV2:
     def test_mlt_convert(self):
         """Test MLT calculation"""
         mlt_args = list(self.long_date)
-        mlt_args.extend([270.0, aacgmv2.AACGM_V2_DAT_PREFIX,
-                         aacgmv2.IGRF_12_COEFFS])
+        mlt_args.extend([270.0])
         self.mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlt, 16.2395, decimal=4)
 
@@ -323,13 +303,10 @@ class TestCAACGMV2:
         import datetime as dt
         dtime = dt.datetime(*self.long_date)
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
-              dtime.minute * 60 + dtime.second
-        mlt_args_1 = [dtime.year, soy, 270.0, aacgmv2.AACGM_V2_DAT_PREFIX,
-                      aacgmv2.IGRF_12_COEFFS]
-        mlt_args_2 = [dtime.year, soy, 80.0, aacgmv2.AACGM_V2_DAT_PREFIX,
-                      aacgmv2.IGRF_12_COEFFS]
-        mlt_args_3 = [dtime.year, soy, -90.0, aacgmv2.AACGM_V2_DAT_PREFIX,
-                      aacgmv2.IGRF_12_COEFFS]
+            dtime.minute * 60 + dtime.second
+        mlt_args_1 = [dtime.year, soy, 270.0]
+        mlt_args_2 = [dtime.year, soy, 80.0]
+        mlt_args_3 = [dtime.year, soy, -90.0]
         
         mlt_1 = aacgmv2._aacgmv2.mlt_convert_yrsec(*mlt_args_1)
         mlt_2 = aacgmv2._aacgmv2.mlt_convert_yrsec(*mlt_args_2)
