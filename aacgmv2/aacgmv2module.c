@@ -73,7 +73,7 @@ static PyObject *mltconvert_v2(PyObject *self, PyObject *args)
   double mlon, mlt;
 
   /* Parse the input as a tupple */
-  if(!PyArg_ParseTuple(args, "iiiiiid", &yr, &mo, &dy, &hr, &mt, &sc, &mlon,))
+  if(!PyArg_ParseTuple(args, "iiiiiid", &yr, &mo, &dy, &hr, &mt, &sc, &mlon))
     return(NULL);
 
   /* Call the AACGM routine */
