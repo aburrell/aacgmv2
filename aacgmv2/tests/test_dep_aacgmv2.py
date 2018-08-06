@@ -163,8 +163,8 @@ class TestDepAACGMV2:
     def test_convert_maxalt_failure(self):
         """For an array, test failure for an altitude too high for
         coefficients"""
-        self.lat, self.lon = aacgmv2.convert([60], [0], [2001], self.dtime)
-        assert np.all([np.isnan(self.lat), np.isnan(self.lon)])
+        with pytest.raises(ValueError):
+            aacgmv2.convert([60], [0], [2001], self.dtime)
 
     def test_convert_lat_failure(self):
         """Test error return for co-latitudes above 90 for an array"""
