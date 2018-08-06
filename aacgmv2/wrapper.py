@@ -38,8 +38,6 @@ def set_coeff_path(igrf_file=False, coeff_prefix=False):
     import aacgmv2
     import os
 
-    print coeff_prefix, igrf_file
-
     # Define coefficient file prefix if requested
     if coeff_prefix is not False:
         # Use the default value, if one was not supplied (allow None to
