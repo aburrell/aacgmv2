@@ -29,7 +29,6 @@ get_aacgm_coord
 get_aacgm_coord_arr
 convert
 convert_mlt
-wrapper.set_coeff_path
 deprecated.subsol
 _aacgmv2.convert
 _aacgmv2.set_datetime
@@ -40,26 +39,26 @@ _aacgmv2.inv_mlt_convert_yrsec
 ---------------------------------------------------------------------------
 """
 from __future__ import print_function
-import os.path as _path
-import os.environ as _environ
+import os as _os
 import logbook as logging
 
 __version__ = "2.5.0"
 
 # path and filename prefix for the IGRF coefficients
-AACGM_V2_DAT_PREFIX = _path.join(_path.realpath(_path.dirname(__file__)),
-                                 'aacgm_coeffs', 'aacgm_coeffs-12-')
-IGRF_COEFFS = _path.join(_path.realpath(_path.dirname(__file__)),
-                         'magmodel_1590-2015.txt')
+AACGM_V2_DAT_PREFIX = _os.path.join(_os.path.realpath( \
+                                                _os.path.dirname(__file__)),
+                                    'aacgm_coeffs', 'aacgm_coeffs-12-')
+IGRF_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)),
+                            'magmodel_1590-2015.txt')
 
 # If not defined, set the IGRF and AACGM environment variables
-if not 'IGRF_COEFFS' in _environ.keys():
-    _environ['IGRF_COEFFS'] = IGRF_COEFFS
+if not 'IGRF_COEFFS' in _os.environ.keys():
+    _os.environ['IGRF_COEFFS'] = IGRF_COEFFS
 else:
     print("using local IGRF coefficients instead of AACGMV2 defaults")
     
-if not 'AACGM_V2_DAT_PREFIX' in _environ.keys():
-    _environ['AACGM_V2_DAT_PREFIX'] = AACGM_V2_DAT_PREFIX
+if not 'AACGM_V2_DAT_PREFIX' in _os.environ.keys():
+    _os.environ['AACGM_V2_DAT_PREFIX'] = AACGM_V2_DAT_PREFIX
 else:
     print("using local AACGM coefficients instead of AACGMV2 defaults")
 
