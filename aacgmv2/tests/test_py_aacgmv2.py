@@ -947,9 +947,10 @@ class TestMLTConvert:
         np.testing.assert_allclose(self.mlt_diff, self.diff_comp, rtol=1.0e-4)
 
 class TestCoeffPath:
+    import os
+
     def setup(self):
         """Runs before every method to create a clean testing setup"""
-        import os
         os.environ['IGRF_COEFFS'] = "default_igrf"
         os.environ['AACGM_v2_DAT_PREFIX'] = "default_coeff"
         self.default_igrf = os.environ['IGRF_COEFFS']
