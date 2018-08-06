@@ -249,11 +249,11 @@ class TestCAACGMV2:
         self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlon, -153.5931, decimal=4)
 
-        mlt_args[-3] = 25.0
+        mlt_args[-3] = 25
         self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlon, 41.4069, decimal=4)
 
-        mlt_args[-3] = -1.0
+        mlt_args[-3] = -1
         self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlon, 11.4069, decimal=4)
 
@@ -282,17 +282,17 @@ class TestCAACGMV2:
         del mlon_3
 
     def test_mlt_convert(self):
-        """Test MLT calculation"""
+        """Test MLT calculation with different longitudes"""
         mlt_args = list(self.long_date)
         mlt_args.extend([270.0])
         self.mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlt, 16.2395, decimal=4)
 
-        mlt_args[-3] = 80.0
+        mlt_args[-1] = 80.0
         self.mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlt, 3.5729, decimal=4)
 
-        mlt_args[-3] = -90.0
+        mlt_args[-1] = -90.0
         self.mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlt, 16.2395, decimal=4)
 
