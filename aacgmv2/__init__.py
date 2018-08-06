@@ -39,15 +39,28 @@ _aacgmv2.inv_mlt_convert
 _aacgmv2.inv_mlt_convert_yrsec
 ---------------------------------------------------------------------------
 """
+from __future__ import print_function
 import os.path as _path
 import logbook as logging
-__version__ = "2.4.2"
+
+__version__ = "2.5.0"
 
 # path and filename prefix for the IGRF coefficients
 AACGM_V2_DAT_PREFIX = _path.join(_path.realpath(_path.dirname(__file__)),
                                  'aacgm_coeffs', 'aacgm_coeffs-12-')
-IGRF_12_COEFFS = _path.join(_path.realpath(_path.dirname(__file__)),
-                            'igrf12coeffs.txt')
+IGRF_COEFFS = _path.join(_path.realpath(_path.dirname(__file__)),
+                         'magmodel_1590-2015.txt')
+
+# If not defined, set the IGRF and AACGM environment variables
+if not 'IGRF_COEFFS' in os.environ.keys():
+    os.environ['IGRF_COEFFS'] = IGRF_COEFFS
+else:
+    print("using local IGRF coefficients instead of AACGMV2 defaults")
+    
+if not 'AACGM_V2_DAT_PREFIX' in os.environ.keys():
+    os.environ['AACGM_V2_DAT_PREFIX'] = AACGM_V2_DAT_PREFIX
+else:
+    print("using local AACGM coefficients instead of AACGMV2 defaults")
 
 # Imports
 #---------------------------------------------------------------------
