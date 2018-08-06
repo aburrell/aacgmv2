@@ -29,6 +29,7 @@ get_aacgm_coord
 get_aacgm_coord_arr
 convert
 convert_mlt
+wrapper.set_coeff_path
 deprecated.subsol
 _aacgmv2.convert
 _aacgmv2.set_datetime
@@ -45,7 +46,7 @@ import logbook as logging
 __version__ = "2.5.0"
 
 # path and filename prefix for the IGRF coefficients
-AACGM_V2_DAT_PREFIX = _os.path.join(_os.path.realpath( \
+AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath( \
                                                 _os.path.dirname(__file__)),
                                     'aacgm_coeffs', 'aacgm_coeffs-12-')
 IGRF_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)),
@@ -57,8 +58,8 @@ if not 'IGRF_COEFFS' in _os.environ.keys():
 else:
     print("using local IGRF coefficients instead of AACGMV2 defaults")
     
-if not 'AACGM_V2_DAT_PREFIX' in _os.environ.keys():
-    _os.environ['AACGM_V2_DAT_PREFIX'] = AACGM_V2_DAT_PREFIX
+if not 'AACGM_v2_DAT_PREFIX' in _os.environ.keys():
+    _os.environ['AACGM_v2_DAT_PREFIX'] = AACGM_v2_DAT_PREFIX
 else:
     print("using local AACGM coefficients instead of AACGMV2 defaults")
 
