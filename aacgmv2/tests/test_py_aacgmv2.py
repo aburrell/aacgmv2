@@ -945,3 +945,58 @@ class TestMLTConvert:
                                                            self.dtime2)
 
         np.testing.assert_allclose(self.mlt_diff, self.diff_comp, rtol=1.0e-4)
+
+class TestCoeffPath:
+    def setup(self):
+        """Runs before every method to create a clean testing setup"""
+        import os
+        os.environ['IGRF_COEFFS'] = "default_igrf"
+        os.environ['AACGM_v2_DAT_PREFIX'] = "default_coeff"
+        self.default_igrf = "default_igrf"
+        self.default_coeff = "default_coeff"
+
+    def teardown(self):
+        """Runs after every method to clean up previous testing"""
+        del self.default_igrf, self.default_coeff
+
+    def test_set_coeff_path_default(self):
+        """Test the coefficient path setting using default values"""
+        aacgmv2.wrapper.set_coeff_path()
+
+        assert os.environ['IGRF_COEFFS'] == self.default_igrf
+        assert os.environ['AACGM_v2_DAT_PREFIX'] == self.default_coeff
+
+    def test_set_coeff_path_string(self):
+        """Test the coefficient path setting using two user specified values"""
+        aacgmv2.wrapper.set_coeff_path("hi", "bye")
+
+        assert os.environ['IGRF_COEFFS'] == "hi"
+        assert os.environ['AACGM_v2_DAT_PREFIX'] == "bye"
+
+    def test_set_coeff_path_true(self):
+        """Test the coefficient path setting using the module values"""
+        aacgmv2.wrapper.set_coeff_path(True, True)
+
+        assert os.environ['IGRF_COEFFS'] == aacgmv2.IGRF_COEFFS
+        assert os.environ['AACGM_v2_DAT_PREFIX'] == aacgmv2.AACGM_v2_DAT_PREFIX
+
+    def test_set_only_aacgm_coeff_path(self):
+        """Test the coefficient path setting using a mix of input"""
+        aacgmv2.wrapper.set_coeff_path(coeff_prefix="hi")
+
+        assert os.environ['IGRF_COEFFS'] == self.default_igrf
+        assert os.environ['AACGM_v2_DAT_PREFIX'] == "hi"
+
+    def test_set_only_igrf_coeff_path(self):
+        """Test the coefficient path setting using a mix of input"""
+        aacgmv2.wrapper.set_coeff_path(igrf_file="hi")
+
+        assert os.environ['IGRF_COEFFS'] == "hi"
+        assert os.environ['AACGM_v2_DAT_PREFIX'] == self.default_coeff
+
+    def test_set_both_mixed(self):
+        """Test the coefficient path setting using a mix of input"""
+        aacgmv2.wrapper.set_coeff_path(igrf_file=True, coeff_prefix="hi")
+
+        assert os.environ['IGRF_COEFFS'] == aacgmv2.IGRF_COEFFS
+        assert os.environ['AACGM_v2_DAT_PREFIX'] == "hi"

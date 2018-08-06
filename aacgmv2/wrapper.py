@@ -3,6 +3,7 @@
 
 Functions
 --------------
+set_coeff_path : Set the coefficient paths using default or supplied values
 convert_latlon : Converts scalar location
 convert_latlon_arr : Converts array location
 get_aacgm_coord : Get scalar magnetic lat, lon, mlt from geographic location
@@ -18,7 +19,49 @@ import datetime as dt
 import numpy as np
 import logbook as logging
 
-def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
+def set_coeff_path(igrf_file=False, coeff_prefix=False):
+    """ Sets the IGRF_COEFF and AACGMV_V2_DAT_PREFIX environment variables.
+
+    Parameters
+    -----------
+    igrf_file : (str or bool)
+        Full filename of IGRF coefficient file, True to use
+        aacgmv2.IGRF_COEFFS, or False to leave as is. (default=False)
+    coeff_prefix : (str or bool)
+        Location and file prefix for aacgm coefficient files, True to use
+        aacgmv2.AACGM_V2_DAT_PREFIX, or False to leave as is. (default=False)
+
+    Returns
+    ---------
+    Void
+    """
+    import aacgmv2
+    import os
+
+    # Define coefficient file prefix if requested
+    if coeff_prefix is not False:
+        # Use the default value, if one was not supplied (allow None to
+        # comply with depricated behaviour)
+        if coeff_prefix is True or coeff_prefix is None:
+            coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
+
+        os.unsetenv('AACGM_v2_DAT_PREFIX')
+        os.environ['AAGMC_v2_DAT_PREFIX'] = coeff_prefix
+
+    # Define IGRF file if requested
+    if igrf_file is not False:
+        # Use the default value, if one was not supplied (allow None to
+        # comply with depricated behaviour)
+        if igrf_file is True or igrf_file is None:
+            igrf_file = aacgmv2.IGRF_COEFFS
+
+        os.unsetenv('IGRF_COEFFS')
+        os.environ['IGRF_COEFFS'] = igrf_file
+
+    return
+
+def convert_latlon(in_lat, in_lon, height, dtime, code="G2A", igrf_file=False,
+                   coeff_prefix=False):
     """Converts between geomagnetic coordinates and AACGM coordinates
 
     Parameters
@@ -40,6 +83,12 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
         BADIDEA    - use coefficients above 2000 km
         GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
         (default is "G2A")
+    igrf_file : (str or bool)
+        Full filename of IGRF coefficient file, True to use
+        aacgmv2.IGRF_12_COEFFS, or False to leave as is. (default=False)
+    coeff_prefix : (str or bool)
+        Location and file prefix for aacgm coefficient files, True to use
+        aacgmv2.AACGM_v2_DAT_PREFIX, or False to leave as is. (default=False)
 
     Returns
     -------
@@ -52,6 +101,9 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
         the Earth (km)
     """
     import aacgmv2._aacgmv2 as c_aacgmv2
+
+    # Define coefficient file prefixes, if desired
+    set_coeff_path(igrf_file=igrf_file, coeff_prefix=coeff_prefix)
 
     # Test time
     if isinstance(dtime, dt.date):
@@ -111,7 +163,8 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
 
     return lat_out, lon_out, r_out
 
-def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
+def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A",
+                       igrf_file=False, coeff_prefix=False):
     """Converts between geomagnetic coordinates and AACGM coordinates.  At least
     one of in_lat, in_lon, and height must be a list or array
 
@@ -134,6 +187,12 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
         BADIDEA    - use coefficients above 2000 km
         GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
         (default = "G2A")
+    igrf_file : (str or bool)
+        Full filename of IGRF coefficient file, True to use
+        aacgmv2.IGRF_12_COEFFS, or False to leave as is. (default=False)
+    coeff_prefix : (str or bool)
+        Location and file prefix for aacgm coefficient files, True to use
+        aacgmv2.AACGM_v2_DAT_PREFIX, or False to leave as is. (default=False)
 
     Returns
     -------
@@ -146,6 +205,9 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
         the Earth (km)
     """
     import aacgmv2._aacgmv2 as c_aacgmv2
+
+    # Define coefficient file prefix if not supplied
+    set_coeff_path(igrf_file=igrf_file, coeff_prefix=coeff_prefix)
 
     # If a list was entered instead of a numpy array, recast it here
     if isinstance(in_lat, list):
@@ -247,7 +309,8 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
 
     return lat_out, lon_out, r_out
 
-def get_aacgm_coord(glat, glon, height, dtime, method="TRACE"):
+def get_aacgm_coord(glat, glon, height, dtime, method="TRACE", igrf_file=False,
+                    coeff_prefix=False):
     """Get AACGM latitude, longitude, and magnetic local time
 
     Parameters
@@ -267,6 +330,12 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE"):
         BADIDEA    - use coefficients above 2000 km
         GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
         (default = "TRACE")
+    igrf_file : (str or bool)
+        Full filename of IGRF coefficient file, True to use
+        aacgmv2.IGRF_12_COEFFS, or False to leave as is. (default=False)
+    coeff_prefix : (str or bool)
+        Location and file prefix for aacgm coefficient files, True to use
+        aacgmv2.AACGM_v2_DAT_PREFIX, or False to leave as is. (default=False)
 
     Returns
     -------
@@ -277,6 +346,9 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE"):
     mlt : (float)
         magnetic local time in hours
     """
+    # Define coefficient file prefix if not supplied
+    set_coeff_path(igrf_file=igrf_file, coeff_prefix=coeff_prefix)
+
     # Initialize code
     code = "G2A|{:s}".format(method)
 
@@ -292,7 +364,8 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE"):
     return mlat, mlon, mlt
 
 
-def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE"):
+def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE",
+                        igrf_file=False, coeff_prefix=False):
     """Get AACGM latitude, longitude, and magnetic local time
 
     Parameters
@@ -312,6 +385,13 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE"):
         BADIDEA    - use coefficients above 2000 km
         GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
         (default = "TRACE")
+        (default = "TRACE")
+    igrf_file : (str or bool)
+        Full filename of IGRF coefficient file, True to use
+        aacgmv2.IGRF_12_COEFFS, or False to leave as is. (default=False)
+    coeff_prefix : (str or bool)
+        Location and file prefix for aacgm coefficient files, True to use
+        aacgmv2.AACGM_v2_DAT_PREFIX, or False to leave as is. (default=False)
 
     Returns
     -------
@@ -322,6 +402,9 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE"):
     mlt : (float)
         magnetic local time in hours
     """
+    # Define coefficient file prefix if not supplied
+    set_coeff_path(igrf_file=igrf_file, coeff_prefix=coeff_prefix)
+
     # Initialize code
     code = "G2A|{:s}".format(method)
 
@@ -413,7 +496,7 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
 
     return bit_code
 
-def convert_mlt(arr, dtime, m2a=False):
+def convert_mlt(arr, dtime, m2a=False, igrf_file=False, coeff_prefix=False):
     """Converts between magnetic local time (MLT) and AACGM-v2 longitude
 
     Parameters
@@ -425,6 +508,12 @@ def convert_mlt(arr, dtime, m2a=False):
     m2a : (bool)
         Convert MLT to AACGM-v2 longitude (True) or magnetic longitude to MLT
         (False).  (default=False)
+    igrf_file : (str or bool)
+        Full filename of IGRF coefficient file, True to use
+        aacgmv2.IGRF_12_COEFFS, or False to leave as is. (default=False)
+    coeff_prefix : (str or bool)
+        Location and file prefix for aacgm coefficient files, True to use
+        aacgmv2.AACGM_v2_DAT_PREFIX, or False to leave as is. (default=False)
 
     Returns
     --------
@@ -437,6 +526,9 @@ def convert_mlt(arr, dtime, m2a=False):
     improved calculation available in AACGM-V2.4.
     """
     import aacgmv2._aacgmv2 as c_aacgmv2
+
+    #Define coefficient file prefix if not supplied
+    set_coeff_path(igrf_file=igrf_file, coeff_prefix=coeff_prefix)
 
     # Test time
     if isinstance(dtime, dt.date):
