@@ -1,5 +1,5 @@
 AACGM-v2 Software
-v2.4 20170601
+v2.5 20180511
 
 C Instructions:
 
@@ -16,33 +16,23 @@ C Instructions:
    Note that if you used the old AACGM software from JHU/APL you should have
    a similar variable already set.
 
-   AGB: I altered the routines to allow the file root to be entered as input
-
 3. Untar the contents of the .tar file into a directory
 
-4. Setup IGRF by putting the IGRF coefficients (igrf12coeffs.txt) somewhere
-   or leaving them in the current directory and setting the environment
-   variable IGRF_COEFFS to the fully qualified path, i.e.,
+4. Setup the magnetic field model by putting the GUFM1/IGRF coefficients
+   (magmodel_1590-2015.txt) somewhere or leaving them in the current directory
+   and setting the environment variable IGRF_COEFFS to the fully qualified
+   path, i.e.,
 
-   IGRF_COEFFS=/directory_you_put_IGRF_coefs_in/igrf12coeffs.txt
-
-   AGB: I altered the routines to allow the filename to be entered as input
+   IGRF_COEFFS=/directory_you_put_IGRF_coefs_in/magmodel_1590-2015.txt
 
 5. Build the test program by running:
 
-   gcc -o test_aacgm test_aacgm.c aacgmlib_v2.c igrflib.c genmag.c astalglib.c
-                         mlt_v2.c time.c -lm
+   gcc -o test_aacgm test_aacgm.c aacgmlib_v2.c igrflib.c genmag.c astalglib.c \
+                         mlt_v2.c rtime.c -lm
 
 6. Run the test program by running:
 
    test_aacgm
-
-   AGB: or by running:
-   
-   test_aacgm aagcm_coeff_fileroot igrf_filename
-
-   Both commands will yeild the same result
-   
 
    The output should look something like:
 
@@ -174,7 +164,7 @@ This package include the following files:
 AACGM C software:
 
 README.txt            ; this file
-release_notes.txt     ; details of changes to v2.4
+release_notes.txt     ; details of changes to v2.5
 aacgmlib_v2.c         ; AACGM-v2 functions
 aacgmlib_v2.h         ; AACGM-v2 header file
 genmag.c              ; general purpose functions
@@ -187,7 +177,8 @@ astalg.c              ; Astronomical algorithms functions
 astalg.h              ; Astronomical algorithms header file
 mlt_v2.c              ; MLT-v2 functions
 mlt_v2.h              ; MLT-v2 header file
-igrf12coeffs.txt      ; IGRF12 coefficients
+igrf12coeffs.txt      ; IGRF12 coefficients (1900-2015)
+magmodel_1590-2015.txt; magnetic field coefficients (1590-2015)
 test_aacgm.c          ; testing and example program
 LICENSE-AstAlg.txt    ; license file for Astro algrorithms
 
