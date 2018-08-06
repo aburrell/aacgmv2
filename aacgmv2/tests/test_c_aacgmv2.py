@@ -240,7 +240,7 @@ class TestCAACGMV2:
     def test_forbidden(self):
         """Test convert failure"""
         with pytest.raises(RuntimeError):
-            mloc = aacgmv2._aacgmv2.convert(7, 0, 0, aacgmv2._aacgmv2.G2A)
+            aacgmv2._aacgmv2.convert(7, 0, 0, aacgmv2._aacgmv2.G2A)
 
     def test_inv_mlt_convert(self):
         """Test MLT inversion"""
@@ -249,11 +249,11 @@ class TestCAACGMV2:
         self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlon, -153.5931, decimal=4)
 
-        mlt_args[-3] = 25
+        mlt_args[-1] = 25.0
         self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlon, 41.4069, decimal=4)
 
-        mlt_args[-3] = -1
+        mlt_args[-1] = -1.0
         self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlon, 11.4069, decimal=4)
 
