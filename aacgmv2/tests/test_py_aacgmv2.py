@@ -952,8 +952,8 @@ class TestCoeffPath:
         import os
         os.environ['IGRF_COEFFS'] = "default_igrf"
         os.environ['AACGM_v2_DAT_PREFIX'] = "default_coeff"
-        self.default_igrf = "default_igrf"
-        self.default_coeff = "default_coeff"
+        self.default_igrf = os.environ['IGRF_COEFFS']
+        self.default_coeff = os.environ['AACGM_v2_DAT_PREFIX']
 
     def teardown(self):
         """Runs after every method to clean up previous testing"""
