@@ -27,7 +27,7 @@ class TestPyAACGMV2:
 
         path1 = path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
                           "aacgm_coeffs-12-")
-        assert aacgmv2.AACGM_V2_DAT_PREFIX.find(path1) >= 0
+        assert aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) >= 0
 
         path2 = path.join("aacgmv2", "aacgmv2", "magmodel_1590-2015.txt")
         assert aacgmv2.IGRF_COEFFS.find(path2) >= 0

@@ -57,7 +57,7 @@ if not 'IGRF_COEFFS' in _os.environ.keys():
     _os.environ['IGRF_COEFFS'] = IGRF_COEFFS
 else:
     print("using local IGRF coefficients instead of AACGMV2 defaults")
-    
+
 if not 'AACGM_v2_DAT_PREFIX' in _os.environ.keys():
     _os.environ['AACGM_v2_DAT_PREFIX'] = AACGM_v2_DAT_PREFIX
 else:
