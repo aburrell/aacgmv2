@@ -29,8 +29,8 @@ class TestPyAACGMV2:
                           "aacgm_coeffs-12-")
         assert aacgmv2.AACGM_V2_DAT_PREFIX.find(path1) >= 0
 
-        path2 = path.join("aacgmv2", "aacgmv2", "igrf12coeffs.txt")
-        assert aacgmv2.IGRF_12_COEFFS.find(path2) >= 0
+        path2 = path.join("aacgmv2", "aacgmv2", "magmodel_1590-2015.txt")
+        assert aacgmv2.IGRF_COEFFS.find(path2) >= 0
 
         del path1, path2
 
@@ -945,36 +945,3 @@ class TestMLTConvert:
                                                            self.dtime2)
 
         np.testing.assert_allclose(self.mlt_diff, self.diff_comp, rtol=1.0e-4)
-
-class TestCoeffPath:
-    def setup(self):
-        """Runs before every method to create a clean testing setup"""
-        self.igrf_out = None
-        self.aacgm_out = None
-
-    def teardown(self):
-        """Runs after every method to clean up previous testing"""
-        del self.igrf_out, self.aacgm_out
-
-    def test_set_coeff_path_default(self):
-        """Test the coefficient path setting using defaults"""
-        self.igrf_out, self.coeff_out = aacgmv2.wrapper.set_coeff_path()
-
-        assert self.igrf_out == aacgmv2.IGRF_12_COEFFS
-        assert self.coeff_out == aacgmv2.AACGM_V2_DAT_PREFIX
-
-    def test_set_coeff_path_different(self):
-        """Test the coefficient path setting"""
-        self.igrf_out, self.coeff_out = aacgmv2.wrapper.set_coeff_path("hi",
-                                                                       "bye")
-
-        assert self.igrf_out == "hi"
-        assert self.coeff_out == "bye"
-
-    def test_set_coeff_path_mix(self):
-        """Test the coefficient path setting using a mix of input"""
-        (self.igrf_out,
-         self.coeff_out) = aacgmv2.wrapper.set_coeff_path(coeff_prefix="hi")
-
-        assert self.igrf_out == aacgmv2.IGRF_12_COEFFS
-        assert self.coeff_out == "hi"
