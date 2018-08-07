@@ -22,6 +22,11 @@
 
 /* For windows, define setenv and unsetenv */
 #if defined(_WIN32) || defined(_WIN64)
+
+#ifndef EINVAL
+#define EINVAL 22
+#endif
+
 int setenv(const char *name, const char *value, int overwrite)
 {
   int setsize;
