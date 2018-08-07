@@ -124,12 +124,6 @@ class TestDepAACGMV2:
                                               [82.5909, 83.1286, 83.7039]],
                                    rtol=1e-4)
 
-    def test_convert_badidea_failure(self):
-        """Test conversion failure for BADIDEA"""
-        with pytest.raises(ValueError):
-            self.lat, self.lon = aacgmv2.convert([60], [0], [3000], self.dtime,
-                                                 badidea=True)
-
     def test_convert_location_failure(self):
         """Test conversion with a bad location"""
         self.lat, self.lon = aacgmv2.convert([0], [0], [0], self.dtime)
