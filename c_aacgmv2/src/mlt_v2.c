@@ -114,7 +114,7 @@ double MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
      * than 30 days, recompute the AACGM-v2 coefficients */
     ajd = TimeYMDHMSToJulian(ayr,amo,ady,ahr,amt,asc);
     jd =  TimeYMDHMSToJulian(yr,mo,dy,hr,mt,sc);
-    if (fabs(jd-ajd) > 30.0) {
+    if (abs((int)(jd-ajd)) > 30) {
       err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc);
     }
     if (err != 0) return (err);
@@ -201,7 +201,7 @@ double inv_MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
      * than 30 days, recompute the AACGM-v2 coefficients */
     ajd = TimeYMDHMSToJulian(ayr,amo,ady,ahr,amt,asc);
     jd =  TimeYMDHMSToJulian(yr,mo,dy,hr,mt,sc);
-    if (fabs(jd-ajd) > 30.0) {
+    if (abs((int)(jd-ajd)) > 30) {
       err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc);
     }
     if (err != 0) return (err);
