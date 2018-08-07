@@ -116,7 +116,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
         code = code.upper()
 
         if(height > 2000 and code.find("TRACE") < 0 and
-           code.find("ALLOWTRACE") < 0 and code.find("BADIDEA")):
+           code.find("ALLOWTRACE") < 0 and code.find("BADIDEA") < 0):
             estr = 'coefficients are not valid for altitudes above 2000 km. You'
             estr += ' must either use field-line tracing (trace=True '
             estr += 'or allowtrace=True) or indicate you know this '
@@ -141,9 +141,12 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
     in_lon = ((in_lon + 180.0) % 360.0) - 180.0
 
     # Set current date and time
-    c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
-                           dtime.minute, dtime.second)
-
+    try:
+        c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
+                               dtime.minute, dtime.second)
+    except:
+        raise RuntimeError("unable to set time for {:}".format(dtime))
+        
     # convert location
     try:
         lat_out, lon_out, r_out = c_aacgmv2.convert(in_lat, in_lon, height,
@@ -248,7 +251,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
         code = code.upper()
 
         if(np.nanmax(height) > 2000 and code.find("TRACE") < 0 and
-           code.find("ALLOWTRACE") < 0 and code.find("BADIDEA")):
+           code.find("ALLOWTRACE") < 0 and code.find("BADIDEA") < 0):
             estr = 'coefficients are not valid for altitudes above 2000 km. You'
             estr += ' must either use field-line tracing (trace=True '
             estr += 'or allowtrace=True) or indicate you know this '
@@ -274,8 +277,11 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     in_lon = ((in_lon + 180.0) % 360.0) - 180.0
 
     # Set current date and time
-    c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
-                           dtime.minute, dtime.second)
+    try:
+        c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
+                               dtime.minute, dtime.second)
+    except:
+        raise RuntimeError("unable to set time for {:}".format(dtime))
 
     # Vectorise the AACGM code
     convert_vectorised = np.vectorize(c_aacgmv2.convert)
