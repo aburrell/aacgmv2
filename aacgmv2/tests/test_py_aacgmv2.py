@@ -66,7 +66,7 @@ class TestConvertLatLon:
         np.testing.assert_almost_equal(self.lat_out, 64.3568, decimal=4)
         np.testing.assert_almost_equal(self.lon_out, 83.3027, decimal=4)
         np.testing.assert_almost_equal(self.r_out, 1.4694, decimal=4)
-        
+
         del code
 
     def test_convert_latlon_location_failure(self):
@@ -1085,7 +1085,7 @@ class TestCoeffPath:
             raise AssertionError()
 
     @classmethod
-    def test_set_coeff_path_string():
+    def test_set_coeff_path_string(self):
         """Test the coefficient path setting using two user specified values"""
         import os
         aacgmv2.wrapper.set_coeff_path("hi", "bye")
