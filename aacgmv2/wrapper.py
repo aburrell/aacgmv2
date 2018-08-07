@@ -146,7 +146,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
                                dtime.minute, dtime.second)
     except:
         raise RuntimeError("unable to set time for {:}".format(dtime))
-        
+
     # convert location
     try:
         lat_out, lon_out, r_out = c_aacgmv2.convert(in_lat, in_lon, height,
