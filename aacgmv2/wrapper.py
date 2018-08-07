@@ -20,7 +20,7 @@ import numpy as np
 import logbook as logging
 
 def set_coeff_path(igrf_file=False, coeff_prefix=False):
-    """ Sets the IGRF_COEFF and AACGMV_V2_DAT_PREFIX environment variables.
+    """Sets the IGRF_COEFF and AACGMV_V2_DAT_PREFIX environment variables.
 
     Parameters
     -----------
@@ -157,8 +157,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
     return lat_out, lon_out, r_out
 
 def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
-    """Converts between geomagnetic coordinates and AACGM coordinates.  At least
-    one of in_lat, in_lon, and height must be a list or array
+    """Converts between geomagnetic coordinates and AACGM coordinates.
 
     Parameters
     ------------
@@ -189,6 +188,10 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     out_r : (np.ndarray)
         Geocentric radial distance (R_Earth) or altitude above the surface of
         the Earth (km)
+
+    Notes
+    -------
+    At least one of in_lat, in_lon, and height must be a list or array.
     """
     import aacgmv2._aacgmv2 as c_aacgmv2
 
