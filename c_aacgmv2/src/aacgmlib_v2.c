@@ -506,7 +506,7 @@ double AACGM_v2_Sgn(double a, double b)
 ;
 ; CALLING SEQUENCE:
 ;       err = convert_geo_coord_v2(in_lat,in_lon,height, out_lat,out_lon,
-;                               code,order, igrf_filename);
+;                               code,order);
 ;     
 ;     Input Arguments:  
 ;       in_lat        - latitude in degrees
@@ -531,8 +531,7 @@ double AACGM_v2_Sgn(double a, double b)
 */
 
 int convert_geo_coord_v2(double lat_in, double lon_in, double height_in,
-			 double *lat_out, double *lon_out, int code, int order,
-			 char *igrf_filename) {
+                      double *lat_out, double *lon_out, int code, int order) {
 
 /*  int i,j,k,l,m,f,a,t,flag;*/
   int i,j,k,l,m,flag;
@@ -568,8 +567,7 @@ int convert_geo_coord_v2(double lat_in, double lon_in, double height_in,
   /* TRACE */ /* call tracing functions here and return */
   if ((code & TRACE) || (height_in > MAXALT && (code & ALLOWTRACE))) {
     if (A2G & code) {   /* AACGM-v2 to geographic */
-      err = AACGM_v2_Trace_inv(lat_in,lon_in,height_in, lat_out,lon_out,
-			       igrf_filename);
+      err = AACGM_v2_Trace_inv(lat_in,lon_in,height_in, lat_out,lon_out);
 
       /* v2.3 moved to AACGM_v2_Convert
       if ((code & GEOCENTRIC) == 0) {
@@ -577,8 +575,7 @@ int convert_geo_coord_v2(double lat_in, double lon_in, double height_in,
         *lat_out = llh[0];
       } */
     } else {
-      err = AACGM_v2_Trace(lat_in,lon_in,height_in, lat_out,lon_out,
-			   igrf_filename);
+      err = AACGM_v2_Trace(lat_in,lon_in,height_in, lat_out,lon_out);
     }
 
     return (err);
@@ -857,12 +854,11 @@ int AACGM_v2_LoadCoef(char *fname, int code)
 ;       Load two sets of spherical harmonic coefficients.
 ;
 ; CALLING SEQUENCE:
-;       err = AACGM_v2_LoadCoefs(myear, root);
+;       err = AACGM_v2_LoadCoefs(myear);
 ;     
 ;     Input Arguments:  
 ;       myear         - 5-year epoch year prior to desired time; bracketing
 ;                       set is +5 years.
-;       root          - directory and file root for AACGM coefficient files
 ;
 ;     Return Value:
 ;       error code
@@ -870,9 +866,10 @@ int AACGM_v2_LoadCoef(char *fname, int code)
 ;+-----------------------------------------------------------------------------
 */
 
-int AACGM_v2_LoadCoefs(int year, char *root)
+int AACGM_v2_LoadCoefs(int year)
 {
   char fname[256];
+  char root[256];
   char yrstr[5];  
   int ret=0;
 
@@ -880,9 +877,7 @@ int AACGM_v2_LoadCoefs(int year, char *root)
   printf("AACGM_v2_LoadCoefs\n");
   #endif
   /* default location of coefficient files */
-  if(strlen(root) == 0 && getenv("AACGM_v2_DAT_PREFIX") != (char *)(NULL))
-    strcpy(root,getenv("AACGM_v2_DAT_PREFIX"));
-
+  strcpy(root,getenv("AACGM_v2_DAT_PREFIX"));  
   if (strlen(root)==0) {
     AACGM_v2_errmsg(2);
     return -1;
@@ -925,7 +920,7 @@ int AACGM_v2_LoadCoefs(int year, char *root)
 ;
 ; CALLING SEQUENCE:
 ;       err = AACGM_v2_Convert(in_lat, in_lon, height,
-;                 out_lat, out_lon, r, code, igrf_filename);
+;                 out_lat, out_lon, r, code);
 ;     
 ;     Input Arguments:  
 ;       int_lat       - double precision input latitude in degrees
@@ -972,8 +967,7 @@ int AACGM_v2_LoadCoefs(int year, char *root)
 */
 
 int AACGM_v2_Convert(double in_lat, double in_lon, double height,
-		     double *out_lat, double *out_lon, double *r, int code,
-		     char *igrf_filename)
+                  double *out_lat, double *out_lon, double *r, int code)
 {
   int err;
   int order=10;   /* pass in so a lower order would be allowed? */
@@ -983,24 +977,6 @@ int AACGM_v2_Convert(double in_lat, double in_lon, double height,
   #if DEBUG > 0
   printf("AACGM_v2_Convert\n");
   #endif
-
-  /* height < 0 km */
-  if (height < 0) {
-    fprintf(stderr, "WARNING: coordinate transformations are not intended "
-                    "for altitudes < 0 km: %lf\n", height);
-  /*  return -2; */
-  }
-
-  /* height > 2000 km not allowed for coefficients */
-  if (height > MAXALT && !(code & (TRACE|ALLOWTRACE|BADIDEA))) {
-    fprintf(stderr, "ERROR: coefficients are not valid for altitudes "
-                    "above %d km: %lf.\n", MAXALT, height);
-    fprintf(stderr, "       You must either use field-line tracing "
-                    "(TRACE or ALLOWTRACE) or\n"
-                    "       indicate that you know this is a very bad idea "
-                    "(BADIDEA)\n\n");
-    return -4;
-  }
 
   /* latitude out of bounds */
   if (fabs(in_lat) > 90.) {
@@ -1031,9 +1007,26 @@ int AACGM_v2_Convert(double in_lat, double in_lon, double height,
     height = (rtp[0]-1.)*RE;
   }
 
+  /* height < 0 km */
+  if ((height < 0) && (code&VERBOSE)) {
+    fprintf(stderr, "WARNING: coordinate transformations are not intended "
+                    "for altitudes < 0 km: %lf\n", height);
+  /*  return -2; */
+  }
+
+  /* height > 2000 km not allowed for coefficients */
+  if (height > MAXALT && !(code & (TRACE|ALLOWTRACE|BADIDEA))) {
+    fprintf(stderr, "ERROR: coefficients are not valid for altitudes "
+                    "above %d km: %lf.\n", MAXALT, height);
+    fprintf(stderr, "       You must either use field-line tracing "
+                    "(TRACE or ALLOWTRACE) or\n"
+                    "       indicate that you know this is a very bad idea "
+                    "(BADIDEA)\n\n");
+    return -4;
+  }
+
   /* all inputs are geocentric */
-  err = convert_geo_coord_v2(in_lat,in_lon,height, out_lat,out_lon, code,order,
-			     igrf_filename);
+  err = convert_geo_coord_v2(in_lat,in_lon,height, out_lat,out_lon, code,order);
   /* all outputs are geocentric */
 
   if ((code & A2G) == 0) {    /* forward: G2A */
@@ -1061,7 +1054,7 @@ int AACGM_v2_Convert(double in_lat, double in_lon, double height,
 ;       any calls to AACGM_v2_Convert.
 ;
 ; CALLING SEQUENCE:
-;       err = AACGM_v2_SetDateTime(year, month, day, hour, minute, second, root)
+;       err = AACGM_v2_SetDateTime(year, month, day, hour, minute, second);
 ;     
 ;     Input Arguments:  
 ;       year          - year [1900-2020)
@@ -1070,7 +1063,6 @@ int AACGM_v2_Convert(double in_lat, double in_lon, double height,
 ;       hour          - hour of day [00-24]
 ;       minute        - minute of hour [00-60]
 ;       second        - second of minute [00-60]
-;       root          - directory and file root of AACGM coefficient file
 ;
 ;     Return Value:
 ;       error code
@@ -1079,7 +1071,7 @@ int AACGM_v2_Convert(double in_lat, double in_lon, double height,
 */
 
 int AACGM_v2_SetDateTime(int year, int month, int day,
-			 int hour, int minute, int second, char *root)
+                      int hour, int minute, int second)
 {
   int err, doy, ndays;
   double fyear;
@@ -1108,7 +1100,7 @@ int AACGM_v2_SetDateTime(int year, int month, int day,
         aacgm_date.hour, aacgm_date.minute, aacgm_date.second);
   #endif
 
-  err = AACGM_v2_TimeInterp(root);
+  err = AACGM_v2_TimeInterp();
 
   return err;
 }
@@ -1162,7 +1154,7 @@ int AACGM_v2_GetDateTime(int *year, int *month, int *day,
 ;       Function to set date and time to current computer time in UT.
 ;
 ; CALLING SEQUENCE:
-;       err = AACGM_v2_SetNow(root);
+;       err = AACGM_v2_SetNow();
 ;     
 ;     Return Value:
 ;       error code
@@ -1170,7 +1162,7 @@ int AACGM_v2_GetDateTime(int *year, int *month, int *day,
 ;+-----------------------------------------------------------------------------
 */
 
-int AACGM_v2_SetNow(char *root)
+int AACGM_v2_SetNow(void)
 {
   /* current time */
   int err, doy,ndays;
@@ -1210,7 +1202,7 @@ int AACGM_v2_SetNow(char *root)
         aacgm_date.hour, aacgm_date.minute, aacgm_date.second);
   #endif
 
-  err = AACGM_v2_TimeInterp(root);
+  err = AACGM_v2_TimeInterp();
 
   return err;
 }
@@ -1250,7 +1242,7 @@ void AACGM_v2_errmsg(int ecode)
   "*                                                                        *\n"
   "* or to the current computer time in UT using the function:              *\n"
   "*                                                                        *\n"
-  "*   AACGM_v2_SetNow(root);                                               *\n"
+  "*   AACGM_v2_SetNow();                                                   *\n"
   "*                                                                        *\n"
   "* subsequent calls to AACGM_v2_Convert() will use the last date and time *\n"
   "* that was set, so update to the actual date and time that is desired.   *"
@@ -1289,12 +1281,12 @@ void AACGM_v2_errmsg(int ecode)
 ;       Interpolate coefficients between adjacent 5-year epochs
 ;
 ; CALLING SEQUENCE:
-;       err = AACGM_v2_TimeInterp(root);
+;       err = AACGM_v2_TimeInterp();
 ;     
 ;+-----------------------------------------------------------------------------
 */
 
-int AACGM_v2_TimeInterp(char *root)
+int AACGM_v2_TimeInterp(void)
 {
   int myear,f,l,a,t,err;
   double fyear;
@@ -1302,7 +1294,7 @@ int AACGM_v2_TimeInterp(char *root)
   /* myear is the epoch model year */
   myear = aacgm_date.year/5*5;
   if (myear != myear_old) {   /* load the new coefficients, if needed */
-    err = AACGM_v2_LoadCoefs(myear, root);
+    err = AACGM_v2_LoadCoefs(myear);
     if (err != 0) return err;
     fyear_old = -1;           /* force time interpolation */
     height_old[0] = -1.;      /* force height interpolation */
@@ -1339,17 +1331,16 @@ int AACGM_v2_TimeInterp(char *root)
 
 
 int AACGM_v2_Trace(double lat_in, double lon_in, double alt,
-		   double *lat_out, double *lon_out, char *igrf_filename)
+                    double *lat_out, double *lon_out)
 {
-  int err, kk, idir;
+  int err, kk, idir, below;
   unsigned long k,niter;
   double ds, dsRE, dsRE0, eps, Lshell;
   double rtp[3],xyzg[3],xyzm[3],xyzc[3],xyzp[3];
 
   /* set date for IGRF model */
   IGRF_SetDateTime(aacgm_date.year, aacgm_date.month, aacgm_date.day,
-		   aacgm_date.hour, aacgm_date.minute, aacgm_date.second,
-		   igrf_filename);
+                    aacgm_date.hour, aacgm_date.minute, aacgm_date.second);
 
   /* Q: these could eventually be command-line options */
   ds    = 1.;
@@ -1383,21 +1374,32 @@ int AACGM_v2_Trace(double lat_in, double lon_in, double alt,
   ; lie above the starting altitude. I am considering the solution for
   ; this set of fieldlines as undefined; just like those that lie below
   ; the surface of the Earth.
+  ;
+  ; Added a check for when tracing goes below altitude so as not to contiue
+  ; tracing beyond what is necessary.
+  ;
+  ; Also making sure that stepsize does not go to zero
   */
-  while (idir*xyzm[2] < 0.) {
+  below = 0;
+  while (!below && idir*xyzm[2] < 0.) {
 
     for (kk=0;kk<3;kk++) xyzp[kk] = xyzg[kk]; /* save as previous */
 
     AACGM_v2_RK45(xyzg, idir, &dsRE, eps, 1); /* set to 0 for RK4: /noadapt) */
 
+    /* make sure that stepsize does not go to zero */
+    if (dsRE*RE < 1e-2) dsRE = 1e-2/RE;
+
     /* convert to magnetic Dipole coordinates */
     geo2mag(xyzg, xyzm);
 
+    below = ((xyzg[0]*xyzg[0]+xyzg[1]*xyzg[1]+xyzg[2]*xyzg[2]) <
+             (RE+alt)*(RE+alt)/(RE*RE));
     k++;
   }
   niter = k;
 
-  if (niter > 1) {
+  if (!below && niter > 1) {
     /* now bisect stepsize (fixed) to land on magnetic equator w/in 1 m */
     for (k=0;k<3;k++) xyzc[k] = xyzp[k];
     kk = 0L;
@@ -1414,6 +1416,9 @@ int AACGM_v2_Trace(double lat_in, double lon_in, double alt,
       kk++;
     }
     niter += kk;
+  } else {
+    if (below) printf("BELOW\n");
+    for (k=0;k<3;k++) xyzc[k] = xyzg[k];    /* just use last value */
   }
 
   /* 'trace' back to reference surface along Dipole field lines */
@@ -1438,7 +1443,7 @@ int AACGM_v2_Trace(double lat_in, double lon_in, double alt,
 }
 
 int AACGM_v2_Trace_inv(double lat_in, double lon_in, double alt,
-		       double *lat_out, double *lon_out, char *igrf_filename)
+                    double *lat_out, double *lon_out)
 {
   int err, kk, idir;
   unsigned long k,niter;
@@ -1447,8 +1452,7 @@ int AACGM_v2_Trace_inv(double lat_in, double lon_in, double alt,
 
   /* set date for IGRF model */
   IGRF_SetDateTime(aacgm_date.year, aacgm_date.month, aacgm_date.day,
-		   aacgm_date.hour, aacgm_date.minute, aacgm_date.second,
-		   igrf_filename);
+                    aacgm_date.hour, aacgm_date.minute, aacgm_date.second);
 
   /* Q: these could eventually be command-line options */
   ds    = 1.;
@@ -1493,8 +1497,10 @@ int AACGM_v2_Trace_inv(double lat_in, double lon_in, double alt,
 
       AACGM_v2_RK45(xyzg, idir, &dsRE, eps, 1); /* set to 0 for RK4: /noadapt)*/
 
-      car2sph(xyzg, rtp);
+      /* make sure that stepsize does not go to zero */
+      if (dsRE*RE < 5e-1) dsRE = 5e-1/RE;
 
+      car2sph(xyzg, rtp);
       k++;
     }
     niter = k;

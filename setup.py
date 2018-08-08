@@ -24,14 +24,14 @@ if 'PY_CCOV' in os.environ.keys():
 
 setup(
     name='aacgmv2',
-    version='2.4.2',
+    version='2.5.0',
     license='MIT',
     description='A Python wrapper for AACGM-v2 magnetic coordinates',
     long_description='%s\n%s' % (read('README.rst'),
                                  re.sub(':[a-z]+:`~?(.*?)`',
                                         r'``\1``', read('CHANGELOG.rst'))),
     author='Angeline G. Burrell, Christer van der Meeren',
-    author_email='agb073000@utdallas.edu',
+    author_email='angeline.burrell@nrl.navy.mil',
     url='https://github.com/aburrell/aacgmv2',
     packages=find_packages(),
     include_package_data=True,
