@@ -23,6 +23,7 @@ class TestCAACGMV2:
         del self.date_args, self.long_date, self.mlat, self.mlon, self.mlt
         del self.lat_in, self.lon_in, self.alt_in
 
+    @classmethod
     def test_module_structure(self):
         """Test module structure"""
         assert aacgmv2
@@ -52,6 +53,7 @@ class TestCAACGMV2:
             arg1 = aacgmv2._aacgmv2.set_datetime(*darg) is None
             assert arg1
 
+    @classmethod
     def test_fail_set_datetime(self):
         """Test unsuccessful set_datetime"""
         with pytest.raises(RuntimeError):
@@ -237,6 +239,7 @@ class TestCAACGMV2:
 
         del code
 
+    @classmethod
     def test_forbidden(self):
         """Test convert failure"""
         with pytest.raises(RuntimeError):

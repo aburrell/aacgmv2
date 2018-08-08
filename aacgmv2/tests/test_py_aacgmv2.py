@@ -8,6 +8,7 @@ import aacgmv2
 
 class TestPyAACGMV2:
 
+    @classmethod
     def test_module_structure(self):
         """Test module structure"""
         assert aacgmv2
@@ -21,6 +22,7 @@ class TestPyAACGMV2:
         assert aacgmv2.wrapper
         assert aacgmv2.wrapper.set_coeff_path
 
+    @classmethod
     def test_module_parameters(self):
         """Test module constants"""
         from os import path
@@ -881,82 +883,97 @@ class TestGetAACGMCoordArr:
         handler.close()
 
 class TestConvertCode:
+    @classmethod
     def test_convert_str_to_bit_g2a(self):
         """Test conversion from string code to bit G2A"""
         if aacgmv2.convert_str_to_bit("G2A") != aacgmv2._aacgmv2.G2A:
             raise AssertionError()
 
+    @classmethod
     def test_convert_str_to_bit_a2g(self):
         """Test conversion from string code to bit A2G"""
         if aacgmv2.convert_str_to_bit("A2G") != aacgmv2._aacgmv2.A2G:
             raise AssertionError()
 
+    @classmethod
     def test_convert_str_to_bit_trace(self):
         """Test conversion from string code to bit TRACE"""
         if aacgmv2.convert_str_to_bit("TRACE") != aacgmv2._aacgmv2.TRACE:
             raise AssertionError()
 
+    @classmethod
     def test_convert_str_to_bit_allowtrace(self):
         """Test conversion from string code to bit ALLOWTRACE"""
         if(aacgmv2.convert_str_to_bit("ALLOWTRACE") !=
            aacgmv2._aacgmv2.ALLOWTRACE):
             raise AssertionError()
 
+    @classmethod
     def test_convert_str_to_bit_badidea(self):
         """Test conversion from string code to bit BADIDEA"""
         if(aacgmv2.convert_str_to_bit("BADIDEA") !=
            aacgmv2._aacgmv2.BADIDEA):
             raise AssertionError()
 
+    @classmethod
     def test_convert_str_to_bit_geocentric(self):
         """Test conversion from string code to bit GEOCENTRIC"""
         if(aacgmv2.convert_str_to_bit("GEOCENTRIC") !=
            aacgmv2._aacgmv2.GEOCENTRIC):
             raise AssertionError()
 
+    @classmethod
     def test_convert_str_to_bit_lowercase(self):
         """Test conversion from string code to bit for a lowercase code"""
         if aacgmv2.convert_str_to_bit("g2a") != aacgmv2._aacgmv2.G2A:
             raise AssertionError()
 
+    @classmethod
     def test_convert_str_to_bit_spaces(self):
         """Test conversion from string code to bit for a code with spaces"""
         if(aacgmv2.convert_str_to_bit("G2A | trace") !=
            aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE):
             raise AssertionError()
 
+    @classmethod
     def test_convert_str_to_bit_invalid(self):
         """Test conversion from string code to bit for an invalid code"""
         if aacgmv2.convert_str_to_bit("ggoogg|") != aacgmv2._aacgmv2.G2A:
             raise AssertionError()
 
+    @classmethod
     def test_convert_bool_to_bit_g2a(self):
         """Test conversion from string code to bit G2A"""
         if aacgmv2.convert_bool_to_bit() != aacgmv2._aacgmv2.G2A:
             raise AssertionError()
 
+    @classmethod
     def test_convert_bool_to_bit_a2g(self):
         """Test conversion from string code to bit A2G"""
         if aacgmv2.convert_bool_to_bit(a2g=True) != aacgmv2._aacgmv2.A2G:
             raise AssertionError()
 
+    @classmethod
     def test_convert_bool_to_bit_trace(self):
         """Test conversion from string code to bit TRACE"""
         if aacgmv2.convert_bool_to_bit(trace=True) != aacgmv2._aacgmv2.TRACE:
             raise AssertionError()
 
+    @classmethod
     def test_convert_bool_to_bit_allowtrace(self):
         """Test conversion from string code to bit ALLOWTRACE"""
         if(aacgmv2.convert_bool_to_bit(allowtrace=True) !=
            aacgmv2._aacgmv2.ALLOWTRACE):
             raise AssertionError()
 
+    @classmethod
     def test_convert_bool_to_bit_badidea(self):
         """Test conversion from string code to bit BADIDEA"""
         if(aacgmv2.convert_bool_to_bit(badidea=True) !=
            aacgmv2._aacgmv2.BADIDEA):
             raise AssertionError()
 
+    @classmethod
     def test_convert_bool_to_bit_geocentric(self):
         """Test conversion from string code to bit GEOCENTRIC"""
         if(aacgmv2.convert_bool_to_bit(geocentric=True) !=

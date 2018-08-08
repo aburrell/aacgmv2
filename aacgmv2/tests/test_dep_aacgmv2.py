@@ -18,6 +18,7 @@ class TestDepAACGMV2:
         """Runs after every method to clean up previous testing"""
         del self.dtime, self.ddate, self.lat, self.lon
 
+    @classmethod
     def test_module_structure(self):
         """Test module structure for deprecated routines"""
         assert aacgmv2
