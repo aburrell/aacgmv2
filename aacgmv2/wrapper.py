@@ -45,7 +45,10 @@ def set_coeff_path(igrf_file=False, coeff_prefix=False):
         if coeff_prefix is True or coeff_prefix is None:
             coeff_prefix = aacgmv2.AACGM_v2_DAT_PREFIX
 
-        os.unsetenv('AACGM_v2_DAT_PREFIX')
+        if hasattr(os, "unsetenv"):
+            os.unsetenv('AACGM_v2_DAT_PREFIX')
+        else:
+            del os.environ['AACGM_v2_DAT_PREFIX']
         os.environ['AACGM_v2_DAT_PREFIX'] = coeff_prefix
 
     # Define IGRF file if requested
@@ -55,7 +58,10 @@ def set_coeff_path(igrf_file=False, coeff_prefix=False):
         if igrf_file is True or igrf_file is None:
             igrf_file = aacgmv2.IGRF_COEFFS
 
-        os.unsetenv('IGRF_COEFFS')
+        if hasattr(os, "unsetenv"):
+            os.unsetenv('IGRF_COEFFS')
+        else:
+            del os.environ['IGRF_COEFFS']
         os.environ['IGRF_COEFFS'] = igrf_file
 
     return
