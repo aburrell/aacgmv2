@@ -1,6 +1,16 @@
 
 Changelog
 =========
+2.5.0 (2018-08-08)
+-----------------------------------------
+* Updated C code and coefficients to version 2.5.  Changes in python
+  code reflect changes in C code (includes going back to using environment
+  variables instead of strings for coefficient file locations)
+* Added decorators to some of the test functions
+* Specified AppVeyor Visual Studio version, since it was defaulting to 2010 and
+  that version doesn't work with python 3
+
+
 2.4.2 (2018-05-21)
 -----------------------------------------
 * Fixed bug in convert_mlt that caused all time inputs to occur
