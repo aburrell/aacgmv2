@@ -1,5 +1,7 @@
 version: '{branch}-{build}'
 build: off
+image:
+- Visual Studio 2015
 environment:
   global:
     WITH_COMPILER: 'cmd /E:ON /V:ON /C .\ci\appveyor-with-compiler.cmd'

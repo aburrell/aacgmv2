@@ -8,7 +8,7 @@
 #include "astalg.h"
 
 /*#define DEBUG 1*/
-/* TO DO: should these stuff go in igrflib.h? */
+/* TO DO: should these go in igrflib.h? */
 
 static struct {
   int year;
@@ -41,7 +41,7 @@ static int    nmx;                          /* order of expansion */
 ; for debugging
 ;+-----------------------------------------------------------------------------
 */
-void pause(void)
+void igrf_pause(void)
 {
   char ch;
 
@@ -82,7 +82,7 @@ void pause(void)
 ;+-----------------------------------------------------------------------------
 */
 
-int IGRF_loadcoeffs(char *filename)
+int IGRF_loadcoeffs(void)
 {
   int k,l,m,n, ll,mm;
   int fac, len;
@@ -90,6 +90,7 @@ int IGRF_loadcoeffs(char *filename)
   int dgrf[MAXNYR];
   int epoch[MAXNYR];
   char jnk;
+  char *filename;
 /*  char header[2][MAXSTR];*/
   char line[MAXSTR];
   double fyear;
@@ -102,17 +103,13 @@ int IGRF_loadcoeffs(char *filename)
   #endif
 
   /* file containing the IGRF coefficients */
-  if(strlen(filename) == 0 && getenv("IGRF_COEFFS") != (char *)(NULL))
-    filename = getenv("IGRF_COEFFS");
-
-  if(strlen(filename) == 0)
-    {
-      printf("\n");
-      printf("*************************************************************\n");
-      printf("* You MUST set the environment variable IGRF_COEFFS \n");
-      printf("*************************************************************\n");
-      return (-99);
-    }
+  if ((filename = getenv("IGRF_COEFFS")) == NULL) {
+    printf("\n");
+    printf("***************************************************************\n");
+    printf("* You MUST set the environment variable IGRF_COEFFS \n");
+    printf("***************************************************************\n");
+    return (-99);
+  }
 /*  strcpy(filename,getenv("IGRF_COEFFS")); */
 
   #if DEBUG > 1
@@ -198,8 +195,9 @@ int IGRF_loadcoeffs(char *filename)
   iyear = 0;
   for (m=0; m<len; m++) {
     switch (line[m]) {
-      case 'I': dgrf[iyear] = 0; break;
-      case 'D': dgrf[iyear] = 1; break;
+      case 'U':                         /* for GUFM1 */
+      case 'I': dgrf[iyear] = 0; break; /* for IGRF */
+      case 'D': dgrf[iyear] = 1; break; /* for DGRF */
       case 'G': iyear++; break;
     }
   }
@@ -282,7 +280,7 @@ int IGRF_loadcoeffs(char *filename)
     }
 
     #if DEBUG > 2
-    pause();
+    igrf_pause();
     #endif
   }
   fclose(fp);
@@ -290,7 +288,7 @@ int IGRF_loadcoeffs(char *filename)
   #if DEBUG > 1
   for (n=0; n<nyear; n++)
     fprintf(stderr, "%04d %f\n", epoch[n], IGRF_coef_set[n][0]);
-  pause();
+  igrf_pause();
   #endif
 
   #if DEBUG > 1
@@ -303,7 +301,7 @@ int IGRF_loadcoeffs(char *filename)
                       IGRF_coef_set[(1980-1900)/5][k]);
     }
   }
-  pause();
+  igrf_pause();
   #endif
 
   return (0);
@@ -647,7 +645,7 @@ int IGRF_interpolate_coefs(void) {
 ;       any calls to IGRF functions.
 ;
 ; CALLING SEQUENCE:
-;       err = IGRF_SetDateTime(year, month, day, hour, minute, second, filename)
+;       err = IGRF_SetDateTime(year, month, day, hour, minute, second);
 ;     
 ;     Input Arguments:  
 ;       year          - year [1965-2014]
@@ -656,7 +654,6 @@ int IGRF_interpolate_coefs(void) {
 ;       hour          - hour of day [00-24]
 ;       minute        - minute of hour [00-60]
 ;       second        - second of minute [00-60]
-;       filename      - file with IGRF coefficients
 ;
 ;     Return Value:
 ;       error code
@@ -665,13 +662,13 @@ int IGRF_interpolate_coefs(void) {
 */
 
 int IGRF_SetDateTime(int year, int month, int day,
-		     int hour, int minute, int second, char *filename)
+                      int hour, int minute, int second)
 {
   int err = 0;
 
   /* load coefficients if not already loaded */
   if (igrf_date.year < 0)
-    err = IGRF_loadcoeffs(filename);
+    err = IGRF_loadcoeffs();
 
   if (err) return (err);
 
@@ -749,7 +746,7 @@ int IGRF_GetDateTime(int *year, int *month, int *day,
 ;       Function to set date and time to current computer time in UT.
 ;
 ; CALLING SEQUENCE:
-;       err = IGRF_SetNow(filename);
+;       err = IGRF_SetNow();
 ;     
 ;     Return Value:
 ;       error code
@@ -757,7 +754,7 @@ int IGRF_GetDateTime(int *year, int *month, int *day,
 ;+-----------------------------------------------------------------------------
 */
 
-int IGRF_SetNow(char *filename)
+int IGRF_SetNow(void)
 {
   /* current time */
   int err = 0;
@@ -767,7 +764,7 @@ int IGRF_SetNow(char *filename)
 
   /* load coefficients if not already loaded */
   if (igrf_date.year < 0)
-    err = IGRF_loadcoeffs(filename);
+    err = IGRF_loadcoeffs();
 
   if (err) return (err);
 
@@ -817,7 +814,7 @@ int IGRF_SetNow(char *filename)
 ;+-----------------------------------------------------------------------------
 */
 
-double IGRF_Tilt(int yr, int mo, int dy, int hr, int mt, int sc, char *filename)
+double IGRF_Tilt(int yr, int mo, int dy, int hr, int mt, int sc)
 {
   double sps,s1,s2,s3,q;
   double d1,d2,d3;
@@ -829,7 +826,7 @@ double IGRF_Tilt(int yr, int mo, int dy, int hr, int mt, int sc, char *filename)
   double rad = 57.295779513;
   double dtwopi = 360.;
 
-  IGRF_SetDateTime(yr,mo,dy,hr,mt,sc, filename);
+  IGRF_SetDateTime(yr,mo,dy,hr,mt,sc);
 
   dd   = AstAlg_dday(dy,hr,mt,sc);
   jd   = AstAlg_jde(yr,mo,dd);
@@ -888,11 +885,11 @@ fprintf(stderr,
 "* calling IGRF functions you must set the date and time to the integer    *\n"
 "* using the function:                                                     *\n"
 "*                                                                         *\n"
-"*   IGRF_SetDateTime(year,month,day,hour,minute,second,filename);         *\n"
+"*   IGRF_SetDateTime(year,month,day,hour,minute,second);                  *\n"
 "*                                                                         *\n"
 "* or to the current computer time in UT using the function:               *\n"
 "*                                                                         *\n"
-"*   IGRF_SetNow(filename);                                                *\n"
+"*   IGRF_SetNow();                                                        *\n"
 "*                                                                         *\n"
 "* subsequent calls to IGRF functions will use the last date and time      *\n"
 "* that was set, so update to the actual date and time that is desired.    *\n"
@@ -1514,17 +1511,17 @@ int AACGM_v2_RK45(double xyz[], int idir, double *ds, double eps, int code) {
         /*if keyword_set(RRds) then   ds = min([50*r*r*r/RE, ds])*/
         *ds = MIN(50*rtp[0]*rtp[0]*rtp[0]/RE, *ds);
       } /* otherwise leave the stepsize alone */
-    }
 
-    /* we use the RK4 solution */
-    for (k=0;k<3;k++) xyz[k] = w1[k];
-    /*
-    ; I would assume that using the higher order RK5 method is better, but
-    ; there is the suggestion that using the RK4 solution guarantees accuracy
-    ; while the RK5 does not. Apparently some texts are now suggesting using
-    ; the RK5 solution...
-    for (k=0;k<3;k++) xyz[k] = w2[k];
-    */
+      /* we use the RK4 solution */
+      for (k=0;k<3;k++) xyz[k] = w1[k];
+      /*
+      ; I would assume that using the higher order RK5 method is better, but
+      ; there is the suggestion that using the RK4 solution guarantees accuracy
+      ; while the RK5 does not. Apparently some texts are now suggesting using
+      ; the RK5 solution...
+      for (k=0;k<3;k++) xyz[k] = w2[k];
+      */
+    }
   }
 
   return (0);

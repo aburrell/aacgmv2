@@ -7,17 +7,8 @@ Python library
 
 For full documentation of the functions, see :doc:`Reference → aacgmv2 <reference/aacgmv2>`.
 
-    >>> import aacgmv2
-    >>> import datetime as dt
-    >>> import numpy as np
-    >>> np.set_printoptions(formatter={'float_kind': lambda x:'{:.4f}'.format(x)})
-    >>> # geo to AACGM, single numbers
-    >>> dtime = dt.datetime(2013, 11, 3)
-    >>> np.array(aacgmv2.get_aacgm_coord(60, 15, 300, dtime))
-    array([57.4698, 93.6300, 1.4822])
-    >>> # AACGM to geo, mix arrays/numbers
-    >>> aacgmv2.convert_latlon_arr([90, -90], 0, 0, dtime, code="A2G")
-    (array([82.9666, -74.3385]), array([-84.6652, 125.8401]), array([14.1244, 12.8771]))
+For examples on converting between AACGM and geographic coordinates and AACGM
+and MLT, see :doc:`Overview → Quick Start <readme>`.
 
 Command-line interface
 ======================

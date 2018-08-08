@@ -1,6 +1,13 @@
 
 Changelog
 =========
+2.5.0 (2018-08-06)
+-----------------------------------------
+* Updated C code and coefficients to version 2.5.  Changes in python
+  code reflect changes in C code (includes going back to using environment
+  variables instead of strings for coefficient file locations)
+
+
 2.4.2 (2018-05-21)
 -----------------------------------------
 * Fixed bug in convert_mlt that caused all time inputs to occur
