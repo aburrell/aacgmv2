@@ -45,11 +45,6 @@
 ;                    case the AACGM-v2 coefficients are loaded and interpolated
 ;                    which could impact other calls to AACGM_v2_Convert() if
 ;                    the date/time is not reset.
-; 20180314 AGB v1.2a Changed inv_MLTConvert_v2 to call AACGM_v2_SetDateTime() if
-;                    the AACGM-v2 date/time is not currently set OR if the
-;                    date/time passed into one of the public functions differs
-;                    from the AACGM-v2 date/time by more than 30 days.  This way
-;                    it has the same behaviour as MLTConvert_v2
 
 ; Changes
 
@@ -62,20 +57,20 @@
 ; Public Functions:
 ; -----------------
 ;
-; mlt  = MLTConvertYMDHMS_v2(yr,mo,dy,hr,mt,sc, mlon, igrf_filename);
-; mlon = inv_MLTConvertYMDHMS_v2(yr,mo,dy,hr,mt,sc, mlt, igrf_filename);
+; mlt  = MLTConvertYMDHMS_v2(yr,mo,dy,hr,mt,sc, mlon);
+; mlon = inv_MLTConvertYMDHMS_v2(yr,mo,dy,hr,mt,sc, mlt);
 ;
-; mlt  = MLTConvertEpoch_v2(epoch, mlon, igrf_filename);
-; mlon = inv_MLTConvertEpoch_v2(epoch, mlt, igrf_filename);
+; mlt  = MLTConvertEpoch_v2(epoch, mlon);
+; mlon = inv_MLTConvertEpoch_v2(epoch, mlt);
 ;
-; mlt  = MLTConvertYrsec_v2(yr,yrsec, mlon, igrf_filename);
-; mlon = inv_MLTConvertYrsec_v2(yr,yrsec, mlt, igrf_filename);
+; mlt  = MLTConvertYrsec_v2(yr,yrsec, mlon);
+; mlon = inv_MLTConvertYrsec_v2(yr,yrsec, mlt);
 ;
 ; Private Functions:
 ; ------------------
 ;
-; mlt  = MLTConvert_v2(yr,mo,dy,hr,mt,sc, mlon, root, igrf_filename);
-; mlon = inv_MLTConvert_v2(yr,mo,dy,hr,mt,sc, mlt, root, igrf_filename);
+; mlt  = MLTConvert_v2(yr,mo,dy,hr,mt,sc, mlon);
+; mlon = inv_MLTConvert_v2(yr,mo,dy,hr,mt,sc, mlt);
 ; 
 ;
 */
@@ -99,7 +94,7 @@ struct {
  *
  */
 double MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
-		     double mlon, char *root, char *igrf_filename)
+                      double mlon)
 {
   int err;
   int ayr,amo,ady,ahr,amt,asc,adyn;
@@ -112,15 +107,15 @@ double MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
   AACGM_v2_GetDateTime(&ayr, &amo, &ady, &ahr, &amt, &asc, &adyn);
   if (ayr < 0) { 
     /* AACGM date/time not set so set it to the date/time passed in */
-    err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc, root);
+    err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc);
     if (err != 0) return (err);
   } else {
     /* If date/time passed into function differs from AACGM data/time by more
      * than 30 days, recompute the AACGM-v2 coefficients */
     ajd = TimeYMDHMSToJulian(ayr,amo,ady,ahr,amt,asc);
     jd =  TimeYMDHMSToJulian(yr,mo,dy,hr,mt,sc);
-    if (fabs(jd-ajd) > 30.0) {
-      err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc, root);
+    if (abs((int)(jd-ajd)) > 30) {
+      err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc);
     }
     if (err != 0) return (err);
   }
@@ -130,8 +125,8 @@ double MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
     return (NAN);
   }
 
-  hgt = 700.0;   /* AACGM-v2 coefficients are defined everywhere above this
-		  * altitude. */
+  hgt = 700.;   /* AACGM-v2 coefficients are defined everywhere above this
+                 * altitude. */
 
   if (mlt_date.yr != yr || mlt_date.mo != mo || mlt_date.dy != dy ||
       mlt_date.hr != hr || mlt_date.mt != mt || mlt_date.sc != sc) {
@@ -164,8 +159,7 @@ double MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
     slon = (43200.-at)*15./3600.;         /* subsolar point  */
 
     /* compute AACGM-v2 coordinates of reference point */
-    err = AACGM_v2_Convert(dec, slon, hgt, &mlat, &mlon_ref, &r, G2A,
-			   igrf_filename);
+    err = AACGM_v2_Convert(dec, slon, hgt, &mlat, &mlon_ref, &r, G2A);
 
     /* check for error: this should NOT happen... */
     if (err != 0) {
@@ -175,39 +169,40 @@ double MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
   }
 /*printf("** %lf\n", mlon_ref);*/
 
-  aacgm_mlt = 12.0 + (mlon - mlon_ref)/15.0;  /* MLT based on subsolar point */
+  aacgm_mlt = 12. + (mlon - mlon_ref)/15.;  /* MLT based on subsolar point */
 
   /* comparision with IDL version is exact */
 
-  while (aacgm_mlt > 24.0) aacgm_mlt -= 24.0;
-  while (aacgm_mlt <  0.0) aacgm_mlt += 24.0;
+  while (aacgm_mlt > 24.) aacgm_mlt -= 24.;
+  while (aacgm_mlt <  0.) aacgm_mlt += 24.;
 
   return (aacgm_mlt);
 }
 
 /* inverse function: MLT to AACGM-v2 magnetic longitude */
 double inv_MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
-			 double mlt, char *root, char *igrf_filename)
+                      double mlt)
 {
   int err;
   int ayr,amo,ady,ahr,amt,asc,adyn;
-  double dd,jd,eqt,dec,ut,at,ajd;
+  double dd,jd,eqt,dec,ut,at;
   double slon,mlat,r;
   double hgt,aacgm_mlon;
+  double ajd;
 
   err = 0;
   AACGM_v2_GetDateTime(&ayr, &amo, &ady, &ahr, &amt, &asc, &adyn);
-  if (ayr < 0) { 
+  if (ayr < 0) {
     /* AACGM date/time not set so set it to the date/time passed in */
-    err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc,root);
+    err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc);
     if (err != 0) return (err);
   } else {
     /* If date/time passed into function differs from AACGM data/time by more
      * than 30 days, recompute the AACGM-v2 coefficients */
     ajd = TimeYMDHMSToJulian(ayr,amo,ady,ahr,amt,asc);
     jd =  TimeYMDHMSToJulian(yr,mo,dy,hr,mt,sc);
-    if (fabs(jd-ajd) > 30.0) {
-      err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc, root);
+    if (abs((int)(jd-ajd)) > 30) {
+      err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc);
     }
     if (err != 0) return (err);
   }
@@ -242,8 +237,7 @@ double inv_MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
     slon = (43200.-at)*15./3600.;         /* subsolar point  */
 
     /* compute AACGM-v2 coordinates of reference point */
-    err = AACGM_v2_Convert(dec, slon, hgt, &mlat, &mlon_ref, &r, G2A,
-			   igrf_filename);
+    err = AACGM_v2_Convert(dec, slon, hgt, &mlat, &mlon_ref, &r, G2A);
 
     /* check for error: this should NOT happen... */
     if (err != 0) {
@@ -260,57 +254,53 @@ double inv_MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
   return (aacgm_mlon);
 }
 
-double MLTConvertYMDHMS_v2(int yr, int mo, int dy, int hr, int mt, int sc,
-			   double mlon, char *root, char *igrf_filename)
+double MLTConvertYMDHMS_v2(int yr, int mo, int dy,
+                           int hr,int mt,int sc, double mlon)
 {
-  return (MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlon,root,igrf_filename));
+  return (MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlon));
 }
 
-double inv_MLTConvertYMDHMS_v2(int yr, int mo, int dy, int hr, int mt, int sc,
-			       double mlt, char *root, char *igrf_filename)
+double inv_MLTConvertYMDHMS_v2(int yr, int mo, int dy,
+                           int hr,int mt,int sc, double mlt)
 {
-  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlt,root,igrf_filename));
+  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlt));
 }
 
-double MLTConvertYrsec_v2(int yr,int yr_sec, double mlon, char *root,
-			  char *igrf_filename)
-{
-  int mo,dy,hr,mt,sc;
-
-  TimeYrsecToYMDHMS(yr_sec,yr,&mo,&dy,&hr,&mt,&sc);
-
-  return (MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlon,root,igrf_filename));
-}
-
-double inv_MLTConvertYrsec_v2(int yr, int yr_sec, double mlt, char *root,
-			      char *igrf_filename)
+double MLTConvertYrsec_v2(int yr,int yr_sec, double mlon)
 {
   int mo,dy,hr,mt,sc;
 
   TimeYrsecToYMDHMS(yr_sec,yr,&mo,&dy,&hr,&mt,&sc);
 
-  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlt,root,igrf_filename));
+  return (MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlon));
 }
 
-double MLTConvertEpoch_v2(double epoch, double mlon, char *root,
-			  char *igrf_filename)
+double inv_MLTConvertYrsec_v2(int yr,int yr_sec, double mlt)
+{
+  int mo,dy,hr,mt,sc;
+
+  TimeYrsecToYMDHMS(yr_sec,yr,&mo,&dy,&hr,&mt,&sc);
+
+  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,sc,mlt));
+}
+
+double MLTConvertEpoch_v2(double epoch, double mlon)
 {
   int yr,mo,dy,hr,mt;
   double sc;
 
   TimeEpochToYMDHMS(epoch,&yr,&mo,&dy,&hr,&mt,&sc);
 
-  return (MLTConvert_v2(yr,mo,dy,hr,mt,(int)sc, mlon, root, igrf_filename));
+  return (MLTConvert_v2(yr,mo,dy,hr,mt,(int)sc, mlon));
 }
 
-double inv_MLTConvertEpoch_v2(double epoch, double mlt, char *root,
-			      char *igrf_filename)
+double inv_MLTConvertEpoch_v2(double epoch, double mlt)
 {
   int yr,mo,dy,hr,mt;
   double sc;
 
   TimeEpochToYMDHMS(epoch,&yr,&mo,&dy,&hr,&mt,&sc);
 
-  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,(int)sc, mlt, root, igrf_filename));
+  return (inv_MLTConvert_v2(yr,mo,dy,hr,mt,(int)sc, mlt));
 }
 

@@ -129,6 +129,7 @@ class testCmdAACGMV2:
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, 9.0564764, rtol=1e-6)
 
+    @classmethod
     def test_convert_mlt_stdin_stdout(self):
         p = subprocess.Popen('echo 12 | aacgmv2 convert_mlt -v 20150224140015',
                              shell=True, stdout=subprocess.PIPE)

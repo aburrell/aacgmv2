@@ -39,16 +39,34 @@ _aacgmv2.inv_mlt_convert
 _aacgmv2.inv_mlt_convert_yrsec
 ---------------------------------------------------------------------------
 """
-import os.path as _path
+from __future__ import print_function
+import os as _os
 import logbook as logging
-__version__ = "2.4.2"
+
+__version__ = "2.5.0"
 
 # path and filename prefix for the IGRF coefficients
-AACGM_V2_DAT_PREFIX = _path.join(_path.realpath(_path.dirname(__file__)),
-                                 'aacgm_coeffs', 'aacgm_coeffs-12-')
-IGRF_12_COEFFS = _path.join(_path.realpath(_path.dirname(__file__)),
-                            'igrf12coeffs.txt')
+AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath( \
+                                                _os.path.dirname(__file__)),
+                                    'aacgm_coeffs', 'aacgm_coeffs-12-')
+IGRF_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)),
+                            'magmodel_1590-2015.txt')
 
+# If not defined, set the IGRF and AACGM environment variables
+reset_warn = False
+if 'IGRF_COEFFS' in _os.environ.keys():
+    print("resetting environment variable IGRF_COEFFS in python script")
+    reset_warn = True
+_os.environ['IGRF_COEFFS'] = IGRF_COEFFS
+
+if 'AACGM_v2_DAT_PREFIX' in _os.environ.keys():
+    print("resetting environment variable AACGM_v2_DAT_PREFIX in python script")
+    reset_warn = True
+_os.environ['AACGM_v2_DAT_PREFIX'] = AACGM_v2_DAT_PREFIX
+
+if reset_warn:
+    print("non-default coefficient files may be specified by running " +
+          "aacgmv2.wrapper.set_coeff_path before any other functions")
 # Imports
 #---------------------------------------------------------------------
 

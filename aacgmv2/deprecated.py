@@ -57,12 +57,13 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
     import aacgmv2
 
     if(np.array(alt).max() > 2000 and not trace and not allowtrace and
-       badidea):
+       not badidea):
         estr = 'coefficients are not valid for altitudes above 2000 km. You'
         estr += ' must either use field-line tracing (trace=True '
         estr += 'or allowtrace=True) or indicate you know this is a bad idea'
+        estr += ' (badidea=True)'
         logging.error(estr)
-        raise ValueError
+        raise ValueError(estr)
 
     # construct a code from the boolian flags
     bit_code = aacgmv2.convert_bool_to_bit(a2g=a2g, trace=trace,
@@ -210,7 +211,7 @@ def igrf_dipole_axis(date):
     year = year + doy / year_days
 
     # read the IGRF coefficients
-    with open(aacgmv2.IGRF_12_COEFFS, 'r') as f_igrf:
+    with open(aacgmv2.IGRF_COEFFS, 'r') as f_igrf:
         lines = f_igrf.readlines()
 
     years = lines[3].split()[3:][:-1]

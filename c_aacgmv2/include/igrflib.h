@@ -1,7 +1,7 @@
 #ifndef _IGRFLIB_
 #define _IGRFLIB_
 
-#define IGRF_FIRST_EPOCH 1900
+#define IGRF_FIRST_EPOCH 1590
 #define IGRF_LAST_EPOCH 2015
 /* SGS using IGRF_COEFFS environment variable */
 /*#define IGRF_FILE "igrf12coeffs.txt"*/  /* current IGRF model */
@@ -14,7 +14,7 @@
 #define M_PI 3.14159265358979323846 /* define M_PI if not already */
 #endif
 
-#define MAXSTR 200                    /* maximum string length */
+#define MAXSTR 800                    /* maximum string length */
 #define MAXNYR 100                    /* maximum number of epochs */
 #define IGRF_ORDER  13                     /* maximum order of SH expansion */
 #define IGRF_MAXK   ((IGRF_ORDER+1)*(IGRF_ORDER+1)) /* # of SH coefficients */
@@ -25,20 +25,19 @@
 /* function prototypes */
 
 /* private functions */
-int IGRF_loadcoeffs(char *filename);
+int IGRF_loadcoeffs(void);
 int IGRF_interpolate_coefs(void);
-void pause(void);
+void igrf_pause(void);
 void IGRF_msg_notime(void);
 
 /* public functions */
 int IGRF_compute(const double rtp[], double brtp[]);
-int IGRF_SetNow(char *filename);
+int IGRF_SetNow(void);
 int IGRF_GetDateTime(int *year, int *month, int *day,
                       int *hour, int *minute, int *second, int *dayno);
 int IGRF_SetDateTime(int year, int month, int day,
-		     int hour, int minute, int second, char *filename);
-double IGRF_Tilt(int yr, int mo, int dy, int hr, int mt, int sc,
-		 char *filename);
+                      int hour, int minute, int second);
+double IGRF_Tilt(int yr, int mo, int dy, int hr, int mt, int sc);
 
 /* some geopack functionality */
 int geo2mag(const double xyzg[], double xyzm[]);
