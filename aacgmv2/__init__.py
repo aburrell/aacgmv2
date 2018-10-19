@@ -43,7 +43,7 @@ import os as _os
 from sys import stderr
 import logbook as logging
 
-__version__ = "2.5.0"
+__version__ = "2.5.1"
 
 # path and filename prefix for the IGRF coefficients
 AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath( \
