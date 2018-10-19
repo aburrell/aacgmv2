@@ -1417,7 +1417,7 @@ int AACGM_v2_Trace(double lat_in, double lon_in, double alt,
     }
     niter += kk;
   } else {
-    if (below) printf("BELOW\n");
+    /* if (below) printf("BELOW\n"); */ /* AGB: commented out debug statement */
     for (k=0;k<3;k++) xyzc[k] = xyzg[k];    /* just use last value */
   }
 
