@@ -39,8 +39,8 @@ _aacgmv2.inv_mlt_convert
 _aacgmv2.inv_mlt_convert_yrsec
 ---------------------------------------------------------------------------
 """
-from __future__ import print_function
 import os as _os
+from sys import stderr
 import logbook as logging
 
 __version__ = "2.5.0"
@@ -55,18 +55,20 @@ IGRF_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)),
 # If not defined, set the IGRF and AACGM environment variables
 reset_warn = False
 if 'IGRF_COEFFS' in _os.environ.keys():
-    print("resetting environment variable IGRF_COEFFS in python script")
+    stderr.write("resetting environment variable IGRF_COEFFS in python "
+                 + "script\n")
     reset_warn = True
 _os.environ['IGRF_COEFFS'] = IGRF_COEFFS
 
 if 'AACGM_v2_DAT_PREFIX' in _os.environ.keys():
-    print("resetting environment variable AACGM_v2_DAT_PREFIX in python script")
+    stderr.write("resetting environment variable AACGM_v2_DAT_PREFIX in " +
+                 "python script\n")
     reset_warn = True
 _os.environ['AACGM_v2_DAT_PREFIX'] = AACGM_v2_DAT_PREFIX
 
 if reset_warn:
-    print("non-default coefficient files may be specified by running " +
-          "aacgmv2.wrapper.set_coeff_path before any other functions")
+    stderr.write("non-default coefficient files may be specified by running " +
+                 "aacgmv2.wrapper.set_coeff_path before any other functions\n")
 # Imports
 #---------------------------------------------------------------------
 
