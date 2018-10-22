@@ -1,6 +1,13 @@
 
 Changelog
 =========
+2.5.1 (2018-10-19)
+-----------------------------------------
+* Commented out debug statement in C code
+* Updated environment variable warning to output to stderr instead of stdout
+* Added templates for pull requests, issues, and a code of conduct
+
+
 2.5.0 (2018-08-08)
 -----------------------------------------
 * Updated C code and coefficients to version 2.5.  Changes in python
