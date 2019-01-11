@@ -32,7 +32,7 @@ class TestFutureDepWarning:
                 # Verify some things
                 assert len(w) == 1
                 assert issubclass(w[-1].category, FutureWarning)
-                assert "deprecated and may be removed" in str(w[-1].message)
+                assert "Deprecated routine" in str(w[-1].message)
 
 
 class TestDepAACGMV2Warning(TestFutureDepWarning):
