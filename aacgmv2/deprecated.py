@@ -22,8 +22,6 @@ import numpy as np
 import logbook as logging
 import warnings
 
-dstr = "This routine has been deprecated and may be removed in future versions"
-
 def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
             badidea=False, geocentric=False):
     """Converts between geomagnetic coordinates and AACGM coordinates
@@ -59,6 +57,8 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
     """
     import aacgmv2
 
+    dstr = "Deprecated routine, may be removed in future versions.  Recommend "
+    dstr += "using convert_latlon or convert_latlon_arr"
     warnings.warn(dstr, category=FutureWarning)
 
     if(np.array(alt).max() > 2000 and not trace and not allowtrace and
@@ -114,6 +114,7 @@ def subsol(year, doy, utime):
     After Fortran code by A. D. Richmond, NCAR. Translated from IDL
     by K. Laundal.
     """
+    dstr = "Deprecated routine, may be removed in future versions"
     warnings.warn(dstr, category=FutureWarning)
 
     
@@ -185,6 +186,7 @@ def gc2gd_lat(gc_lat):
     gd_lat : (same as input)
         Geodetic latitude in degrees N
     """
+    dstr = "Deprecated routine, may be removed in future versions"
     warnings.warn(dstr, category=FutureWarning)
 
     
@@ -215,6 +217,7 @@ def igrf_dipole_axis(date):
     import datetime as dt
     import aacgmv2
 
+    dstr = "Deprecated routine, may be removed in future versions"
     warnings.warn(dstr, category=FutureWarning)
 
 
