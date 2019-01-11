@@ -21,6 +21,8 @@ from __future__ import division, absolute_import, unicode_literals
 import numpy as np
 import logbook as logging
 
+dstr = "This routine has been deprecated and may be removed in future versions"
+
 def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
             badidea=False, geocentric=False):
     """Converts between geomagnetic coordinates and AACGM coordinates
@@ -55,6 +57,8 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
         Output longitude in degrees E
     """
     import aacgmv2
+    dstr += ", recommend using convert_latlon or convert_latlon_arr instead"
+    raise FutureWarning(dstr)
 
     if(np.array(alt).max() > 2000 and not trace and not allowtrace and
        not badidea):
@@ -109,6 +113,8 @@ def subsol(year, doy, utime):
     After Fortran code by A. D. Richmond, NCAR. Translated from IDL
     by K. Laundal.
     """
+    raise FutureWarning(dstr)
+    
     yr2 = year - 2000
 
     if year >= 2101:
@@ -177,6 +183,8 @@ def gc2gd_lat(gc_lat):
     gd_lat : (same as input)
         Geodetic latitude in degrees N
     """
+    raise FutureWarning(dstr)
+    
     wgs84_e2 = 0.006694379990141317 - 1.0
     return np.rad2deg(-np.arctan(np.tan(np.deg2rad(gc_lat)) / wgs84_e2))
 
@@ -203,6 +211,8 @@ def igrf_dipole_axis(date):
     """
     import datetime as dt
     import aacgmv2
+
+    raise FutureWarning(dstr)
 
     # get time in years, as float:
     year = date.year
