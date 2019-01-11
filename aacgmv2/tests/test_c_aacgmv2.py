@@ -23,18 +23,6 @@ class TestCAACGMV2:
         del self.date_args, self.long_date, self.mlat, self.mlon, self.mlt
         del self.lat_in, self.lon_in, self.alt_in
 
-    @classmethod
-    def test_module_structure(self):
-        """Test module structure"""
-        assert aacgmv2
-        assert aacgmv2._aacgmv2
-        assert aacgmv2._aacgmv2.set_datetime
-        assert aacgmv2._aacgmv2.convert
-        assert aacgmv2._aacgmv2.inv_mlt_convert
-        assert aacgmv2._aacgmv2.inv_mlt_convert_yrsec
-        assert aacgmv2._aacgmv2.mlt_convert
-        assert aacgmv2._aacgmv2.mlt_convert_yrsec
-
     def test_constants(self):
         """Test module constants"""
         ans1 = aacgmv2._aacgmv2.G2A == 0
