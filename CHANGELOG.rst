@@ -1,6 +1,13 @@
 
 Changelog
 =========
+2.5.2 (2019)
+-----------------------------------------
+* Added FutureWarning to deprecated functions
+* Updated names in licenses
+* Moved module structure routine tests to their own class
+
+
 2.5.1 (2018-10-19)
 -----------------------------------------
 * Commented out debug statement in C code

@@ -6,40 +6,7 @@ import numpy as np
 import pytest
 import aacgmv2
 
-class TestPyAACGMV2:
-
-    @classmethod
-    def test_module_structure(self):
-        """Test module structure"""
-        assert aacgmv2
-        assert aacgmv2.convert_bool_to_bit
-        assert aacgmv2.convert_str_to_bit
-        assert aacgmv2.convert_mlt
-        assert aacgmv2.convert_latlon
-        assert aacgmv2.convert_latlon_arr
-        assert aacgmv2.get_aacgm_coord
-        assert aacgmv2.get_aacgm_coord_arr
-        assert aacgmv2.wrapper
-        assert aacgmv2.wrapper.set_coeff_path
-
-    @classmethod
-    def test_module_parameters(self):
-        """Test module constants"""
-        from os import path
-
-        path1 = path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
-                          "aacgm_coeffs-12-")
-        if aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) < 0:
-            raise AssertionError()
-
-        path2 = path.join("aacgmv2", "aacgmv2", "magmodel_1590-2015.txt")
-        if aacgmv2.IGRF_COEFFS.find(path2) < 0:
-            raise AssertionError()
-
-        del path1, path2
-
 class TestConvertLatLon:
-
     def setup(self):
         """Runs before every method to create a clean testing setup"""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
