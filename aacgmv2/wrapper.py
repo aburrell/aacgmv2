@@ -105,8 +105,8 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
     if isinstance(dtime, dt.date):
         dtime = dt.datetime.combine(dtime, dt.time(0))
 
-    assert isinstance(dtime, dt.datetime), \
-        logging.error('time must be specified as datetime object')
+    if not isinstance(dtime, dt.datetime):
+        raise ValueError('time must be specified as datetime object')
 
     # Test height
     if height < 0:
@@ -135,12 +135,13 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
     except AttributeError:
         bit_code = code
 
-    assert isinstance(bit_code, int), \
-        logging.error("unknown code {:}".format(bit_code))
+    if not isinstance(bit_code, int):
+        raise ValueError("unknown code {:}".format(bit_code))
 
     # Test latitude range
     if abs(in_lat) > 90.0:
-        assert abs(in_lat) <= 90.1, logging.error('unrealistic latitude')
+        if abs(in_lat) > 90.1:
+            raise ValueError('unrealistic latitude')
         in_lat = np.sign(in_lat) * 90.0
 
     # Constrain longitudes between -180 and 180
@@ -151,7 +152,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
         c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
                                dtime.minute, dtime.second)
     except:
-        raise RuntimeError("unable to set time for {:}".format(dtime))
+        raise ValueError("unable to set time for {:}".format(dtime))
 
     # convert location
     try:
@@ -201,35 +202,28 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     """
     import aacgmv2._aacgmv2 as c_aacgmv2
 
-    # If a list was entered instead of a numpy array, recast it here
-    if isinstance(in_lat, list):
-        in_lat = np.array(in_lat)
-
-    if isinstance(in_lon, list):
-        in_lon = np.array(in_lon)
-
-    if isinstance(height, list):
-        height = np.array(height)
+    # Recast the data as numpy arrays
+    in_lat = np.array(in_lat)
+    in_lon = np.array(in_lon)
+    height = np.array(height)
 
     # If one or two of these elements is a float or int, create an array
-    test_array = np.array([hasattr(in_lat, "shape"), hasattr(in_lon, "shape"),
-                           hasattr(height, "shape")])
-    if not test_array.all():
-        if test_array.any():
-            arr_shape = in_lat.shape if test_array.argmax() == 0 else \
-                        (in_lon.shape if test_array.argmax() == 1 else
-                         height.shape)
-            if not test_array[0]:
-                in_lat = np.ones(shape=arr_shape, dtype=float) * in_lat
-            if not test_array[1]:
-                in_lon = np.ones(shape=arr_shape, dtype=float) * in_lon
-            if not test_array[2]:
-                height = np.ones(shape=arr_shape, dtype=float) * height
-        else:
-            logging.info("for a single location, consider using convert_latlon")
+    test_array = np.array([len(in_lat.shape), len(in_lon.shape),
+                           len(height.shape)])
+    if test_array.min() == 0:
+        if test_array.max() == 0:
+            logging.warn("for a single location, consider using " \
+                         "convert_latlon or get_aacgm_coord")
             in_lat = np.array([in_lat])
             in_lon = np.array([in_lon])
             height = np.array([height])
+        else:
+            if test_array[0] == 0:
+                in_lat = np.full(shape=test_array.max(), fill_value=in_lat)
+            if not test_array[1]:
+                in_lon = np.full(shape=test_array.max(), fill_value=in_lon)
+            if not test_array[2]:
+                height = np.full(shape=test_array.max(), fill_value=height)
 
     # Ensure that lat, lon, and height are the same length or if the lengths
     # differ that the different ones contain only a single value
@@ -243,17 +237,17 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     if isinstance(dtime, dt.date):
         dtime = dt.datetime.combine(dtime, dt.time(0))
 
-    assert isinstance(dtime, dt.datetime), \
-        logging.error('time must be specified as datetime object')
+    if not isinstance(dtime, dt.datetime):
+        raise ValueError('time must be specified as datetime object')
 
     # Test height
     if np.min(height) < 0:
         logging.warn('conversion not intended for altitudes < 0 km')
 
     # Initialise output
-    lat_out = np.empty(shape=in_lat.shape, dtype=float) * np.nan
-    lon_out = np.empty(shape=in_lon.shape, dtype=float) * np.nan
-    r_out = np.empty(shape=height.shape, dtype=float) * np.nan
+    lat_out = np.full(shape=in_lat.shape, fill_value=np.nan)
+    lon_out = np.full(shape=in_lon.shape, fill_value=np.nan)
+    r_out = np.full(shape=height.shape, fill_value=np.nan)
 
     # Test code
     try:
@@ -273,18 +267,19 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     except AttributeError:
         bit_code = code
 
-    assert isinstance(bit_code, int), \
-        logging.error("unknown code {:}".format(bit_code))
+    if not isinstance(bit_code, int):
+        raise ValueError("unknown code {:}".format(bit_code))
 
     # Test latitude range
     if np.abs(in_lat).max() > 90.0:
-        assert np.abs(in_lat).max() <= 90.1, \
-            logging.error('unrealistic latitude')
+        if np.abs(in_lat).max() > 90.1:
+            raise ValueError('unrealistic latitude')
         in_lat = np.clip(in_lat, -90.0, 90.0)
 
     # Constrain longitudes between -180 and 180
     in_lon = ((in_lon + 180.0) % 360.0) - 180.0
 
+    
     # Set current date and time
     try:
         c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
@@ -387,7 +382,7 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE"):
     mlat, mlon, _ = convert_latlon_arr(glat, glon, height, dtime, code=code)
 
     if np.all(np.isnan(mlon)):
-        mlt = np.empty(shape=mlat.shape, dtype=float) * np.nan
+        mlt = np.full(shape=mlat.shape, fill_value=np.nan)
     else:
         # Get magnetic local time
         mlt = convert_mlt(mlon, dtime, m2a=False)
