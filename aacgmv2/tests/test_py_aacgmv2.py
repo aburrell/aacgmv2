@@ -89,6 +89,17 @@ class TestConvertLatLon:
                 np.isnan(self.r_out)):
             raise AssertionError()
 
+    def test_convert_latlon_veryhigh_failure(self):
+        """For a single value, test failure for a very high altitude with trace
+        """
+        (self.lat_out, self.lon_out,
+         self.r_out) = aacgmv2.convert_latlon(44.757, 286.893, 6371000000.2,
+                                              dt.datetime(2001,1,1,2,26),
+                                              code='G2A|TRACE')
+        if not (np.isnan(self.lat_out) & np.isnan(self.lon_out) &
+                np.isnan(self.r_out)):
+            raise AssertionError()
+
     def test_convert_latlon_lat_failure(self):
         """Test error return for co-latitudes above 90 for a single value"""
         with pytest.raises(AssertionError):
@@ -443,6 +454,15 @@ class TestGetAACGMCoord:
         np.testing.assert_almost_equal(self.mlon_out, 83.3027, decimal=4)
         np.testing.assert_almost_equal(self.mlt_out, 0.3307, decimal=4)
         del method
+
+    def test_get_aacgm_coord_veryhigh_failure(self):
+        """Test single value AACGMV2 calculation with a very high altitude"""
+        (self.mlat_out, self.mlon_out,
+         self.mlt_out) = aacgmv2.get_aacgm_coord(44.757, 286.893, 6371000000.2,
+                                                 dt.datetime(2001, 1, 1, 2, 26))
+        if not (np.isnan(self.mlat_out) & np.isnan(self.mlon_out) &
+                np.isnan(self.mlt_out)):
+            raise AssertionError()
 
     def test_get_aacgm_coord_location_failure(self):
         """Test single value AACGMV2 calculation with a bad location"""

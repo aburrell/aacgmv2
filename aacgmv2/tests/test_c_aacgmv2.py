@@ -145,6 +145,43 @@ class TestCAACGMV2:
 
         del code
 
+    def test_convert_very_high_TRACE_failure(self):
+        """Test failure with very high altitude geodetic to magnetic coordinates
+        using trace"""
+        self.date_args[0] = (2001, 1, 1, 2, 26, 0)
+        self.lat_in[0] = 44.757
+        self.lon_in[0] = 286.893
+        self.alt_in[0] = 6371000000.2
+        
+        code = aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE
+        aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
+        
+        with pytest.raises(RuntimeError):
+            aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
+                                     self.alt_in[0], code)
+
+        del code
+
+    def test_convert_very_high_TRACE_success(self):
+        """Test success with very high altitude geodetic to magnetic coordinates
+        using trace"""
+        self.date_args[0] = (2001, 1, 1, 2, 26, 0)
+        self.lat_in[0] = 0.0
+        self.lon_in[0] = 180.0
+        self.alt_in[0] = 1000000000000000000.
+        
+        code = aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE
+        aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
+        (self.mlat, self.mlon,
+         self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
+                                                 self.alt_in[0], code)
+        np.testing.assert_almost_equal(self.mlat, -90.0, decimal=4)
+        np.testing.assert_almost_equal(self.mlon, -108.0994, decimal=4)
+        np.testing.assert_almost_equal(self.rshell, 1.5695630336514416*1.0e14,
+                                       decimal=4)
+
+        del code
+
     def test_convert_high_ALLOWTRACE(self):
         """Test convert from high altitude geodetic to magnetic coordinates
         by allowing IGRF tracing"""
