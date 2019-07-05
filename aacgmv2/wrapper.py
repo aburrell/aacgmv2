@@ -19,6 +19,11 @@ import datetime as dt
 import numpy as np
 import logbook as logging
 
+# Setting a sensible high altitude limit to 10 Re, should probably be lower (km)
+high_alt = 63780.0
+# High altitude limit for coefficients (km)
+high_coeff_alt = 2000
+
 def set_coeff_path(igrf_file=False, coeff_prefix=False):
     """Sets the IGRF_COEFF and AACGMV_V2_DAT_PREFIX environment variables.
 
@@ -121,7 +126,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
     try:
         code = code.upper()
 
-        if(height > 2000 and code.find("TRACE") < 0 and
+        if(height > high_alt_coeff and code.find("TRACE") < 0 and
            code.find("ALLOWTRACE") < 0 and code.find("BADIDEA") < 0):
             estr = 'coefficients are not valid for altitudes above 2000 km. You'
             estr += ' must either use field-line tracing (trace=True '
@@ -130,6 +135,12 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
             logging.error(estr)
             return lat_out, lon_out, r_out
 
+        if height > high_alt:
+            estr = 'Coordinates not intended for magnetospheric altitudes!'
+            logging.error(estr)
+            return lat_out, lon_out, r_out
+            
+        
         # make flag
         bit_code = convert_str_to_bit(code)
     except AttributeError:
@@ -253,7 +264,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     try:
         code = code.upper()
 
-        if(np.nanmax(height) > 2000 and code.find("TRACE") < 0 and
+        if(np.nanmax(height) > high_alt_coeff and code.find("TRACE") < 0 and
            code.find("ALLOWTRACE") < 0 and code.find("BADIDEA") < 0):
             estr = 'coefficients are not valid for altitudes above 2000 km. You'
             estr += ' must either use field-line tracing (trace=True '
@@ -294,6 +305,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     try:
         lat_out, lon_out, r_out = convert_vectorised(in_lat, in_lon, height,
                                                      bit_code)
+
     except:
         pass
 
