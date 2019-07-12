@@ -134,11 +134,11 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
             return lat_out, lon_out, r_out
 
         if height > aacgmv2.high_alt_trace:
-            estr = 'Coordinates not intended for magnetospheric altitudes!'
+            estr = ''.join(['tracing not intended for great heights! Limit at ',
+                            '{:.0f} km'.format(aacgmv2.high_alt_trace)])
             logging.error(estr)
             return lat_out, lon_out, r_out
-            
-        
+
         # make flag
         bit_code = convert_str_to_bit(code)
     except AttributeError:
@@ -270,6 +270,12 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
                             'must either use field-line tracing (trace=True or',
                             ' allowtrace=True) or indicate you know this is a ',
                             'bad idea'])
+            logging.error(estr)
+            return lat_out, lon_out, r_out
+        
+        if np.nanmax(height) > aacgmv2.high_alt_trace:
+            estr = ''.join(['tracing not intended for great heights! Limit at ',
+                            '{:.0f} km'.format(aacgmv2.high_alt_trace)])
             logging.error(estr)
             return lat_out, lon_out, r_out
 
