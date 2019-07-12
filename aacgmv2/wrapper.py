@@ -101,6 +101,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
         the Earth (km)
     """
     import aacgmv2._aacgmv2 as c_aacgmv2
+    import aacgmv2
 
     # Test time
     if isinstance(dtime, dt.date):
@@ -126,9 +127,9 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
            code.find("ALLOWTRACE") < 0 and code.find("BADIDEA") < 0):
             estr = ''.join(['coefficients are not valid for altitudes above ',
                             '{:.0f} km. You '.format(aacgmv2.high_alt_coeff),
-                            'must either use field-line tracing (trace=True '
-                            'or allowtrace=True) or indicate you know this '
-                            'is a bad idea'])
+                            'must either use field-line tracing (trace=True or',
+                            ' allowtrace=True) or indicate you know this is a',
+                            ' bad idea'])
             logging.error(estr)
             return lat_out, lon_out, r_out
 
@@ -209,6 +210,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     At least one of in_lat, in_lon, and height must be a list or array.
     """
     import aacgmv2._aacgmv2 as c_aacgmv2
+    import aacgmv2
 
     # Recast the data as numpy arrays
     in_lat = np.array(in_lat)
@@ -265,9 +267,9 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
            and code.find("ALLOWTRACE") < 0 and code.find("BADIDEA") < 0):
             estr = ''.join(['coefficients are not valid for altitudes above ',
                             '{:.0f} km. You '.format(aacgmv2.high_alt_coeff),
-                            'must either use field-line tracing (trace=True ',
-                            'or allowtrace=True) or indicate you know this ',
-                            'is a bad idea'])
+                            'must either use field-line tracing (trace=True or',
+                            ' allowtrace=True) or indicate you know this is a ',
+                            'bad idea'])
             logging.error(estr)
             return lat_out, lon_out, r_out
 
