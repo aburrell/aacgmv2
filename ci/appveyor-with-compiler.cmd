@@ -23,7 +23,7 @@ SET WIN_WDK="c:\Program Files (x86)\Windows Kits\10\Include\wdf"
 ECHO SDK: %WINDOWS_SDK_VERSION% ARCH: %PYTHON_ARCH%
 
 
-IF "%PYTHON_VERSION%"=="3.5" (
+IF "%PYTHON_VERSION%"=="3.6" (
     IF EXIST %WIN_WDK% (
         REM See: https://connect.microsoft.com/VisualStudio/feedback/details/1610302/
         REN %WIN_WDK% 0wdf

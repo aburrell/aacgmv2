@@ -24,7 +24,7 @@ project = u'AACGM-v2 Python library'
 year = u'2015'
 author = u'Angeline G. Burrell, Christer van der Meeren'
 copyright = '{0}, {1}'.format(year, author)
-version = release = u'2.5.1'
+version = release = u'2.5.2'
 # on_rtd is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
