@@ -99,7 +99,6 @@ class TestDepLogging:
 
         aacgmv2.convert(*self.in_convert)
         self.lout = self.log_capture.getvalue()
-        print self.lout
         assert self.lout.find(self.lwarn) >= 0
 
 
