@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 import aacgmv2
 import warnings
+import logging
 
 class TestFutureDepWarning:
     def setup(self):
@@ -74,7 +75,34 @@ class TestDepAACGMV2Warning(TestFutureDepWarning):
         self.test_routine = aacgmv2.deprecated.igrf_dipole_axis
         self.test_args = [self.dtime]
         self.test_future_dep_warning()
-        
+
+
+class TestDepLogging:
+    def setup(self):
+        """Runs before every method to create a clean testing setup"""
+        from io import StringIO
+
+        self.log_capture = StringIO()
+        aacgmv2.logger.addHandler(logging.StreamHandler(self.log_capture))
+
+        self.in_convert = ([60], [0], [-1], dt.datetime(2015, 1, 1, 0, 0, 0))
+        self.lwarn = u"conversion not intended for altitudes < 0 km"
+        self.lout = ''
+
+    def teardown(self):
+        """Runs after every method to clean up previous testing"""
+        self.log_capture.close()
+        del self.in_convert, self.lwarn, self.lout
+
+    def test_warning_below_ground_convert(self):
+        """ Test that a warning is issued if altitude is below zero"""
+
+        aacgmv2.convert(*self.in_convert)
+        self.lout = self.log_capture.getvalue()
+        print self.lout
+        assert self.lout.find(self.lwarn) >= 0
+
+
 class TestDepAACGMV2:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
@@ -240,20 +268,6 @@ class TestDepAACGMV2:
 
         np.testing.assert_allclose(self.lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685], rtol=1e-4)
-
-    def test_warning_below_ground_convert(self):
-        """ Test that a warning is issued if altitude is below zero"""
-        import logbook
-        lwarn = u"conversion not intended for altitudes < 0 km"
-
-        with logbook.TestHandler() as handler:
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                self.lat, self.lon = aacgmv2.convert([60], [0], [-1],
-                                                     self.dtime)
-                assert handler.has_warning(lwarn)
-
-        handler.close()
 
     def test_convert_maxalt_failure(self):
         """For an array, test failure for an altitude too high for
