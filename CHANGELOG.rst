@@ -6,6 +6,9 @@ Changelog
 * Added FutureWarning to deprecated functions
 * Updated names in licenses
 * Moved module structure routine tests to their own class
+* Added additional exit condition in C tracing routine to avoid hanging
+* Changed version support to 2.7, 3.6, and 3.7
+* Removed logbook dependency
 
 
 2.5.1 (2018-10-19)
