@@ -20,7 +20,6 @@ Laundal, K. M. and A. D. Richmond (2016), Magnetic Coordinate Systems, Space
 
 from __future__ import division, absolute_import, unicode_literals
 import numpy as np
-import logging
 import warnings
 
 def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
@@ -114,14 +113,15 @@ def subsol(year, doy, utime):
     After Fortran code by A. D. Richmond, NCAR. Translated from IDL
     by K. Laundal.
     """
+    import aacgmv2
+
     dstr = "Deprecated routine, may be removed in future versions"
     warnings.warn(dstr, category=FutureWarning)
 
-    
     yr2 = year - 2000
 
     if year >= 2101:
-        logging.error('subsol invalid after 2100. Input year is:', year)
+        aacgmv2.logger.error('subsol invalid after 2100. Input year is:', year)
 
     nleap = np.floor((year - 1601) / 4)
     nleap = nleap - 99

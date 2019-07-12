@@ -45,6 +45,9 @@ import logging
 
 __version__ = "2.5.2"
 
+# Define a logger object to allow easier log handling
+logger = logging.getLogger('aacgmv2_logger')
+
 # Altitude constraints
 high_alt_coeff = 2000.0 # Tested and published in Shepherd (2014)
 high_alt_trace = 63780.0 # 10 RE, you may have left the magnetosphere!
@@ -81,15 +84,15 @@ try:
     from aacgmv2.wrapper import (convert_latlon_arr, get_aacgm_coord_arr)
     from aacgmv2.wrapper import (convert_bool_to_bit, convert_str_to_bit)
 except Exception as err:
-    logging.exception(__file__ + ' -> aacgmv2: ' + str(err))
+    logger.exception(__file__ + ' -> aacgmv2: ' + str(err))
 
 try:
     from aacgmv2 import (deprecated)
     from aacgmv2.deprecated import (convert)
 except Exception as err:
-    logging.exception(__file__ + ' -> aacgmv2: ' + str(err))
+    logger.exception(__file__ + ' -> aacgmv2: ' + str(err))
 
 try:
     from aacgmv2 import (_aacgmv2)
 except Exception as err:
-    logging.exception(__file__ + ' -> aacgmv2: ' + str(err))
+    logger.exception(__file__ + ' -> aacgmv2: ' + str(err))

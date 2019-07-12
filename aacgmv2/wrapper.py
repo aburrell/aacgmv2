@@ -18,7 +18,6 @@ convert_mlt : Get array mlt
 from __future__ import division, absolute_import, unicode_literals
 import datetime as dt
 import numpy as np
-import logging
 
 def set_coeff_path(igrf_file=False, coeff_prefix=False):
     """Sets the IGRF_COEFF and AACGMV_V2_DAT_PREFIX environment variables.
@@ -112,7 +111,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
 
     # Test height
     if height < 0:
-        logging.warn('conversion not intended for altitudes < 0 km')
+        aacgmv2.logger.warn('conversion not intended for altitudes < 0 km')
 
     # Initialise output
     lat_out = np.nan
@@ -130,13 +129,13 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
                             'must either use field-line tracing (trace=True or',
                             ' allowtrace=True) or indicate you know this is a',
                             ' bad idea'])
-            logging.error(estr)
+            aacgmv2.logger.error(estr)
             return lat_out, lon_out, r_out
 
         if height > aacgmv2.high_alt_trace:
             estr = ''.join(['tracing not intended for great heights! Limit at ',
                             '{:.0f} km'.format(aacgmv2.high_alt_trace)])
-            logging.error(estr)
+            aacgmv2.logger.error(estr)
             return lat_out, lon_out, r_out
 
         # make flag
@@ -222,8 +221,8 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
                            len(height.shape)])
     if test_array.min() == 0:
         if test_array.max() == 0:
-            logging.warn("for a single location, consider using " \
-                         "convert_latlon or get_aacgm_coord")
+            aacgmv2.logger.warn("for a single location, consider using " \
+                                "convert_latlon or get_aacgm_coord")
             in_lat = np.array([in_lat])
             in_lon = np.array([in_lon])
             height = np.array([height])
@@ -240,7 +239,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     if not (in_lat.shape == in_lon.shape and in_lat.shape == height.shape):
         ulen = np.unique([in_lat.shape, in_lon.shape, height.shape])
         if ulen.min() != (1,):
-            logging.error("mismatched input arrays")
+            aacgmv2.logger.error("mismatched input arrays")
             return None, None, None
 
     # Test time
@@ -252,7 +251,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
 
     # Test height
     if np.min(height) < 0:
-        logging.warn('conversion not intended for altitudes < 0 km')
+        aacgmv2.logger.warn('conversion not intended for altitudes < 0 km')
 
     # Initialise output
     lat_out = np.full(shape=in_lat.shape, fill_value=np.nan)
@@ -270,13 +269,13 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
                             'must either use field-line tracing (trace=True or',
                             ' allowtrace=True) or indicate you know this is a ',
                             'bad idea'])
-            logging.error(estr)
+            aacgmv2.logger.error(estr)
             return lat_out, lon_out, r_out
         
         if np.nanmax(height) > aacgmv2.high_alt_trace:
             estr = ''.join(['tracing not intended for great heights! Limit at ',
                             '{:.0f} km'.format(aacgmv2.high_alt_trace)])
-            logging.error(estr)
+            aacgmv2.logger.error(estr)
             return lat_out, lon_out, r_out
 
         # make flag
