@@ -10,6 +10,9 @@ wrapper : Contains current python functions
 
 Parameters
 ---------------------------------------------------------------------------
+logger
+high_alt_coeff
+high_alt_trace
 AACGM_V2_DAT_PREFIX
 IGRF_12_COEFFS
 _aacgmv2.G2A
