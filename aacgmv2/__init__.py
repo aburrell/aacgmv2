@@ -45,6 +45,10 @@ import logging
 
 __version__ = "2.5.2"
 
+# Altitude constraints
+high_alt_coeff = 2000.0 # Tested and published in Shepherd (2014)
+high_alt_trace = 63780.0 # 10 RE, you may have left the magnetosphere!
+
 # path and filename prefix for the IGRF coefficients
 AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath( \
                                                 _os.path.dirname(__file__)),

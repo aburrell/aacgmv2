@@ -20,11 +20,6 @@ import datetime as dt
 import numpy as np
 import logging
 
-# Setting a sensible high altitude limit to 10 Re, should probably be lower (km)
-high_alt = 63780.0
-# High altitude limit for coefficients (km)
-high_coeff_alt = 2000
-
 def set_coeff_path(igrf_file=False, coeff_prefix=False):
     """Sets the IGRF_COEFF and AACGMV_V2_DAT_PREFIX environment variables.
 
@@ -127,16 +122,17 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
     try:
         code = code.upper()
 
-        if(height > high_alt_coeff and code.find("TRACE") < 0 and
+        if(height > aacgmv2.high_alt_coeff and code.find("TRACE") < 0 and
            code.find("ALLOWTRACE") < 0 and code.find("BADIDEA") < 0):
-            estr = 'coefficients are not valid for altitudes above 2000 km. You'
-            estr += ' must either use field-line tracing (trace=True '
-            estr += 'or allowtrace=True) or indicate you know this '
-            estr += 'is a bad idea'
+            estr = ''.join(['coefficients are not valid for altitudes above ',
+                            '{:.0f} km. You '.format(aacgmv2.high_alt_coeff),
+                            'must either use field-line tracing (trace=True '
+                            'or allowtrace=True) or indicate you know this '
+                            'is a bad idea'])
             logging.error(estr)
             return lat_out, lon_out, r_out
 
-        if height > high_alt:
+        if height > aacgmv2.high_alt_trace:
             estr = 'Coordinates not intended for magnetospheric altitudes!'
             logging.error(estr)
             return lat_out, lon_out, r_out
@@ -265,12 +261,13 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     try:
         code = code.upper()
 
-        if(np.nanmax(height) > high_alt_coeff and code.find("TRACE") < 0 and
-           code.find("ALLOWTRACE") < 0 and code.find("BADIDEA") < 0):
-            estr = 'coefficients are not valid for altitudes above 2000 km. You'
-            estr += ' must either use field-line tracing (trace=True '
-            estr += 'or allowtrace=True) or indicate you know this '
-            estr += 'is a bad idea'
+        if(np.nanmax(height) > aacgmv2.high_alt_coeff and code.find("TRACE") < 0
+           and code.find("ALLOWTRACE") < 0 and code.find("BADIDEA") < 0):
+            estr = ''.join(['coefficients are not valid for altitudes above ',
+                            '{:.0f} km. You '.format(aacgmv2.high_alt_coeff),
+                            'must either use field-line tracing (trace=True ',
+                            'or allowtrace=True) or indicate you know this ',
+                            'is a bad idea'])
             logging.error(estr)
             return lat_out, lon_out, r_out
 
