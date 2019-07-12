@@ -5,6 +5,7 @@ import datetime as dt
 import numpy as np
 import pytest
 import aacgmv2
+import logging
 
 class TestConvertLatLon:
     def setup(self):
@@ -48,7 +49,7 @@ class TestConvertLatLon:
 
     def test_convert_latlon_time_failure(self):
         """Test single value latlon conversion with a bad datetime"""
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             (self.lat_out, self.lon_out,
              self.r_out) = aacgmv2.convert_latlon(60, 0, 300, None)
 
@@ -67,19 +68,6 @@ class TestConvertLatLon:
 
         del lat_2, lon_2, r_2
 
-    def test_warning_below_ground_convert_latlon(self):
-        """ Test that a warning is issued if altitude is below zero"""
-        import logbook
-        lwarn = u"conversion not intended for altitudes < 0 km"
-
-        with logbook.TestHandler() as handler:
-            (self.lat_out, self.lon_out,
-             self.r_out) = aacgmv2.convert_latlon(60, 0, -1, self.dtime)
-            if not handler.has_warning(lwarn):
-                raise AssertionError()
-
-        handler.close()
-
     def test_convert_latlon_maxalt_failure(self):
         """For a single value, test failure for an altitude too high for
         coefficients"""
@@ -89,12 +77,14 @@ class TestConvertLatLon:
                 np.isnan(self.r_out)):
             raise AssertionError()
 
-    def test_convert_latlon_lat_failure(self):
+    def test_convert_latlon_lat_high_failure(self):
         """Test error return for co-latitudes above 90 for a single value"""
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             aacgmv2.convert_latlon(91, 0, 300, self.dtime)
 
-        with pytest.raises(AssertionError):
+    def test_convert_latlon_lat_low_failure(self):
+        """Test error return for co-latitudes below -90 for a single value"""
+        with pytest.raises(ValueError):
             aacgmv2.convert_latlon(-91, 0, 300, self.dtime)
 
 class TestConvertLatLonArr:
@@ -361,9 +351,15 @@ class TestConvertLatLonArr:
                        np.isnan(self.r_out)]):
             raise AssertionError()
 
+    def test_convert_latlon_arr_mult_arr_unequal_failure(self):
+        """Test array latlon conversion for unequal sized arrays"""
+        with pytest.raises(ValueError):
+            aacgmv2.convert_latlon_arr(np.array([[60, 61, 62], [63, 64, 65]]),
+                                       np.array([0, 1]), 300, self.dtime)
+
     def test_convert_latlon_arr_time_failure(self):
         """Test array latlon conversion with a bad time"""
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             (self.lat_out, self.lon_out,
              self.r_out) = aacgmv2.convert_latlon_arr([60], [0], [300], None)
 
@@ -382,20 +378,6 @@ class TestConvertLatLonArr:
 
         del lat_2, lon_2, r_2
 
-    def test_warning_below_ground_convert_latlon_arr(self):
-        """ Test that a warning is issued if altitude is below zero"""
-        import logbook
-        lwarn = u"conversion not intended for altitudes < 0 km"
-
-        with logbook.TestHandler() as handler:
-            (self.lat_out, self.lon_out,
-             self.r_out) = aacgmv2.convert_latlon_arr([60], [0], [-1],
-                                                      self.dtime)
-            if not handler.has_warning(lwarn):
-                raise AssertionError()
-
-        handler.close()
-
     def test_convert_latlon_arr_maxalt_failure(self):
         """For an array, test failure for an altitude too high for
         coefficients"""
@@ -407,7 +389,7 @@ class TestConvertLatLonArr:
 
     def test_convert_latlon_arr_lat_failure(self):
         """Test error return for co-latitudes above 90 for an array"""
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             aacgmv2.convert_latlon_arr([91, 60, -91], 0, 300, self.dtime)
 
 class TestGetAACGMCoord:
@@ -454,9 +436,21 @@ class TestGetAACGMCoord:
 
     def test_get_aacgm_coord_time_failure(self):
         """Test single value AACGMV2 calculation with a bad datetime"""
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             (self.mlat_out, self.mlon_out,
              self.mlt_out) = aacgmv2.get_aacgm_coord(60, 0, 300, None)
+
+    def test_get_aacgm_coord_mlat_high_failure(self):
+        """Test error return for co-latitudes above 90 for a single value"""
+
+        with pytest.raises(ValueError):
+            aacgmv2.get_aacgm_coord(91, 0, 300, self.dtime)
+
+    def test_get_aacgm_coord_mlat_low_failure(self):
+        """Test error return for co-latitudes below -90 for a single value"""
+
+        with pytest.raises(ValueError):
+            aacgmv2.get_aacgm_coord(-91, 0, 300, self.dtime)
 
     def test_get_aacgm_coord_datetime_date(self):
         """Test single AACGMV2 calculation with date and datetime input"""
@@ -470,19 +464,6 @@ class TestGetAACGMCoord:
 
         del mlat_2, mlon_2, mlt_2
 
-    def test_warning_below_ground_get_aacgm_coord(self):
-        """ Test that a warning is issued if altitude is below zero"""
-        import logbook
-        lwarn = u"conversion not intended for altitudes < 0 km"
-
-        with logbook.TestHandler() as handler:
-            (self.mlat_out, self.mlon_out,
-             self.mlt_out) = aacgmv2.get_aacgm_coord(60, 0, -1, self.dtime)
-            if not handler.has_warning(lwarn):
-                raise AssertionError()
-
-        handler.close()
-
     def test_get_aacgm_coord_maxalt_failure(self):
         """For a single value, test failure for an altitude too high for
         coefficients"""
@@ -493,29 +474,6 @@ class TestGetAACGMCoord:
         if not (np.isnan(self.mlat_out) & np.isnan(self.mlon_out) &
                 np.isnan(self.mlt_out)):
             raise AssertionError()
-
-    def test_get_aacgm_coord_mlat_failure(self):
-        """Test error return for co-latitudes above 90 for a single value"""
-        import logbook
-        lerr = u"unrealistic latitude"
-
-        with logbook.TestHandler() as hhigh:
-            with pytest.raises(AssertionError):
-                (self.mlat_out, self.mlon_out,
-                 self.mlt_out) = aacgmv2.get_aacgm_coord(91, 0, 300, self.dtime)
-                if not hhigh.has_error(lerr):
-                    raise AssertionError()
-
-        with logbook.TestHandler() as hlow:
-            with pytest.raises(AssertionError):
-                (self.mlat_out, self.mlon_out,
-                 self.mlt_out) = aacgmv2.get_aacgm_coord(-91, 0, 300,
-                                                         self.dtime)
-                if not hlow.has_error(lerr):
-                    raise AssertionError()
-
-        hhigh.close()
-        hlow.close()
 
 class TestGetAACGMCoordArr:
     def setup(self):
@@ -789,10 +747,18 @@ class TestGetAACGMCoordArr:
 
     def test_get_aacgm_coord_arr_time_failure(self):
         """Test array AACGMV2 calculation with a bad time"""
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             (self.mlat_out, self.mlon_out,
              self.mlt_out) = aacgmv2.get_aacgm_coord_arr([60], [0], [300],
                                                          None)
+
+    def test_get_aacgm_coord_arr_mlat_failure(self):
+        """Test error return for co-latitudes above 90 for an array"""
+
+        with pytest.raises(ValueError):
+            (self.mlat_out, self.mlon_out,
+             self.mlt_out) = aacgmv2.get_aacgm_coord_arr([91, 60, -91], 0, 300,
+                                                         self.dtime)
 
     def test_get_aacgm_coord_arr_datetime_date(self):
         """Test array AACGMV2 calculation with date and datetime input"""
@@ -808,20 +774,6 @@ class TestGetAACGMCoordArr:
 
         del mlat_2, mlon_2, mlt_2
 
-    def test_warning_below_ground_get_aacgm_coord_arr(self):
-        """ Test that a warning is issued if altitude is below zero"""
-        import logbook
-        lwarn = u"conversion not intended for altitudes < 0 km"
-
-        with logbook.TestHandler() as handler:
-            (self.mlat_out, self.mlon_out,
-             self.mlt_out) = aacgmv2.get_aacgm_coord_arr([60], [0], [-1],
-                                                         self.dtime)
-            if not handler.has_warning(lwarn):
-                raise AssertionError()
-
-        handler.close()
-
     def test_get_aacgm_coord_arr_maxalt_failure(self):
         """For an array, test failure for an altitude too high for
         coefficients"""
@@ -834,20 +786,6 @@ class TestGetAACGMCoordArr:
             raise AssertionError()
 
         del method
-
-    def test_get_aacgm_coord_arr_mlat_failure(self):
-        """Test error return for co-latitudes above 90 for an array"""
-        import logbook
-        lerr = u"unrealistic latitude"
-
-        with logbook.TestHandler() as handler:
-            with pytest.raises(AssertionError):
-                aacgmv2.get_aacgm_coord_arr([91, 60, -91], 0, 300,
-                                                self.dtime)
-                if not handler.has_error(lerr):
-                    raise AssertionError()
-
-        handler.close()
 
 class TestConvertCode:
     @classmethod
@@ -1119,4 +1057,57 @@ class TestCoeffPath:
         if os.environ['IGRF_COEFFS'] != aacgmv2.IGRF_COEFFS:
             raise AssertionError()
         if os.environ['AACGM_v2_DAT_PREFIX'] != "hi":
+            raise AssertionError()
+
+class TestPyLogging:
+    def setup(self):
+        """Runs before every method to create a clean testing setup"""
+        from io import StringIO
+
+        self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
+        self.lwarn = u""
+        self.lout = u""
+        self.log_capture = StringIO()
+        aacgmv2.logger.addHandler(logging.StreamHandler(self.log_capture))
+
+    def teardown(self):
+        """Runs after every method to clean up previous testing"""
+        self.log_capture.close()
+        del self.dtime, self.lwarn, self.lout, self.log_capture
+
+
+    def test_warning_below_ground_get_aacgm_coord_arr(self):
+        """ Test that a warning is issued if altitude is below zero"""
+        self.lwarn = u"conversion not intended for altitudes < 0 km"
+
+        aacgmv2.get_aacgm_coord_arr([90], [60], [-1], self.dtime)
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError()
+
+    def test_warning_below_ground_convert_latlon(self):
+        """ Test that a warning is issued if altitude is below zero"""
+        self.lwarn = u"conversion not intended for altitudes < 0 km"
+
+        aacgmv2.convert_latlon(60, 0, -1, self.dtime)
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError()
+
+    def test_warning_below_ground_convert_latlon_arr(self):
+        """ Test that a warning is issued if altitude is below zero"""
+        self.lwarn = u"conversion not intended for altitudes < 0 km"
+
+        aacgmv2.convert_latlon_arr([60], [0], [-1], self.dtime)
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError()
+
+    def test_warning_below_ground_get_aacgm_coord(self):
+        """ Test that a warning is issued if altitude is below zero"""
+        self.lwarn = u"conversion not intended for altitudes < 0 km"
+
+        aacgmv2.get_aacgm_coord(60, 0, -1, self.dtime)
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
             raise AssertionError()

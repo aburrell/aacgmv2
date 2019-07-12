@@ -255,7 +255,7 @@ class TestDepAACGMV2:
 
     def test_convert_time_failure(self):
         """Test conversion with a bad time"""
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 self.lat, self.lon = aacgmv2.convert([60], [0], [300], None)
@@ -279,7 +279,7 @@ class TestDepAACGMV2:
 
     def test_convert_lat_failure(self):
         """Test error return for co-latitudes above 90 for an array"""
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 aacgmv2.convert([91, 60, -91], 0, 300, self.dtime)

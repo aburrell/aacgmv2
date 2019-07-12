@@ -180,3 +180,27 @@ class TestTopStructure(TestModuleStructure):
             raise AssertionError()
 
         del path1, path2
+
+    @classmethod
+    def test_high_alt_variables(self):
+        """ Test that module altitude limits exist and are appropriate"""
+
+        if not isinstance(aacgmv2.high_alt_coeff, float):
+            raise TypeError("Coefficient upper limit not float")
+
+        if not isinstance(aacgmv2.high_alt_trace, float):
+            raise TypeError("Trace upper limit not float")
+
+        if aacgmv2.high_alt_coeff != 2000.0:
+            raise ValueError("unexpected coefficient upper limit")
+
+        if aacgmv2.high_alt_trace <= aacgmv2.high_alt_trace:
+            raise ValueError("Trace limit lower than coefficient limit")
+
+    @classmethod
+    def test_module_logger(self):
+        """ Test the module logger instance"""
+        import logging
+        
+        if not isinstance(aacgmv2.logger, logging.Logger):
+            raise TypeError("Logger incorrect type")
