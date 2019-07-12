@@ -227,20 +227,22 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
             in_lon = np.array([in_lon])
             height = np.array([height])
         else:
+            imax = test_array.argmax()
+            max_shape = in_lat.shape if imax == 0 else (in_lon.shape \
+                                            if imax == 1 else height.shape) 
             if test_array[0] == 0:
-                in_lat = np.full(shape=test_array.max(), fill_value=in_lat)
+                in_lat = np.full(shape=max_shape, fill_value=in_lat)
             if not test_array[1]:
-                in_lon = np.full(shape=test_array.max(), fill_value=in_lon)
+                in_lon = np.full(shape=max_shape, fill_value=in_lon)
             if not test_array[2]:
-                height = np.full(shape=test_array.max(), fill_value=height)
+                height = np.full(shape=max_shape, fill_value=height)
 
     # Ensure that lat, lon, and height are the same length or if the lengths
     # differ that the different ones contain only a single value
     if not (in_lat.shape == in_lon.shape and in_lat.shape == height.shape):
         ulen = np.unique([in_lat.shape, in_lon.shape, height.shape])
         if ulen.min() != (1,):
-            aacgmv2.logger.error("mismatched input arrays")
-            return None, None, None
+            raise ValueError('mismatched input arrays')
 
     # Test time
     if isinstance(dtime, dt.date):
