@@ -12,12 +12,13 @@ convert_str_to_bit : Convert human readible AACGM flag to bits
 convert_bool_to_bit : Convert boolian flags to bits
 convert_mlt : Get array mlt
 --------------
+
 """
 
 from __future__ import division, absolute_import, unicode_literals
 import datetime as dt
 import numpy as np
-import logbook as logging
+import logging
 
 # Setting a sensible high altitude limit to 10 Re, should probably be lower (km)
 high_alt = 63780.0

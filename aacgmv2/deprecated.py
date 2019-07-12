@@ -15,11 +15,12 @@ References
 Laundal, K. M. and A. D. Richmond (2016), Magnetic Coordinate Systems, Space
  Sci. Rev., doi:10.1007/s11214-016-0275-y.
 -------------------------------------------------------------------------------
+
 """
 
 from __future__ import division, absolute_import, unicode_literals
 import numpy as np
-import logbook as logging
+import logging
 import warnings
 
 def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
@@ -67,7 +68,6 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
         estr += ' must either use field-line tracing (trace=True '
         estr += 'or allowtrace=True) or indicate you know this is a bad idea'
         estr += ' (badidea=True)'
-        logging.error(estr)
         raise ValueError(estr)
 
     # construct a code from the boolian flags
