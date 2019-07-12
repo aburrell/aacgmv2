@@ -598,7 +598,6 @@ int convert_geo_coord_v2(double lat_in, double lon_in, double height_in,
     printf("** HEIGHT INTERPOLATION **\n");
     #endif
 
-
     for (i=0; i<NCOORD; i++) {
       for (j=0; j<AACGM_KMAX;j++) {
         /* change to allow general polynomial approximation */
@@ -652,7 +651,7 @@ int convert_geo_coord_v2(double lat_in, double lon_in, double height_in,
       z += cint[k][2][flag]*ylmval[k];
     }
   }
-
+ 
   /* COMMENT: SGS
    * 
    * This answers one of my questions about how the coordinates for AACGM are
@@ -668,7 +667,6 @@ int convert_geo_coord_v2(double lat_in, double lon_in, double height_in,
    */
   if (flag == 0) {
     fac = x*x + y*y;
-
     if (fac > 1.) {
       /* we are in the forbidden region and the solution is undefined */
       *lat_out = HUGE_VAL;
@@ -969,7 +967,7 @@ int AACGM_v2_LoadCoefs(int year)
 */
 
 int AACGM_v2_Convert(double in_lat, double in_lon, double height,
-		     double *out_lat, double *out_lon, double *r, int code)
+                  double *out_lat, double *out_lon, double *r, int code)
 {
   int err;
   int order=10;   /* pass in so a lower order would be allowed? */
@@ -1030,7 +1028,7 @@ int AACGM_v2_Convert(double in_lat, double in_lon, double height,
   /* all inputs are geocentric */
   err = convert_geo_coord_v2(in_lat,in_lon,height, out_lat,out_lon, code,order);
   /* all outputs are geocentric */
-  
+
   if ((code & A2G) == 0) {    /* forward: G2A */
     *r = (height + RE)/RE;    /* geocentric radial distance in RE */
   } else {                    /* inverse: A2G */
@@ -1337,7 +1335,7 @@ int AACGM_v2_Trace(double lat_in, double lon_in, double alt,
 {
   int err, kk, idir, below;
   unsigned long k,niter;
-  double ds, dsRE, dsRE0, eps, Lshell, test_dist;
+  double ds, dsRE, dsRE0, eps, Lshell;
   double rtp[3],xyzg[3],xyzm[3],xyzc[3],xyzp[3];
 
   /* set date for IGRF model */
@@ -1383,34 +1381,21 @@ int AACGM_v2_Trace(double lat_in, double lon_in, double alt,
   ; Also making sure that stepsize does not go to zero
   */
   below = 0;
-  test_dist = idir * xyzm[2];
-  while (!below && test_dist < 0.0) {
+  while (!below && idir*xyzm[2] < 0.) {
 
     for (kk=0;kk<3;kk++) xyzp[kk] = xyzg[kk]; /* save as previous */
 
     AACGM_v2_RK45(xyzg, idir, &dsRE, eps, 1); /* set to 0 for RK4: /noadapt) */
-    
+
     /* make sure that stepsize does not go to zero */
     if (dsRE*RE < 1e-2) dsRE = 1e-2/RE;
 
     /* convert to magnetic Dipole coordinates */
     geo2mag(xyzg, xyzm);
 
-    /* Trace solution is diverging */
-    if(test_dist > idir * xyzm[2])
-      {
-	*lat_out = NAN;
-	*lon_out = NAN;
-
-	err = -1;
-	return(err);
-      }
-
     below = ((xyzg[0]*xyzg[0]+xyzg[1]*xyzg[1]+xyzg[2]*xyzg[2]) <
              (RE+alt)*(RE+alt)/(RE*RE));
     k++;
-
-    test_dist = idir * xyzm[2];
   }
   niter = k;
 
