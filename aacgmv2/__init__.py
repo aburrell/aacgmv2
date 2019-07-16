@@ -53,7 +53,7 @@ logger = logging.getLogger('aacgmv2_logger')
 
 # Altitude constraints
 high_alt_coeff = 2000.0 # Tested and published in Shepherd (2014)
-high_alt_trace = 63780.0 # 10 RE, you may have left the magnetosphere!
+high_alt_trace = 6378.0 # 1 RE, these are ionospheric coordinates
 
 # path and filename prefix for the IGRF coefficients
 AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath( \
