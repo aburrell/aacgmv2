@@ -39,6 +39,17 @@ class TestConvertLatLon:
 
         del code
 
+    def test_convert_latlon_trace_badidea(self):
+        """Test single value latlon conversion with a bad flag for trace"""
+        code = "G2A | TRACE | BADIDEA"
+        (self.lat_out, self.lon_out,
+         self.r_out) = aacgmv2.convert_latlon(60, 0, 7000, self.dtime, code)
+        np.testing.assert_almost_equal(self.lat_out, 69.3174, decimal=4)
+        np.testing.assert_almost_equal(self.lon_out, 85.0995, decimal=4)
+        np.testing.assert_almost_equal(self.r_out, 2.0973, decimal=4)
+
+        del code
+
     def test_convert_latlon_location_failure(self):
         """Test single value latlon conversion with a bad location"""
         (self.lat_out, self.lon_out,
@@ -331,6 +342,17 @@ class TestConvertLatLonArr:
         np.testing.assert_allclose(self.lat_out, [64.35677791], rtol=1e-4)
         np.testing.assert_allclose(self.lon_out, [83.30272053], rtol=1e-4)
         np.testing.assert_allclose(self.r_out, [1.46944431], rtol=1e-4)
+
+    def test_convert_latlon_arr_badidea_trace(self):
+        """Test array latlon conversion for BADIDEA with trace"""
+        code = "G2A | BADIDEA | TRACE"
+        (self.lat_out, self.lon_out,
+         self.r_out) = aacgmv2.convert_latlon_arr([60], [0], [7000],
+                                                  self.dtime, code)
+
+        np.testing.assert_allclose(self.lat_out, [69.317391], rtol=1e-4)
+        np.testing.assert_allclose(self.lon_out, [85.099499], rtol=1e-4)
+        np.testing.assert_allclose(self.r_out, [2.09726], rtol=1e-4)
 
     def test_convert_latlon_arr_location_failure(self):
         """Test array latlon conversion with a bad location"""
@@ -1108,6 +1130,78 @@ class TestPyLogging:
         self.lwarn = u"conversion not intended for altitudes < 0 km"
 
         aacgmv2.get_aacgm_coord(60, 0, -1, self.dtime)
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError()
+
+    def test_warning_magnetosphere_get_aacgm_coord_arr(self):
+        """ Test that a warning is issued if altitude is very high"""
+        self.lwarn = u"coordinates are not intended for the magnetosphere"
+
+        aacgmv2.get_aacgm_coord_arr([90], [60], [7000], self.dtime, 'G2A|TRACE')
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError()
+
+    def test_warning_magnetosphere_convert_latlon(self):
+        """ Test that a warning is issued if altitude is very high"""
+        self.lwarn = u"coordinates are not intended for the magnetosphere"
+
+        aacgmv2.convert_latlon(60, 0, 7000, self.dtime, 'G2A|TRACE')
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError()
+
+    def test_warning_magnetosphere_convert_latlon_arr(self):
+        """ Test that a warning is issued if altitude is very high"""
+        self.lwarn = u"coordinates are not intended for the magnetosphere"
+
+        aacgmv2.convert_latlon_arr([60], [0], [7000], self.dtime, 'G2A|TRACE')
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError()
+
+    def test_warning_magnetosphere_get_aacgm_coord(self):
+        """ Test that a warning is issued if altitude is very high"""
+        self.lwarn = u"coordinates are not intended for the magnetosphere"
+
+        aacgmv2.get_aacgm_coord(60, 0, 7000, self.dtime, 'G2A|TRACE')
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError()
+
+    def test_warning_high_coeff_alt_get_aacgm_coord_arr(self):
+        """ Test that a warning is issued if altitude is very high"""
+        self.lwarn = u"must either use field-line tracing (trace=True"
+
+        aacgmv2.get_aacgm_coord_arr([90], [60], [3000], self.dtime, 'G2A')
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError()
+
+    def test_warning_high_coeff_alt_convert_latlon(self):
+        """ Test that a warning is issued if altitude is very high"""
+        self.lwarn = u"must either use field-line tracing (trace=True"
+
+        aacgmv2.convert_latlon(60, 0, 3000, self.dtime, 'G2A')
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError()
+
+    def test_warning_high_coeff_alt_convert_latlon_arr(self):
+        """ Test that a warning is issued if altitude is very high"""
+        self.lwarn = u"must either use field-line tracing (trace=True"
+
+        aacgmv2.convert_latlon_arr([60], [0], [3000], self.dtime, 'G2A')
+        self.lout = self.log_capture.getvalue()
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError()
+
+    def test_warning_high_coeff_alt_get_aacgm_coord(self):
+        """ Test that a warning is issued if altitude is very high"""
+        self.lwarn = u"must either use field-line tracing (trace=True"
+
+        aacgmv2.get_aacgm_coord(60, 0, 3000, self.dtime, 'G2A')
         self.lout = self.log_capture.getvalue()
         if self.lout.find(self.lwarn) < 0:
             raise AssertionError()
