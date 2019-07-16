@@ -108,14 +108,9 @@ on_failure:
   - ps: get-content .tox\*\log\*
 artifacts:
   - path: dist\*
-matrix:
-  allow_failures:
-    - TOXENV: 'check'
-    - TOXENV: '3.6-nocover'
-    - TOXENV: '3.6,codecov'
-    - TOXENV: '2.7-buildonly-nocover'
-    - TOXENV: '3.6-buildonly-nocover'
-    - TOXENV: '3.7-buildonly-nocover'
+#matrix:
+#  allow_failures:
+#    - TOXENV: '2.7-buildonly-nocover'
 ### To enable remote debugging uncomment this:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
