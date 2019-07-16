@@ -18,7 +18,7 @@ Space Physics, 119, 7501–7521, doi:10.1002/2014JA020264.
 Quick start
 ===========
 
-Install (requires NumPy and logging)::
+Install (requires NumPy)::
 
     pip install aacgmv2
 
