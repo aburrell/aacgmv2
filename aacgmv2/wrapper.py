@@ -132,9 +132,12 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
             aacgmv2.logger.error(estr)
             return lat_out, lon_out, r_out
 
-        if height > aacgmv2.high_alt_trace:
-            estr = ''.join(['tracing not intended for great heights! Limit at ',
-                            '{:.0f} km'.format(aacgmv2.high_alt_trace)])
+        if height > aacgmv2.high_alt_trace and code.find("BADIDEA") < 0:
+            estr = ''.join(['these coordinates are not intended for the ',
+                            'magnetosphere! You must indicate that you know ',
+                            'this is a bad idea.  If you continue, it is ',
+                            'possible that the code will hang.'])
+
             aacgmv2.logger.error(estr)
             return lat_out, lon_out, r_out
 
@@ -274,9 +277,12 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
             aacgmv2.logger.error(estr)
             return lat_out, lon_out, r_out
         
-        if np.nanmax(height) > aacgmv2.high_alt_trace:
-            estr = ''.join(['tracing not intended for great heights! Limit at ',
-                            '{:.0f} km'.format(aacgmv2.high_alt_trace)])
+        if(np.nanmax(height) > aacgmv2.high_alt_trace and
+           code.find("BADIDEA") < 0):
+            estr = ''.join(['these coordinates are not intended for the ',
+                            'magnetosphere! You must indicate that you know ',
+                            'this is a bad idea.  If you continue, it is ',
+                            'possible that the code will hang.'])
             aacgmv2.logger.error(estr)
             return lat_out, lon_out, r_out
 
