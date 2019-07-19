@@ -164,19 +164,3 @@ class TestTopStructure(TestModuleStructure):
         self.reference_list = ["_aacgmv2", "wrapper",
                                "deprecated", "__main__"]
         self.test_modules()
-
-    @classmethod
-    def test_top_parameters(self):
-        """Test module constants"""
-        from os import path
-
-        path1 = path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
-                          "aacgm_coeffs-12-")
-        if aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) < 0:
-            raise AssertionError()
-
-        path2 = path.join("aacgmv2", "aacgmv2", "magmodel_1590-2015.txt")
-        if aacgmv2.IGRF_COEFFS.find(path2) < 0:
-            raise AssertionError()
-
-        del path1, path2
