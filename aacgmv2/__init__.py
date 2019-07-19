@@ -53,20 +53,24 @@ IGRF_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)),
                             'magmodel_1590-2015.txt')
 
 # If not defined, set the IGRF and AACGM environment variables
-reset_warn = False
+__reset_warn__ = False
 if 'IGRF_COEFFS' in _os.environ.keys():
-    stderr.write("resetting environment variable IGRF_COEFFS in python "
-                 + "script\n")
-    reset_warn = True
+    # Check and see if this environment variable is the same or different
+    if not _os.environ['IGRF_COEFFS'] == IGRF_COEFFS:
+        stderr.write("".join(["resetting environment variable IGRF_COEFFS in ",
+                              "python script\n"]))
+        __reset_warn__ = True
 _os.environ['IGRF_COEFFS'] = IGRF_COEFFS
 
 if 'AACGM_v2_DAT_PREFIX' in _os.environ.keys():
-    stderr.write("resetting environment variable AACGM_v2_DAT_PREFIX in " +
-                 "python script\n")
-    reset_warn = True
+    # Check and see if this environment variable is the same or different
+    if not _os.environ['AACGM_v2_DAT_PREFIX'] == AACGM_v2_DAT_PREFIX:
+        stderr.write("".join(["resetting environment variable ",
+                              "AACGM_v2_DAT_PREFIX in python script\n"]))
+        __reset_warn__ = True
 _os.environ['AACGM_v2_DAT_PREFIX'] = AACGM_v2_DAT_PREFIX
 
-if reset_warn:
+if __reset_warn__:
     stderr.write("non-default coefficient files may be specified by running " +
                  "aacgmv2.wrapper.set_coeff_path before any other functions\n")
 # Imports
