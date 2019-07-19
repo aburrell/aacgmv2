@@ -6,6 +6,7 @@ Changelog
 * Added FutureWarning to deprecated functions
 * Updated names in licenses
 * Moved module structure routine tests to their own class
+* Added logic to avoid reseting environment variables if not necessary
 
 
 2.5.1 (2018-10-19)
