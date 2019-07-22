@@ -9,6 +9,7 @@ Changelog
 * Added high altitude limit to avoid while-loop hanging
 * Changed version support to 2.7, 3.6, and 3.7
 * Removed logbook dependency
+* Added logic to avoid reseting environment variables if not necessary
 
 
 2.5.1 (2018-10-19)
