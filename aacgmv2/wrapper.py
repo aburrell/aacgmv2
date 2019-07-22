@@ -3,6 +3,7 @@
 
 Functions
 --------------
+test_height : Test the height and see if it is appropriate for the method
 set_coeff_path : Set the coefficient paths using default or supplied values
 convert_latlon : Converts scalar location
 convert_latlon_arr : Converts array location
@@ -18,6 +19,52 @@ convert_mlt : Get array mlt
 from __future__ import division, absolute_import, unicode_literals
 import datetime as dt
 import numpy as np
+
+def test_height(height, bit_code):
+    """ Test the input height and ensure it is appropriate for the method
+
+    Parameters
+    ----------
+    height : (float)
+        Height to test in km
+    bit_code : (int)
+        Code string denoting method to use
+
+    Returns
+    -------
+    good_height : (boolean)
+        True if height and method are appropriate, False if not
+
+    """
+    import aacgmv2
+    from aacgmv2._aacgmv2 import TRACE, ALLOWTRACE, BADIDEA
+
+    # Test for heights that are allowed but not smart
+    if height < 0:
+        aacgmv2.logger.warning('conversion not intended for altitudes < 0 km')
+
+    # Test the conditions for using the coefficient method
+    if(height > aacgmv2.high_alt_coeff and
+       not (bit_code & (TRACE|ALLOWTRACE|BADIDEA))):
+        estr = ''.join(['coefficients are not valid for altitudes above ',
+                        '{:.0f} km. You '.format(aacgmv2.high_alt_coeff),
+                        'must either use field-line tracing (trace=True or',
+                        ' allowtrace=True) or indicate you know this is a',
+                        ' bad idea'])
+        aacgmv2.logger.error(estr)
+        return False
+
+    # Test the conditions for using the tracing method
+    if height > aacgmv2.high_alt_trace and not (bit_code & BADIDEA):
+        estr = ''.join(['these coordinates are not intended for the ',
+                        'magnetosphere! You must indicate that you know ',
+                        'this is a bad idea.  If you continue, it is ',
+                        'possible that the code will hang.'])
+
+        aacgmv2.logger.error(estr)
+        return False
+
+    return True
 
 def set_coeff_path(igrf_file=False, coeff_prefix=False):
     """Sets the IGRF_COEFF and AACGMV_V2_DAT_PREFIX environment variables.
@@ -109,45 +156,25 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
     if not isinstance(dtime, dt.datetime):
         raise ValueError('time must be specified as datetime object')
 
-    # Test height
-    if height < 0:
-        aacgmv2.logger.warning('conversion not intended for altitudes < 0 km')
-
     # Initialise output
     lat_out = np.nan
     lon_out = np.nan
     r_out = np.nan
 
-    # Test code
+    # Set the code in bits
     try:
-        code = code.upper()
-
-        if(height > aacgmv2.high_alt_coeff and code.find("TRACE") < 0 and
-           code.find("ALLOWTRACE") < 0 and code.find("BADIDEA") < 0):
-            estr = ''.join(['coefficients are not valid for altitudes above ',
-                            '{:.0f} km. You '.format(aacgmv2.high_alt_coeff),
-                            'must either use field-line tracing (trace=True or',
-                            ' allowtrace=True) or indicate you know this is a',
-                            ' bad idea'])
-            aacgmv2.logger.error(estr)
-            return lat_out, lon_out, r_out
-
-        if height > aacgmv2.high_alt_trace and code.find("BADIDEA") < 0:
-            estr = ''.join(['these coordinates are not intended for the ',
-                            'magnetosphere! You must indicate that you know ',
-                            'this is a bad idea.  If you continue, it is ',
-                            'possible that the code will hang.'])
-
-            aacgmv2.logger.error(estr)
-            return lat_out, lon_out, r_out
-
-        # make flag
-        bit_code = convert_str_to_bit(code)
+        bit_code = convert_str_to_bit(code.upper())
     except AttributeError:
         bit_code = code
 
     if not isinstance(bit_code, int):
         raise ValueError("unknown code {:}".format(bit_code))
+
+    # Test height that may or may not cause failure
+    good_height = test_height(height, bit_code)
+
+    if not good_height:
+        return lat_out, lon_out, r_out
 
     # Test latitude range
     if abs(in_lat) > 90.0:
@@ -254,45 +281,25 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     if not isinstance(dtime, dt.datetime):
         raise ValueError('time must be specified as datetime object')
 
-    # Test height
-    if np.min(height) < 0:
-        aacgmv2.logger.warning('conversion not intended for altitudes < 0 km')
-
     # Initialise output
     lat_out = np.full(shape=in_lat.shape, fill_value=np.nan)
     lon_out = np.full(shape=in_lon.shape, fill_value=np.nan)
     r_out = np.full(shape=height.shape, fill_value=np.nan)
 
-    # Test code
+    # Test and set code
     try:
-        code = code.upper()
-
-        if(np.nanmax(height) > aacgmv2.high_alt_coeff and code.find("TRACE") < 0
-           and code.find("ALLOWTRACE") < 0 and code.find("BADIDEA") < 0):
-            estr = ''.join(['coefficients are not valid for altitudes above ',
-                            '{:.0f} km. You '.format(aacgmv2.high_alt_coeff),
-                            'must either use field-line tracing (trace=True or',
-                            ' allowtrace=True) or indicate you know this is a ',
-                            'bad idea'])
-            aacgmv2.logger.error(estr)
-            return lat_out, lon_out, r_out
-        
-        if(np.nanmax(height) > aacgmv2.high_alt_trace and
-           code.find("BADIDEA") < 0):
-            estr = ''.join(['these coordinates are not intended for the ',
-                            'magnetosphere! You must indicate that you know ',
-                            'this is a bad idea.  If you continue, it is ',
-                            'possible that the code will hang.'])
-            aacgmv2.logger.error(estr)
-            return lat_out, lon_out, r_out
-
-        # make flag
-        bit_code = convert_str_to_bit(code)
+        bit_code = convert_str_to_bit(code.upper())
     except AttributeError:
         bit_code = code
 
     if not isinstance(bit_code, int):
         raise ValueError("unknown code {:}".format(bit_code))
+
+    # Test height
+    good_height = test_height(np.nanmax(height), bit_code)
+
+    if not good_height:
+        return lat_out, lon_out, r_out
 
     # Test latitude range
     if np.abs(in_lat).max() > 90.0:

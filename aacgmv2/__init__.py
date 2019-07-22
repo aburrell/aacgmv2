@@ -33,6 +33,7 @@ get_aacgm_coord_arr
 convert
 convert_mlt
 wrapper.set_coeff_path
+wrapper.test_height
 deprecated.subsol
 _aacgmv2.convert
 _aacgmv2.set_datetime

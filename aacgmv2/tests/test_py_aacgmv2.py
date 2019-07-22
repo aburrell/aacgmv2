@@ -1081,12 +1081,60 @@ class TestCoeffPath:
         if os.environ['AACGM_v2_DAT_PREFIX'] != "hi":
             raise AssertionError()
 
+class TestHeightReturns:
+    def setup(self):
+        """Runs before every method to create a clean testing setup"""
+        self.code = aacgmv2._aacgmv2.A2G
+        self.bad_code = aacgmv2._aacgmv2.BADIDEA
+        self.trace_code = aacgmv2._aacgmv2.TRACE
+        
+    def teardown(self):
+        """Runs after every method to clean up previous testing"""
+        del self.code, self.bad_code
+
+    def test_low_height_good(self):
+        """ Test to see that a very low height is still accepted"""
+
+        assert aacgmv2.wrapper.test_height(-1, self.code)
+
+    def test_high_coeff_bad(self):
+        """ Test to see that a high altitude for coefficent use fails"""
+
+        assert not aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff+10.0,
+                                               self.code)
+
+    def test_high_coeff_good(self):
+        """ Test a high altitude for coefficent use with badidea """
+
+        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff+10.0,
+                                           self.bad_code)
+
+    def test_low_coeff_good(self):
+        """ Test that a normal height succeeds"""
+        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff*0.5,
+                                           self.code)
+
+    def test_high_trace_bad(self):
+        """ Test that a high trace height fails"""
+        assert not aacgmv2.wrapper.test_height(aacgmv2.high_alt_trace+10.0,
+                                               self.code)
+
+    def test_low_trace_good(self):
+        """ Test that a high coefficient height succeeds with trace"""
+        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff+10.0,
+                                           self.trace_code)
+
+    def test_high_trace_good(self):
+        """ Test that a high trace height succeeds with badidea"""
+        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_trace+10.0,
+                                           self.bad_code)
+
+
 class TestPyLogging:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
         from io import StringIO
 
-        self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
         self.lwarn = u""
         self.lout = u""
         self.log_capture = StringIO()
@@ -1095,113 +1143,41 @@ class TestPyLogging:
     def teardown(self):
         """Runs after every method to clean up previous testing"""
         self.log_capture.close()
-        del self.dtime, self.lwarn, self.lout, self.log_capture
+        del self.lwarn, self.lout, self.log_capture
 
 
-    def test_warning_below_ground_get_aacgm_coord_arr(self):
-        """ Test that a warning is issued if altitude is below zero"""
+    def test_warning_below_ground(self):
+        """ Test that a warning is issued if height < 0 for height test """
         self.lwarn = u"conversion not intended for altitudes < 0 km"
 
-        aacgmv2.get_aacgm_coord_arr([90], [60], [-1], self.dtime)
+        aacgmv2.wrapper.test_height(-1, 0)
         self.lout = self.log_capture.getvalue()
         if self.lout.find(self.lwarn) < 0:
             raise AssertionError()
 
-    def test_warning_below_ground_convert_latlon(self):
-        """ Test that a warning is issued if altitude is below zero"""
-        self.lwarn = u"conversion not intended for altitudes < 0 km"
-
-        aacgmv2.convert_latlon(60, 0, -1, self.dtime)
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
-
-    def test_warning_below_ground_convert_latlon_arr(self):
-        """ Test that a warning is issued if altitude is below zero"""
-        self.lwarn = u"conversion not intended for altitudes < 0 km"
-
-        aacgmv2.convert_latlon_arr([60], [0], [-1], self.dtime)
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
-
-    def test_warning_below_ground_get_aacgm_coord(self):
-        """ Test that a warning is issued if altitude is below zero"""
-        self.lwarn = u"conversion not intended for altitudes < 0 km"
-
-        aacgmv2.get_aacgm_coord(60, 0, -1, self.dtime)
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
-
-    def test_warning_magnetosphere_get_aacgm_coord_arr(self):
+    def test_warning_magnetosphere(self):
         """ Test that a warning is issued if altitude is very high"""
         self.lwarn = u"coordinates are not intended for the magnetosphere"
 
-        aacgmv2.get_aacgm_coord_arr([90], [60], [7000], self.dtime, 'G2A|TRACE')
+        aacgmv2.wrapper.test_height(70000, aacgmv2._aacgmv2.TRACE)
         self.lout = self.log_capture.getvalue()
         if self.lout.find(self.lwarn) < 0:
             raise AssertionError()
 
-    def test_warning_magnetosphere_convert_latlon(self):
-        """ Test that a warning is issued if altitude is very high"""
-        self.lwarn = u"coordinates are not intended for the magnetosphere"
-
-        aacgmv2.convert_latlon(60, 0, 7000, self.dtime, 'G2A|TRACE')
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
-
-    def test_warning_magnetosphere_convert_latlon_arr(self):
-        """ Test that a warning is issued if altitude is very high"""
-        self.lwarn = u"coordinates are not intended for the magnetosphere"
-
-        aacgmv2.convert_latlon_arr([60], [0], [7000], self.dtime, 'G2A|TRACE')
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
-
-    def test_warning_magnetosphere_get_aacgm_coord(self):
-        """ Test that a warning is issued if altitude is very high"""
-        self.lwarn = u"coordinates are not intended for the magnetosphere"
-
-        aacgmv2.get_aacgm_coord(60, 0, 7000, self.dtime, 'G2A|TRACE')
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
-
-    def test_warning_high_coeff_alt_get_aacgm_coord_arr(self):
+    def test_warning_high_coeff(self):
         """ Test that a warning is issued if altitude is very high"""
         self.lwarn = u"must either use field-line tracing (trace=True"
 
-        aacgmv2.get_aacgm_coord_arr([90], [60], [3000], self.dtime, 'G2A')
+        aacgmv2.wrapper.test_height(3000, 0)
         self.lout = self.log_capture.getvalue()
         if self.lout.find(self.lwarn) < 0:
             raise AssertionError()
 
-    def test_warning_high_coeff_alt_convert_latlon(self):
-        """ Test that a warning is issued if altitude is very high"""
-        self.lwarn = u"must either use field-line tracing (trace=True"
+    def test_warning_single_loc_in_arr(self):
+        """ Test that user is warned they should be using simpler routine"""
+        self.lwarn = u"for a single location, consider using"
 
-        aacgmv2.convert_latlon(60, 0, 3000, self.dtime, 'G2A')
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
-
-    def test_warning_high_coeff_alt_convert_latlon_arr(self):
-        """ Test that a warning is issued if altitude is very high"""
-        self.lwarn = u"must either use field-line tracing (trace=True"
-
-        aacgmv2.convert_latlon_arr([60], [0], [3000], self.dtime, 'G2A')
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
-
-    def test_warning_high_coeff_alt_get_aacgm_coord(self):
-        """ Test that a warning is issued if altitude is very high"""
-        self.lwarn = u"must either use field-line tracing (trace=True"
-
-        aacgmv2.get_aacgm_coord(60, 0, 3000, self.dtime, 'G2A')
+        aacgmv2.convert_latlon_arr(60, 0, 300, dt.datetime(2015,1,1,0,0,0))
         self.lout = self.log_capture.getvalue()
         if self.lout.find(self.lwarn) < 0:
             raise AssertionError()
