@@ -19,8 +19,10 @@ Laundal, K. M. and A. D. Richmond (2016), Magnetic Coordinate Systems, Space
 """
 
 from __future__ import division, absolute_import, unicode_literals
+import datetime as dt
 import numpy as np
 import warnings
+import aacgmv2
 
 def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
             badidea=False, geocentric=False):
@@ -55,9 +57,8 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
     lon_out : (float)
         Output longitude in degrees E
     """
-    import aacgmv2
 
-    dstr = "Deprecated routine, may be removed in future versions.  Recommend "
+    dstr = "Deprecated routine, will be removed in version 2.6.  Recommend "
     dstr += "using convert_latlon or convert_latlon_arr"
     warnings.warn(dstr, category=FutureWarning)
 
@@ -112,17 +113,19 @@ def subsol(year, doy, utime):
     algorithm).
     After Fortran code by A. D. Richmond, NCAR. Translated from IDL
     by K. Laundal.
+
     """
-    import aacgmv2
 
     dstr = "Deprecated routine, may be removed in future versions"
     warnings.warn(dstr, category=FutureWarning)
 
+    # Convert from 4 digit year to 2 digit year
     yr2 = year - 2000
 
     if year >= 2101:
         aacgmv2.logger.error('subsol invalid after 2100. Input year is:', year)
 
+    # Determine if this year is a leap year
     nleap = np.floor((year - 1601) / 4)
     nleap = nleap - 99
     if year <= 1900:
@@ -132,6 +135,8 @@ def subsol(year, doy, utime):
         ncent = 3 - ncent
         nleap = nleap + ncent
 
+    # Calculate some of the coefficients needed to deterimine the mean longitude
+    # of the sun and the mean anomaly
     l_0 = -79.549 + (-0.238699 * (yr2 - 4 * nleap) + 3.08514e-2 * nleap)
     g_0 = -2.472 + (-0.2558905 * (yr2 - 4 * nleap) - 3.79617e-2 * nleap)
 
@@ -214,8 +219,6 @@ def igrf_dipole_axis(date):
     work after IGRF updates.  The dipole coefficients are interpolated to the
     date, or extrapolated if date > latest IGRF model
     """
-    import datetime as dt
-    import aacgmv2
 
     dstr = "Deprecated routine, may be removed in future versions"
     warnings.warn(dstr, category=FutureWarning)
