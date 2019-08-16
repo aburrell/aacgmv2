@@ -3,6 +3,7 @@
 
 Functions
 --------------
+test_time : Test the time and ensure it is a datetime.datetime object
 test_height : Test the height and see if it is appropriate for the method
 set_coeff_path : Set the coefficient paths using default or supplied values
 convert_latlon : Converts scalar location
@@ -19,6 +20,42 @@ convert_mlt : Get array mlt
 from __future__ import division, absolute_import, unicode_literals
 import datetime as dt
 import numpy as np
+import os
+import sys
+
+import aacgmv2
+import aacgmv2._aacgmv2 as c_aacgmv2
+from aacgmv2._aacgmv2 import TRACE, ALLOWTRACE, BADIDEA
+
+def test_time(dtime):
+    """ Test the time input and ensure it is a dt.datetime object
+
+    Parameters
+    ----------
+    dtime : (unknown)
+        Time input in an untested format
+
+    Returns
+    -------
+    dtime : (dt.datetime)
+        Time as a datetime object
+
+    Raises
+    ------
+    ValueError if time is not a dt.date or dt.datetime object
+
+    """
+    if isinstance(dtime, dt.date):
+        # Because datetime objects identify as both dt.date and dt.datetime,
+        # you need an extra test here to ensure you don't lose the time
+        # attributes
+        if not isinstance(dtime, dt.datetime):
+            dtime = dt.datetime.combine(dtime, dt.time(0))
+    elif not isinstance(dtime, dt.datetime):
+        raise ValueError('time variable (dtime) must be a datetime object')
+
+    return dtime
+
 
 def test_height(height, bit_code):
     """ Test the input height and ensure it is appropriate for the method
@@ -35,11 +72,24 @@ def test_height(height, bit_code):
     good_height : (boolean)
         True if height and method are appropriate, False if not
 
-    """
-    import aacgmv2
-    from aacgmv2._aacgmv2 import TRACE, ALLOWTRACE, BADIDEA
+    Notes
+    -----
+    Appropriate altitude ranges for the different methods are explored in
+    Shepherd (2014).  Summarized, they are:
+    Coefficients: 0-2000 km
+    Tracing: 0-1 Earth Radius
 
-    # Test for heights that are allowed but not smart
+    Altitudes below zero will work, but will not provide a good representation
+    of the magnetic field because it goes beyond the intended scope of these
+    coordiantes.
+
+    If you use the 'BADIDEA' code, you can bypass all constraints, but it
+    is a Bad Idea!  If you include a high enough altiutde, the code may hang.
+
+    """
+    # Test for heights that are allowed but not within the intended scope
+    # of the coordinate system.  The routine will work, but the user should
+    # be aware that the results are not as reliable
     if height < 0:
         aacgmv2.logger.warning('conversion not intended for altitudes < 0 km')
 
@@ -60,7 +110,6 @@ def test_height(height, bit_code):
                         'magnetosphere! You must indicate that you know ',
                         'this is a bad idea.  If you continue, it is ',
                         'possible that the code will hang.'])
-
         aacgmv2.logger.error(estr)
         return False
 
@@ -78,12 +127,7 @@ def set_coeff_path(igrf_file=False, coeff_prefix=False):
         Location and file prefix for aacgm coefficient files, True to use
         aacgmv2.AACGM_V2_DAT_PREFIX, or False to leave as is. (default=False)
 
-    Returns
-    ---------
-    Void
     """
-    import aacgmv2
-    import os
 
     # Define coefficient file prefix if requested
     if coeff_prefix is not False:
@@ -113,7 +157,7 @@ def set_coeff_path(igrf_file=False, coeff_prefix=False):
 
     return
 
-def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
+def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
     """Converts between geomagnetic coordinates and AACGM coordinates
 
     Parameters
@@ -126,7 +170,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
         Altitude above the surface of the earth in km
     dtime : (datetime)
         Datetime for magnetic field
-    code : (str or int)
+    method_code : (str or int)
         Bit code or string denoting which type(s) of conversion to perform
         G2A        - geographic (geodetic) to AACGM-v2
         A2G        - AACGM-v2 to geographic (geodetic)
@@ -145,39 +189,39 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
     out_r : (float)
         Geocentric radial distance (R_Earth) or altitude above the surface of
         the Earth (km)
+
+    Raises
+    ------
+    ValueError if input is incorrect
+    TypeError or RuntimeError if unable to set AACGMV2 datetime
+
     """
-    import aacgmv2._aacgmv2 as c_aacgmv2
-    import aacgmv2
 
     # Test time
-    if isinstance(dtime, dt.date):
-        dtime = dt.datetime.combine(dtime, dt.time(0))
-
-    if not isinstance(dtime, dt.datetime):
-        raise ValueError('time must be specified as datetime object')
+    dtime = test_time(dtime)
 
     # Initialise output
     lat_out = np.nan
     lon_out = np.nan
     r_out = np.nan
 
-    # Set the code in bits
+    # Set the coordinate coversion method code in bits
     try:
-        bit_code = convert_str_to_bit(code.upper())
+        bit_code = convert_str_to_bit(method_code.upper())
     except AttributeError:
-        bit_code = code
+        bit_code = method_code
 
     if not isinstance(bit_code, int):
-        raise ValueError("unknown code {:}".format(bit_code))
+        raise ValueError("unknown method code {:}".format(method_code))
 
     # Test height that may or may not cause failure
-    good_height = test_height(height, bit_code)
-
-    if not good_height:
+    if not test_height(height, bit_code):
         return lat_out, lon_out, r_out
 
     # Test latitude range
     if abs(in_lat) > 90.0:
+        # Allow latitudes with a small deviation from the maximum
+        # (+/- 90 degrees) to be set to 90
         if abs(in_lat) > 90.1:
             raise ValueError('unrealistic latitude')
         in_lat = np.sign(in_lat) * 90.0
@@ -189,32 +233,40 @@ def convert_latlon(in_lat, in_lon, height, dtime, code="G2A"):
     try:
         c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
                                dtime.minute, dtime.second)
-    except:
-        raise ValueError("unable to set time for {:}".format(dtime))
+    except TypeError as terr:
+        raise TypeError("unable to set time for {:}: {:}".format(dtime, terr))
+    except RuntimeError as rerr:
+        raise RuntimeError("unable to set time for {:}: {:}".format(dtime,
+                                                                    rerr))
 
     # convert location
     try:
         lat_out, lon_out, r_out = c_aacgmv2.convert(in_lat, in_lon, height,
                                                     bit_code)
     except:
+        err = sys.exc_info()[0]
+        estr = "unable to perform conversion at {:.1f},".format(in_lat)
+        estr = "{:s}{:.1f} {:.1f} km, {:} ".format(estr, in_lon, height, dtime)
+        estr = "{:s}using method {:}: {:}".format(estr, bit_code, err)
+        aacgmv2.logger.warning(estr)
         pass
 
     return lat_out, lon_out, r_out
 
-def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
+def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
     """Converts between geomagnetic coordinates and AACGM coordinates.
 
     Parameters
     ------------
     in_lat : (np.ndarray or list or float)
-        Input latitude in degrees N (code specifies type of latitude)
+        Input latitude in degrees N (method_code specifies type of latitude)
     in_lon : (np.ndarray or list or float)
-        Input longitude in degrees E (code specifies type of longitude)
+        Input longitude in degrees E (method_code specifies type of longitude)
     height : (np.ndarray or list or float)
         Altitude above the surface of the earth in km
     dtime : (datetime)
         Single datetime object for magnetic field
-    code : (int or str)
+    method_code : (int or str)
         Bit code or string denoting which type(s) of conversion to perform
         G2A        - geographic (geodetic) to AACGM-v2
         A2G        - AACGM-v2 to geographic (geodetic)
@@ -234,12 +286,16 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
         Geocentric radial distance (R_Earth) or altitude above the surface of
         the Earth (km)
 
+    Raises
+    ------
+    ValueError if input is incorrect
+    TypeError or RuntimeError if unable to set AACGMV2 datetime
+
     Notes
     -------
     At least one of in_lat, in_lon, and height must be a list or array.
+
     """
-    import aacgmv2._aacgmv2 as c_aacgmv2
-    import aacgmv2
 
     # Recast the data as numpy arrays
     in_lat = np.array(in_lat)
@@ -260,7 +316,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
             imax = test_array.argmax()
             max_shape = in_lat.shape if imax == 0 else (in_lon.shape \
                                             if imax == 1 else height.shape) 
-            if test_array[0] == 0:
+            if not test_array[0]:
                 in_lat = np.full(shape=max_shape, fill_value=in_lat)
             if not test_array[1]:
                 in_lon = np.full(shape=max_shape, fill_value=in_lon)
@@ -270,35 +326,37 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     # Ensure that lat, lon, and height are the same length or if the lengths
     # differ that the different ones contain only a single value
     if not (in_lat.shape == in_lon.shape and in_lat.shape == height.shape):
-        ulen = np.unique([in_lat.shape, in_lon.shape, height.shape])
-        if ulen.min() != (1,):
-            raise ValueError('mismatched input arrays')
+        shape_dict = {'lat': in_lat.shape, 'lon': in_lon.shape,
+                      'height': height.shape}
+        ulen = np.unique(shape_dict.values())
+        array_key = [kk for i, kk in enumerate(shape_dict.keys())
+                     if shape_dict[kk] != (1,)]
+        if len(array_key) == 3:
+            raise ValueError('lat, lon, and height arrays are mismatched')
+        elif len(array_key) == 2:
+            if shape_dict[array_key[0]] == shape_dict[array_dict[1]]:
+                raise ValueError('{:s} and {:s} arrays are mismatched'.format(\
+                                                                *array_key))
 
     # Test time
-    if isinstance(dtime, dt.date):
-        dtime = dt.datetime.combine(dtime, dt.time(0))
-
-    if not isinstance(dtime, dt.datetime):
-        raise ValueError('time must be specified as datetime object')
+    dtime = test_time(dtime)
 
     # Initialise output
     lat_out = np.full(shape=in_lat.shape, fill_value=np.nan)
     lon_out = np.full(shape=in_lon.shape, fill_value=np.nan)
     r_out = np.full(shape=height.shape, fill_value=np.nan)
 
-    # Test and set code
+    # Test and set the conversion method code
     try:
-        bit_code = convert_str_to_bit(code.upper())
+        bit_code = convert_str_to_bit(method_code.upper())
     except AttributeError:
-        bit_code = code
+        bit_code = method_code
 
     if not isinstance(bit_code, int):
-        raise ValueError("unknown code {:}".format(bit_code))
+        raise ValueError("unknown method code {:}".format(method_code))
 
     # Test height
-    good_height = test_height(np.nanmax(height), bit_code)
-
-    if not good_height:
+    if not test_height(np.nanmax(height), bit_code):
         return lat_out, lon_out, r_out
 
     # Test latitude range
@@ -315,10 +373,13 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
     try:
         c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
                                dtime.minute, dtime.second)
-    except:
-        raise RuntimeError("unable to set time for {:}".format(dtime))
+    except TypeError as terr:
+        raise TypeError("unable to set time for {:}: {:}".format(dtime, terr))
+    except RuntimeError as rerr:
+        raise RuntimeError("unable to set time for {:}: {:}".format(dtime,
+                                                                    rerr))
 
-    # Vectorise the AACGM code
+    # Vectorise the AACGM C routine
     convert_vectorised = np.vectorize(c_aacgmv2.convert)
 
     # convert
@@ -327,6 +388,10 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, code="G2A"):
                                                      bit_code)
 
     except:
+        err = sys.exc_info()[0]
+        estr = "unable to perform vector conversion at {:} using ".format(dtime)
+        estr = "{:s}method {:}: {:}".format(estr, bit_code, err)
+        aacgmv2.logger.warning(estr)
         pass
 
     return lat_out, lon_out, r_out
@@ -360,18 +425,17 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE"):
         magnetic longitude in degrees E
     mlt : (float)
         magnetic local time in hours
+
     """
-    # Initialize code
-    code = "G2A|{:s}".format(method)
+    # Initialize method code
+    method_code = "G2A|{:s}".format(method)
 
     # Get magnetic lat and lon.
-    mlat, mlon, _ = convert_latlon(glat, glon, height, dtime, code=code)
+    mlat, mlon, _ = convert_latlon(glat, glon, height, dtime,
+                                   method_code=method_code)
 
     # Get magnetic local time
-    if np.isnan(mlon):
-        mlt = np.nan
-    else:
-        mlt = convert_mlt(mlon, dtime, m2a=False)
+    mlt = np.nan if np.isnan(mlon) else convert_mlt(mlon, dtime, m2a=False)
 
     return mlat, mlon, mlt
 
@@ -406,12 +470,14 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE"):
         magnetic longitude in degrees E
     mlt : (float)
         magnetic local time in hours
+
     """
-    # Initialize code
-    code = "G2A|{:s}".format(method)
+    # Initialize method code
+    method_code = "G2A|{:s}".format(method)
 
     # Get magnetic lat and lon.
-    mlat, mlon, _ = convert_latlon_arr(glat, glon, height, dtime, code=code)
+    mlat, mlon, _ = convert_latlon_arr(glat, glon, height, dtime,
+                                       method_code=method_code)
 
     if np.all(np.isnan(mlon)):
         mlt = np.full(shape=mlat.shape, fill_value=np.nan)
@@ -421,12 +487,12 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE"):
 
     return mlat, mlon, mlt
 
-def convert_str_to_bit(code):
+def convert_str_to_bit(method_code):
     """convert string code specification to bit code specification
 
     Parameters
     ------------
-    code : (str)
+    method_code : (str)
         Bitwise code for passing options into converter (default=0)
         G2A        - geographic (geodetic) to AACGM-v2
         A2G        - AACGM-v2 to geographic (geodetic)
@@ -438,14 +504,14 @@ def convert_str_to_bit(code):
     Returns
     --------
     bit_code : (int)
-        code specification in bits
+        Method code specification in bits
 
     Notes
     --------
     Multiple codes should be seperated by pipes '|'.  Invalid parts of the code
     are ignored and no code defaults to 'G2A'.
+
     """
-    import aacgmv2._aacgmv2 as c_aacgmv2
 
     convert_code = {"G2A": c_aacgmv2.G2A, "A2G": c_aacgmv2.A2G,
                     "TRACE": c_aacgmv2.TRACE, "BADIDEA": c_aacgmv2.BADIDEA,
@@ -453,10 +519,11 @@ def convert_str_to_bit(code):
                     "ALLOWTRACE": c_aacgmv2.ALLOWTRACE}
 
     # Force upper case, remove any spaces, and split along pipes
-    codes = code.upper().replace(" ", "").split("|")
+    method_codes = method_code.upper().replace(" ", "").split("|")
 
     # Add the valid parts of the code, invalid elements are ignored
-    bit_code = sum([convert_code[k] for k in codes if k in convert_code.keys()])
+    bit_code = sum([convert_code[k] for k in method_codes
+                    if k in convert_code.keys()])
 
     return bit_code
 
@@ -482,8 +549,8 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
     --------
     bit_code : (int)
         code specification in bits
+
     """
-    import aacgmv2._aacgmv2 as c_aacgmv2
 
     bit_code = c_aacgmv2.A2G if a2g else c_aacgmv2.G2A
 
@@ -520,16 +587,12 @@ def convert_mlt(arr, dtime, m2a=False):
     -------
     This routine previously based on Laundal et al. 2016, but now uses the
     improved calculation available in AACGM-V2.4.
+
     """
-    import aacgmv2._aacgmv2 as c_aacgmv2
 
     # Test time
-    if isinstance(dtime, dt.date):
-        if not isinstance(dtime, dt.datetime):
-            dtime = dt.datetime.combine(dtime, dt.time(0))
-    else:
-        raise ValueError('time must be specified as datetime object')
-
+    dtime = test_time(dtime)
+    
     # Calculate desired location, C routines set date and time
     if m2a:
         # Get the magnetic longitude
