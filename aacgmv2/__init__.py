@@ -34,6 +34,7 @@ convert
 convert_mlt
 wrapper.set_coeff_path
 wrapper.test_height
+wrapper.test_time
 deprecated.subsol
 _aacgmv2.convert
 _aacgmv2.set_datetime
@@ -43,9 +44,22 @@ _aacgmv2.inv_mlt_convert
 _aacgmv2.inv_mlt_convert_yrsec
 ---------------------------------------------------------------------------
 """
+# Imports
+#---------------------------------------------------------------------
+
+import logging
 import os as _os
 from sys import stderr
-import logging
+
+from aacgmv2.wrapper import (convert_latlon, convert_mlt, get_aacgm_coord)
+from aacgmv2.wrapper import (convert_latlon_arr, get_aacgm_coord_arr)
+from aacgmv2.wrapper import (convert_bool_to_bit, convert_str_to_bit)
+from aacgmv2 import (deprecated)
+from aacgmv2.deprecated import (convert)
+from aacgmv2 import (_aacgmv2)
+
+# Define global variables
+#---------------------------------------------------------------------
 
 __version__ = "2.5.2"
 
@@ -84,23 +98,3 @@ _os.environ['AACGM_v2_DAT_PREFIX'] = AACGM_v2_DAT_PREFIX
 if __reset_warn__:
     stderr.write("non-default coefficient files may be specified by running " +
                  "aacgmv2.wrapper.set_coeff_path before any other functions\n")
-# Imports
-#---------------------------------------------------------------------
-
-try:
-    from aacgmv2.wrapper import (convert_latlon, convert_mlt, get_aacgm_coord)
-    from aacgmv2.wrapper import (convert_latlon_arr, get_aacgm_coord_arr)
-    from aacgmv2.wrapper import (convert_bool_to_bit, convert_str_to_bit)
-except Exception as err:
-    logger.exception(__file__ + ' -> aacgmv2: ' + str(err))
-
-try:
-    from aacgmv2 import (deprecated)
-    from aacgmv2.deprecated import (convert)
-except Exception as err:
-    logger.exception(__file__ + ' -> aacgmv2: ' + str(err))
-
-try:
-    from aacgmv2 import (_aacgmv2)
-except Exception as err:
-    logger.exception(__file__ + ' -> aacgmv2: ' + str(err))
