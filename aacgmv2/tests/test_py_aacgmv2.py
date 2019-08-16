@@ -2,10 +2,13 @@
 from __future__ import division, absolute_import, unicode_literals
 
 import datetime as dt
-import numpy as np
-import pytest
-import aacgmv2
+from io import StringIO
 import logging
+import numpy as np
+import os
+import pytest
+
+import aacgmv2
 
 class TestConvertLatLon:
     def setup(self):
@@ -1008,7 +1011,6 @@ class TestCoeffPath:
 
     def setup(self):
         """Runs before every method to create a clean testing setup"""
-        import os
         os.environ['IGRF_COEFFS'] = "default_igrf"
         os.environ['AACGM_v2_DAT_PREFIX'] = "default_coeff"
         self.default_igrf = os.environ['IGRF_COEFFS']
@@ -1020,7 +1022,6 @@ class TestCoeffPath:
 
     def test_set_coeff_path_default(self):
         """Test the coefficient path setting using default values"""
-        import os
         aacgmv2.wrapper.set_coeff_path()
 
         if os.environ['IGRF_COEFFS'] != self.default_igrf:
@@ -1031,7 +1032,6 @@ class TestCoeffPath:
     @classmethod
     def test_set_coeff_path_string(self):
         """Test the coefficient path setting using two user specified values"""
-        import os
         aacgmv2.wrapper.set_coeff_path("hi", "bye")
 
         if os.environ['IGRF_COEFFS'] != "hi":
@@ -1042,7 +1042,6 @@ class TestCoeffPath:
     @classmethod
     def test_set_coeff_path_true(self):
         """Test the coefficient path setting using the module values"""
-        import os
         aacgmv2.wrapper.set_coeff_path(True, True)
 
         if os.environ['IGRF_COEFFS'] != aacgmv2.IGRF_COEFFS:
@@ -1052,7 +1051,6 @@ class TestCoeffPath:
 
     def test_set_only_aacgm_coeff_path(self):
         """Test the coefficient path setting using a mix of input"""
-        import os
         aacgmv2.wrapper.set_coeff_path(coeff_prefix="hi")
 
         if os.environ['IGRF_COEFFS'] != self.default_igrf:
@@ -1062,7 +1060,6 @@ class TestCoeffPath:
 
     def test_set_only_igrf_coeff_path(self):
         """Test the coefficient path setting using a mix of input"""
-        import os
         aacgmv2.wrapper.set_coeff_path(igrf_file="hi")
 
         if os.environ['IGRF_COEFFS'] != "hi":
@@ -1073,7 +1070,6 @@ class TestCoeffPath:
     @classmethod
     def test_set_both_mixed(self):
         """Test the coefficient path setting using a mix of input"""
-        import os
         aacgmv2.wrapper.set_coeff_path(igrf_file=True, coeff_prefix="hi")
 
         if os.environ['IGRF_COEFFS'] != aacgmv2.IGRF_COEFFS:
@@ -1133,7 +1129,6 @@ class TestHeightReturns:
 class TestPyLogging:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
-        from io import StringIO
 
         self.lwarn = u""
         self.lout = u""
@@ -1181,3 +1176,34 @@ class TestPyLogging:
         self.lout = self.log_capture.getvalue()
         if self.lout.find(self.lwarn) < 0:
             raise AssertionError()
+
+class TestTimeReturns:
+    def setup(self):
+        """Runs before every method to create a clean testing setup"""
+        self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
+        self.dtime2 = dt.datetime(2015, 1, 1, 10, 10, 10)
+        self.ddate = dt.date(2015, 1, 1)
+        
+    def teardown(self):
+        """Runs after every method to clean up previous testing"""
+        del self.dtime, self.ddate, self.dtime2
+
+    def test_good_time(self):
+        """ Test to see that a good datetime is accepted"""
+
+        assert self.dtime == aacgmv2.wrapper.test_time(self.dtime)
+
+    def test_good_time_with_nonzero_time(self):
+        """ Test to see that a good datetime with h/m/s is accepted"""
+
+        assert self.dtime2 == aacgmv2.wrapper.test_time(self.dtime2)
+
+    def test_good_date(self):
+        """ Test to see that a good date has a good datetime output"""
+
+        assert self.dtime == aacgmv2.wrapper.test_time(self.dtime)
+
+    def test_bad_time(self):
+        """ Test to see that a warning is raised with a bad time input"""
+        with pytest.raises(ValueError):
+            aacgmv2.wrapper.test_time(2015)
