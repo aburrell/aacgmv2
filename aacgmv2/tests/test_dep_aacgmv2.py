@@ -2,11 +2,13 @@
 from __future__ import division, absolute_import, unicode_literals
 
 import datetime as dt
+from io import StringIO
+import logging
 import numpy as np
 import pytest
-import aacgmv2
 import warnings
-import logging
+
+import aacgmv2
 
 class TestFutureDepWarning:
     def setup(self):
@@ -80,7 +82,6 @@ class TestDepAACGMV2Warning(TestFutureDepWarning):
 class TestDepLogging:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
-        from io import StringIO
 
         self.log_capture = StringIO()
         aacgmv2.logger.addHandler(logging.StreamHandler(self.log_capture))

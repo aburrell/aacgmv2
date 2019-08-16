@@ -2,8 +2,12 @@
 from __future__ import division, absolute_import, unicode_literals
 
 import datetime as dt
+import logging
 import numpy as np
+import os
+import pkgutil
 import pytest
+
 import aacgmv2
 
 #@pytest.mark.skip(reason="Not meant to be run alone")
@@ -59,8 +63,6 @@ class TestModuleStructure:
 
     def test_modules(self):
         """Test module submodule structure"""
-        import os
-        import pkgutil
 
         if self.module_name is None:
             assert True
@@ -168,14 +170,13 @@ class TestTopStructure(TestModuleStructure):
     @classmethod
     def test_top_parameters(self):
         """Test module constants"""
-        from os import path
 
-        path1 = path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
+        path1 = os.path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
                           "aacgm_coeffs-12-")
         if aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) < 0:
             raise AssertionError()
 
-        path2 = path.join("aacgmv2", "aacgmv2", "magmodel_1590-2015.txt")
+        path2 = os.path.join("aacgmv2", "aacgmv2", "magmodel_1590-2015.txt")
         if aacgmv2.IGRF_COEFFS.find(path2) < 0:
             raise AssertionError()
 
@@ -200,7 +201,6 @@ class TestTopStructure(TestModuleStructure):
     @classmethod
     def test_module_logger(self):
         """ Test the module logger instance"""
-        import logging
         
         if not isinstance(aacgmv2.logger, logging.Logger):
             raise TypeError("Logger incorrect type")
