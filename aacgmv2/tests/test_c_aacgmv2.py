@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, absolute_import, unicode_literals
 
+import datetime as dt
 import numpy as np
 import pytest
 import aacgmv2
@@ -252,7 +253,6 @@ class TestCAACGMV2:
 
     def test_inv_mlt_convert_yrsec(self):
         """Test MLT inversion with year and seconds of year"""
-        import datetime as dt
         dtime = dt.datetime(*self.long_date)
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
               dtime.minute * 60 + dtime.second
@@ -291,7 +291,6 @@ class TestCAACGMV2:
 
     def test_mlt_convert_yrsec(self):
         """Test MLT calculation using year and seconds of year"""
-        import datetime as dt
         dtime = dt.datetime(*self.long_date)
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
             dtime.minute * 60 + dtime.second

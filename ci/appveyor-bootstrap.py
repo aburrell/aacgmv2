@@ -20,14 +20,12 @@ BASE_URL = "https://www.python.org/ftp/python/"
 GET_PIP_URL = "https://bootstrap.pypa.io/get-pip.py"
 GET_PIP_PATH = "C:\get-pip.py"
 URLS = {
-    ("2.7", "64"): BASE_URL + "2.7.14/python-2.7.14.amd64.msi",
-    ("2.7", "32"): BASE_URL + "2.7.14/python-2.7.14.msi",
-    ("3.4", "64"): BASE_URL + "3.4.8/python-3.4.8.amd64.msi",
-    ("3.4", "32"): BASE_URL + "3.4.8/python-3.4.8.msi",
-    ("3.5", "64"): BASE_URL + "3.5.5/python-3.5.5-amd64.exe",
-    ("3.5", "32"): BASE_URL + "3.5.5/python-3.5.5.exe",
+    ("2.7", "64"): BASE_URL + "2.7.14/python-2.7.16.amd64.msi",
+    ("2.7", "32"): BASE_URL + "2.7.14/python-2.7.16.msi",
     ("3.6", "64"): BASE_URL + "3.6.4/python-3.6.4-amd64.exe",
     ("3.6", "32"): BASE_URL + "3.6.4/python-3.6.4.exe",
+    ("3.7", "64"): BASE_URL + "3.7/python-3.7.amd64.msi",
+    ("3.7", "32"): BASE_URL + "3.7/python-3.7.msi",
 }
 INSTALL_CMD = {
     # Commands are allowed to fail only if they are not the last command.
@@ -38,13 +36,10 @@ INSTALL_CMD = {
     "2.7": [["msiexec.exe", "/L*+!", "install.log", "/qn", "/x", "{path}"],
             ["msiexec.exe", "/L*+!", "install.log", "/qn", "/i", "{path}",
              "TARGETDIR={home}"]],
-    "3.4": [["msiexec.exe", "/L*+!", "install.log", "/qn", "/x", "{path}"],
-            ["msiexec.exe", "/L*+!", "install.log", "/qn", "/i", "{path}",
-             "TARGETDIR={home}"]],
-    "3.5": [["msiexec.exe", "/L*+!", "install.log", "/qn", "/x", "{path}"],
-            ["msiexec.exe", "/L*+!", "install.log", "/qn", "/i", "{path}",
-             "TARGETDIR={home}"]],
     "3.6": [["msiexec.exe", "/L*+!", "install.log", "/qn", "/x", "{path}"],
+            ["msiexec.exe", "/L*+!", "install.log", "/qn", "/i", "{path}",
+             "TARGETDIR={home}"]],
+    "3.7": [["msiexec.exe", "/L*+!", "install.log", "/qn", "/x", "{path}"],
             ["msiexec.exe", "/L*+!", "install.log", "/qn", "/i", "{path}",
              "TARGETDIR={home}"]],
 }

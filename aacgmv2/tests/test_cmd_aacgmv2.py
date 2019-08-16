@@ -3,6 +3,7 @@ from __future__ import division, absolute_import, unicode_literals
 
 import subprocess
 import numpy as np
+import os
 
 class testCmdAACGMV2:
     def setup(self):
@@ -15,8 +16,6 @@ class testCmdAACGMV2:
 
     def teardown(self):
         """Runs after every method to clean up previous testing"""
-        import os
-
         if os.path.isfile(self.output):
             os.remove(self.output)
 

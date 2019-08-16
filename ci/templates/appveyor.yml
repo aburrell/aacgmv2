@@ -18,30 +18,6 @@ environment:
       PYTHON_HOME: C:\python27-x64
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '64'
-    - TOXENV: '3.4-buildonly-nocover'
-      TOXPYTHON: C:\python34\python.exe
-      WINDOWS_SDK_VERSION: v7.1
-      PYTHON_HOME: C:\python34
-      PYTHON_VERSION: '3.4'
-      PYTHON_ARCH: '32'
-    - TOXENV: '3.4-buildonly-nocover'
-      TOXPYTHON: C:\python34-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.1
-      PYTHON_HOME: C:\python34-x64
-      PYTHON_VERSION: '3.4'
-      PYTHON_ARCH: '64'
-    - TOXENV: '3.5-buildonly-nocover'
-      TOXPYTHON: C:\python35\python.exe
-      WINDOWS_SDK_VERSION: v7.1
-      PYTHON_HOME: C:\python35
-      PYTHON_VERSION: '3.5'
-      PYTHON_ARCH: '32'
-    - TOXENV: '3.5-buildonly-nocover'
-      TOXPYTHON: C:\python35-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.1
-      PYTHON_HOME: C:\python35-x64
-      PYTHON_VERSION: '3.5'
-      PYTHON_ARCH: '64'
     - TOXENV: '3.6-buildonly-nocover'
       TOXPYTHON: C:\python36\python.exe
       WINDOWS_SDK_VERSION: v7.1
@@ -54,17 +30,25 @@ environment:
       PYTHON_HOME: C:\python36-x64
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '64'
+    - TOXENV: '3.7-buildonly-nocover'
+      TOXPYTHON: C:\python37\python.exe
+      WINDOWS_SDK_VERSION: v7.1
+      PYTHON_HOME: C:\python37
+      PYTHON_VERSION: '3.7'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.7-buildonly-nocover'
+      TOXPYTHON: C:\python37-x64\python.exe
+      WINDOWS_SDK_VERSION: v7.1
+      PYTHON_HOME: C:\python37-x64
+      PYTHON_VERSION: '3.7'
+      PYTHON_ARCH: '64'
     - TOXENV: check
       PYTHON_HOME: C:\Python27
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '32'
-{% for env, config in tox_environments|dictsort %}{% if config.python in ('python2.6', 'python2.7', 'python3.4', 'python3.5', 'python3.6') and not config.cover %}
+{% for env, config in tox_environments|dictsort %}{% if config.python in ('python2.6', 'python2.7', 'python3.6', 'python3.7') and not config.cover %}
     - TOXENV: '{{ env }}{% if config.cover %},codecov{% endif %}'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}\python.exe
-      {%- if config.python != 'python3.5' %}
-
-      WINDOWS_SDK_VERSION: v7.{{ '1' if config.python[-1] == '3' else '0' }}
-      {%- endif %}
 
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}
       PYTHON_VERSION: '{{ config.python[-3:] }}'
@@ -108,13 +92,8 @@ artifacts:
   - path: dist\*
 matrix:
   allow_failures:
-    - TOXENV: 'check'
-    - TOXENV: '3.6-nocover'
-    - TOXENV: '3.6,codecov'
-    - TOXENV: '2.7-buildonly-nocover'
-    - TOXENV: '3.4-buildonly-nocover'
-    - TOXENV: '3.5-buildonly-nocover'
-    - TOXENV: '3.6-buildonly-nocover'
+    - TOXENV: '2.7-nocover'
+    - TOXENV: '3.7-nocover'
 ### To enable remote debugging uncomment this:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 

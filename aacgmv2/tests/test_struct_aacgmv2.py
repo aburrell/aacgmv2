@@ -2,8 +2,12 @@
 from __future__ import division, absolute_import, unicode_literals
 
 import datetime as dt
+import logging
 import numpy as np
+import os
+import pkgutil
 import pytest
+
 import aacgmv2
 
 #@pytest.mark.skip(reason="Not meant to be run alone")
@@ -59,8 +63,6 @@ class TestModuleStructure:
 
     def test_modules(self):
         """Test module submodule structure"""
-        import os
-        import pkgutil
 
         if self.module_name is None:
             assert True
@@ -118,9 +120,10 @@ class TestPyStructure(TestModuleStructure):
     def setup(self):
         self.module_name = None
         self.reference_list = ["convert_bool_to_bit", "convert_str_to_bit",
-                               "convert_mlt", "convert_latlon",
+                               "convert_mlt", "convert_latlon", "test_height",
                                "convert_latlon_arr", "get_aacgm_coord",
-                               "get_aacgm_coord_arr", "set_coeff_path"]
+                               "get_aacgm_coord_arr", "set_coeff_path",
+                               "test_time"]
 
     def teardown(self):
         del self.module_name, self.reference_list
@@ -164,3 +167,41 @@ class TestTopStructure(TestModuleStructure):
         self.reference_list = ["_aacgmv2", "wrapper",
                                "deprecated", "__main__"]
         self.test_modules()
+
+    @classmethod
+    def test_top_parameters(self):
+        """Test module constants"""
+
+        path1 = os.path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
+                          "aacgm_coeffs-12-")
+        if aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) < 0:
+            raise AssertionError()
+
+        path2 = os.path.join("aacgmv2", "aacgmv2", "magmodel_1590-2015.txt")
+        if aacgmv2.IGRF_COEFFS.find(path2) < 0:
+            raise AssertionError()
+
+        del path1, path2
+
+    @classmethod
+    def test_high_alt_variables(self):
+        """ Test that module altitude limits exist and are appropriate"""
+
+        if not isinstance(aacgmv2.high_alt_coeff, float):
+            raise TypeError("Coefficient upper limit not float")
+
+        if not isinstance(aacgmv2.high_alt_trace, float):
+            raise TypeError("Trace upper limit not float")
+
+        if aacgmv2.high_alt_coeff != 2000.0:
+            raise ValueError("unexpected coefficient upper limit")
+
+        if aacgmv2.high_alt_trace <= aacgmv2.high_alt_trace:
+            raise ValueError("Trace limit lower than coefficient limit")
+
+    @classmethod
+    def test_module_logger(self):
+        """ Test the module logger instance"""
+        
+        if not isinstance(aacgmv2.logger, logging.Logger):
+            raise TypeError("Logger incorrect type")
