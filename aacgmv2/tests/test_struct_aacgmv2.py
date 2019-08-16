@@ -122,7 +122,8 @@ class TestPyStructure(TestModuleStructure):
         self.reference_list = ["convert_bool_to_bit", "convert_str_to_bit",
                                "convert_mlt", "convert_latlon", "test_height",
                                "convert_latlon_arr", "get_aacgm_coord",
-                               "get_aacgm_coord_arr", "set_coeff_path"]
+                               "get_aacgm_coord_arr", "set_coeff_path",
+                               "test_time"]
 
     def teardown(self):
         del self.module_name, self.reference_list

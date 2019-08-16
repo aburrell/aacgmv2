@@ -78,7 +78,7 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
 
     # convert location
     lat_out, lon_out, _ = aacgmv2.convert_latlon_arr(lat, lon, alt, date,
-                                                     code=bit_code)
+                                                     method_code=bit_code)
 
     return lat_out, lon_out
 
