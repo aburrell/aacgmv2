@@ -1,6 +1,8 @@
 #include <stdio.h>
 
 /*****************************************************************************
+ * Copyright (C) 2019 NRL
+ * 
  * Author: Angeline G. Burrell, UTDallas, April 2017
  *
  * Comments: python wrapper to AACGM functions based on test_aacgm.c
@@ -11,6 +13,9 @@
  *             coordinates: Definition and functional approximations, Journal
  *             of Geophysical Research: Space Physics, 119, p 7501-7521, 
  *             doi:10.1002/2014JA020264
+ *
+ * Disclaimer: This code is under the MIT license, whose details can be found at
+ *             the root in the LICENSE file
  *****************************************************************************/
 
 #include <Python.h>

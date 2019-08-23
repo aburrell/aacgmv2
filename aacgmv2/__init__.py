@@ -1,3 +1,8 @@
+# Copyright (C) 2019 NRL 
+# Author: Angeline Burrell
+# Disclaimer: This code is under the MIT license, whose details can be found at
+# the root in the LICENSE file
+#
 # -*- coding: utf-8 -*-
 """aacgmv2
 
