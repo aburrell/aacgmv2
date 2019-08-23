@@ -6,6 +6,11 @@ Bug reports, feature suggestions and other contributions are greatly
 appreciated! While I can't promise to implement everything, I will always try
 to respond in a timely manner.
 
+You can also contribute by testing pull request or performing code reviews.  If
+you help out in ways that don't involve hacking the code, please add your name
+under the **Thanks** header in the ``AUTHORS.rst`` file.  We appreciate the
+time you have given to improve this project.
+
 Short version
 =============
 
