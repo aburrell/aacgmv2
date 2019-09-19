@@ -1,6 +1,18 @@
 
 Changelog
 =========
+2.5.2 (2019-08-27)
+-----------------------------------------
+* Added FutureWarning to deprecated functions
+* Updated names in licenses
+* Moved module structure routine tests to their own class
+* Added high altitude limit to avoid while-loop hanging
+* Changed version support to 2.7, 3.6, and 3.7
+* Removed logbook dependency
+* Added logic to avoid reseting environment variables if not necessary
+* Added copyright and license disclaimer to module-specific program files
+  
+
 2.5.1 (2018-10-19)
 -----------------------------------------
 * Commented out debug statement in C code

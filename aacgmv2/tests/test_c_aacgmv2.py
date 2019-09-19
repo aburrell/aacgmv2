@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, absolute_import, unicode_literals
 
+import datetime as dt
 import numpy as np
 import pytest
 import aacgmv2
@@ -22,18 +23,6 @@ class TestCAACGMV2:
         """Runs after every method to clean up previous testing"""
         del self.date_args, self.long_date, self.mlat, self.mlon, self.mlt
         del self.lat_in, self.lon_in, self.alt_in
-
-    @classmethod
-    def test_module_structure(self):
-        """Test module structure"""
-        assert aacgmv2
-        assert aacgmv2._aacgmv2
-        assert aacgmv2._aacgmv2.set_datetime
-        assert aacgmv2._aacgmv2.convert
-        assert aacgmv2._aacgmv2.inv_mlt_convert
-        assert aacgmv2._aacgmv2.inv_mlt_convert_yrsec
-        assert aacgmv2._aacgmv2.mlt_convert
-        assert aacgmv2._aacgmv2.mlt_convert_yrsec
 
     def test_constants(self):
         """Test module constants"""
@@ -264,7 +253,6 @@ class TestCAACGMV2:
 
     def test_inv_mlt_convert_yrsec(self):
         """Test MLT inversion with year and seconds of year"""
-        import datetime as dt
         dtime = dt.datetime(*self.long_date)
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
               dtime.minute * 60 + dtime.second
@@ -303,7 +291,6 @@ class TestCAACGMV2:
 
     def test_mlt_convert_yrsec(self):
         """Test MLT calculation using year and seconds of year"""
-        import datetime as dt
         dtime = dt.datetime(*self.long_date)
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
             dtime.minute * 60 + dtime.second
