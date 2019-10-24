@@ -312,8 +312,8 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
                            len(height.shape)])
     if test_array.min() == 0:
         if test_array.max() == 0:
-            aacgmv2.logger.warning("for a single location, consider using " \
-                                   "convert_latlon or get_aacgm_coord")
+            aacgmv2.logger.info("".join(["for a single location, consider ",
+                                    "using convert_latlon or get_aacgm_coord"]))
             in_lat = np.array([in_lat])
             in_lon = np.array([in_lon])
             height = np.array([height])
