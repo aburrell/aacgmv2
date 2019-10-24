@@ -401,7 +401,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
 
     return lat_out, lon_out, r_out
 
-def get_aacgm_coord(glat, glon, height, dtime, method="TRACE"):
+def get_aacgm_coord(glat, glon, height, dtime, method="ALLOWTRACE"):
     """Get AACGM latitude, longitude, and magnetic local time
 
     Parameters
@@ -445,7 +445,7 @@ def get_aacgm_coord(glat, glon, height, dtime, method="TRACE"):
     return mlat, mlon, mlt
 
 
-def get_aacgm_coord_arr(glat, glon, height, dtime, method="TRACE"):
+def get_aacgm_coord_arr(glat, glon, height, dtime, method="ALLOWTRACE"):
     """Get AACGM latitude, longitude, and magnetic local time
 
     Parameters
