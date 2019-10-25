@@ -42,6 +42,7 @@ wrapper.test_height
 wrapper.test_time
 deprecated.subsol
 _aacgmv2.convert
+_aacgmv2.convert_arr
 _aacgmv2.set_datetime
 _aacgmv2.mlt_convert
 _aacgmv2.mlt_convert_yrsec

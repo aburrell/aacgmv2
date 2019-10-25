@@ -47,6 +47,65 @@ static PyObject *aacgm_v2_setdatetime(PyObject *self, PyObject *args)
   Py_RETURN_NONE;
 }
 
+static PyObject *aacgm_v2_convert_arr(PyObject *self, PyObject *args)
+{
+  int i, code, err;
+
+  long int in_num;
+
+  double in_lat, in_lon, in_h, *out_lat, *out_lon, *out_r;
+
+  char *out_fmt, *arr_fmt;
+
+  PyObject *latIn, *lonIn, *hIn;
+
+  /* Parse the input as a tuple */
+  if(!PyArg_ParseTuple(args, "O!O!O!i", &PyList_Type, &latIn, &PyList_Type,
+		       &lonIn, &PyList_Type, &hIn, &code))
+    return(NULL);
+
+  /* Allocate space for the output data */
+  in_num  = PyList_Size(latIn);
+  out_lat = (double *)(malloc(sizeof(double) * in_num));
+  out_lon = (double *)(malloc(sizeof(double) * in_num));
+  out_r   = (double *)(malloc(sizeof(double) * in_num));
+  out_fmt = (char *)(malloc(sizeof(char) * (in_num + 2)));
+  out_fmt = (char *)(malloc(sizeof(char) * in_num));
+  memset(arr_fmt, 'd', in_num);
+  sprintf(out_fmt, "[%s]", arr_fmt);
+
+  printf("TEST FMT: %s\n", out_fmt);fflush(stdout);
+
+  /* Cycle through all of the inputs */
+  for(i=0; i<in_num; i++)
+    {
+      /* Read in the input */
+      in_lat     = PyFloat_AsDouble(PyList_GetItem(latIn, i));
+      in_lon     = PyFloat_AsDouble(PyList_GetItem(lonIn, i));
+      in_h       = PyFloat_AsDouble(PyList_GetItem(hIn, i));
+
+      printf("TEST IN:  %d %f %f %f\n", i, in_lat, in_lon, in_h);fflush(stdout);
+		       
+      /* Call the AACGM routine */
+      err = AACGM_v2_Convert(in_lat, in_lon, in_h, &out_lat[i], &out_lon[i],
+			     &out_r[i], code);
+      if(err < 0)
+	{
+	  out_lat[i] = -666.0;
+	  out_lon[i] = -666.0;
+	  out_r[i]   = -666.0;
+	  PyErr_Format(PyExc_RuntimeWarning,
+		       "AACGM_v2_Convert returned error code %d", err);
+	}
+      
+      printf("TEST OUT: %d %f %f %f\n", err, out_lat[i], out_lon[i], out_r[i]);fflush(stdout);
+      
+    }
+
+  return Py_BuildValue(out_fmt, out_lat);
+
+}
+
 static PyObject *aacgm_v2_convert(PyObject *self, PyObject *args)
 {
   int code, err;
@@ -189,6 +248,40 @@ out_lon : (float)\n\
     Output longitude in degrees\n\
 out_r : (float)\n\
     Geocentric radial distance in Re\n", },
+  { "convert_arr", aacgm_v2_convert_arr, METH_VARARGS,
+    "convert_arr(in_lat, in_lon, height, code)\n\
+\n\
+Converts between geographic/dedic and magnetic coordinates.\n\
+\n\
+Parameters\n\
+-------------\n\
+in_lat : (list)\n\
+    Input latitudes in degrees N (code specifies type of latitude)\n\
+in_lon : (list)\n\
+    Input longitudes in degrees E (code specifies type of longitude)\n\
+height : (list)\n\
+    Altitudes above the surface of the earth in km\n\
+code : (int)	\n\
+    Bitwise code for passing options into converter (default=0)\n\
+    0  - G2A        - geographic (geodetic) to AACGM-v2	\n\
+    1  - A2G        - AACGM-v2 to geographic (geodetic)	\n\
+    2  - TRACE      - use field-line tracing, not coefficients\n\
+    4  - ALLOWTRACE - use trace only above 2000 km\n\
+    8  - BADIDEA    - use coefficients above 2000 km\n\
+    16 - GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2\n\
+\n\
+Returns	\n\
+-------\n\
+out_lat : (list)\n\
+    Output latitudes in degrees\n\
+out_lon : (list)\n\
+    Output longitudes in degrees\n\
+out_r : (list)\n\
+    Geocentric radial distances in Re\n\
+\n\
+Notes \n\
+-----\n\
+Return values will default to -666.0 if unable to calcuate output\n", },
   {"mlt_convert", mltconvert_v2, METH_VARARGS,
     "mlt_convert(yr, mo, dy, hr, mt, sc, mlon)\n\
 \n\
