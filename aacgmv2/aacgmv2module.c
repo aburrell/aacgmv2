@@ -49,15 +49,15 @@ static PyObject *aacgm_v2_setdatetime(PyObject *self, PyObject *args)
 
 static PyObject *aacgm_v2_convert_arr(PyObject *self, PyObject *args)
 {
-  int i, code, err;
+  int i, code, err, raise_warn;
 
   long int in_num;
 
-  double in_lat, in_lon, in_h, *out_lat, *out_lon, *out_r;
+  double in_lat, in_lon, in_h, out_lat, out_lon, out_r;
 
-  char *out_fmt, *arr_fmt;
+  PyObject *latIn, *lonIn, *hIn, *latOut, *lonOut, *rOut, *allOut;
 
-  PyObject *latIn, *lonIn, *hIn;
+  raise_warn = 0;
 
   /* Parse the input as a tuple */
   if(!PyArg_ParseTuple(args, "O!O!O!i", &PyList_Type, &latIn, &PyList_Type,
@@ -66,43 +66,36 @@ static PyObject *aacgm_v2_convert_arr(PyObject *self, PyObject *args)
 
   /* Allocate space for the output data */
   in_num  = PyList_Size(latIn);
-  out_lat = (double *)(malloc(sizeof(double) * in_num));
-  out_lon = (double *)(malloc(sizeof(double) * in_num));
-  out_r   = (double *)(malloc(sizeof(double) * in_num));
-  out_fmt = (char *)(malloc(sizeof(char) * (in_num + 2)));
-  out_fmt = (char *)(malloc(sizeof(char) * in_num));
-  memset(arr_fmt, 'd', in_num);
-  sprintf(out_fmt, "[%s]", arr_fmt);
-
-  printf("TEST FMT: %s\n", out_fmt);fflush(stdout);
+  latOut = PyList_New(in_num);
+  lonOut = PyList_New(in_num);
+  rOut   = PyList_New(in_num);
 
   /* Cycle through all of the inputs */
   for(i=0; i<in_num; i++)
     {
       /* Read in the input */
-      in_lat     = PyFloat_AsDouble(PyList_GetItem(latIn, i));
-      in_lon     = PyFloat_AsDouble(PyList_GetItem(lonIn, i));
-      in_h       = PyFloat_AsDouble(PyList_GetItem(hIn, i));
-
-      printf("TEST IN:  %d %f %f %f\n", i, in_lat, in_lon, in_h);fflush(stdout);
-		       
+      in_lat = PyFloat_AsDouble(PyList_GetItem(latIn, i));
+      in_lon = PyFloat_AsDouble(PyList_GetItem(lonIn, i));
+      in_h   = PyFloat_AsDouble(PyList_GetItem(hIn, i));
+	       
       /* Call the AACGM routine */
-      err = AACGM_v2_Convert(in_lat, in_lon, in_h, &out_lat[i], &out_lon[i],
-			     &out_r[i], code);
-      if(err < 0)
-	{
-	  out_lat[i] = -666.0;
-	  out_lon[i] = -666.0;
-	  out_r[i]   = -666.0;
-	  PyErr_Format(PyExc_RuntimeWarning,
-		       "AACGM_v2_Convert returned error code %d", err);
-	}
+      err = AACGM_v2_Convert(in_lat, in_lon, in_h, &out_lat, &out_lon,
+			     &out_r, code);
+      if(err < 0) raise_warn++;
       
-      printf("TEST OUT: %d %f %f %f\n", err, out_lat[i], out_lon[i], out_r[i]);fflush(stdout);
-      
+      PyList_SetItem(latOut, i, PyFloat_FromDouble(out_lat));
+      PyList_SetItem(lonOut, i, PyFloat_FromDouble(out_lon));
+      PyList_SetItem(rOut, i, PyFloat_FromDouble(out_r));
     }
 
-  return Py_BuildValue(out_fmt, out_lat);
+  if(raise_warn > 0)
+    PyErr_Format(PyExc_RuntimeWarning,
+		 "AACGM_v2_Convert returned with error %d times", raise_warn);
+
+  /* Set the output tuple */
+  allOut = PyTuple_Pack(3, latOut, lonOut, rOut);
+  
+  return allOut;
 
 }
 
