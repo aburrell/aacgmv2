@@ -481,11 +481,13 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="ALLOWTRACE"):
     mlat, mlon, _ = convert_latlon_arr(glat, glon, height, dtime,
                                        method_code=method_code)
 
-    if np.all(np.isnan(mlon)):
-        mlt = np.full(shape=mlat.shape, fill_value=np.nan)
+    if not np.all(np.isfinite(mlon)):
+        mlt = list(np.full(shape=len(mlat), fill_value=np.nan))
     else:
         # Get magnetic local time
         mlt = convert_mlt(mlon, dtime, m2a=False)
+        if not isinstance(mlt, type(mlat)):
+            mlt = [mlt]
 
     return mlat, mlon, mlt
 
@@ -596,6 +598,9 @@ def convert_mlt(arr, dtime, m2a=False):
     if arr.shape == ():
         arr = np.array([arr])
 
+    if len(arr.shape) > 1:
+        raise ValueError("unable to process multi-dimensional arrays")
+
     # Test time
     try:
         dtime = test_time(dtime)
@@ -619,9 +624,6 @@ def convert_mlt(arr, dtime, m2a=False):
         minutes = [dd.minute for dd in dtime]
         seconds = [dd.second for dd in dtime]
 
-    if len(arr.shape) > 1:
-        raise ValueError("unable to process multi-dimensional arrays")
-        
     arr = list(arr)
 
     # Calculate desired location, C routines set date and time
