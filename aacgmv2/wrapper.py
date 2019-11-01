@@ -304,6 +304,8 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
     that all successful calculations are returned.  To select only good values
     use a function like `np.isfinite`.
 
+    Multi-dimensional arrays are not allowed.
+
     """
 
     # Recast the data as numpy arrays
@@ -314,6 +316,9 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
     # If one or two of these elements is a float or int, create an array
     test_array = np.array([len(in_lat.shape), len(in_lon.shape),
                            len(height.shape)])
+    if test_array.max() > 1:
+        raise ValueError("unable to process multi-dimensional arrays")
+
     if test_array.min() == 0:
         if test_array.max() == 0:
             aacgmv2.logger.info("".join(["for a single location, consider ",
@@ -613,6 +618,10 @@ def convert_mlt(arr, dtime, m2a=False):
         hours = [dd.hour for dd in dtime]
         minutes = [dd.minute for dd in dtime]
         seconds = [dd.second for dd in dtime]
+
+    if len(arr.shape) > 1:
+        raise ValueError("unable to process multi-dimensional arrays")
+        
     arr = list(arr)
 
     # Calculate desired location, C routines set date and time
