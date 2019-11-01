@@ -100,7 +100,8 @@ class TestCStructure(TestModuleStructure):
         self.module_name = None
         self.reference_list = ["set_datetime", "convert", "inv_mlt_convert",
                                "inv_mlt_convert_yrsec", "mlt_convert",
-                               "mlt_convert_yrsec"]
+                               "mlt_convert_yrsec", "inv_mlt_convert_arr",
+                               "mlt_convert_arr", "convert_arr"]
 
     def teardown(self):
         del self.module_name, self.reference_list
