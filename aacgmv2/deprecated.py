@@ -63,16 +63,16 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
         Output longitude in degrees E
     """
 
-    dstr = "Deprecated routine, will be removed in version 2.6.  Recommend "
-    dstr += "using convert_latlon or convert_latlon_arr"
+    dstr = "".join(["Deprecated routine, will be removed in version 2.6.  ",
+                    "Recommend using convert_latlon or convert_latlon_arr"])
     warnings.warn(dstr, category=FutureWarning)
 
     if(np.array(alt).max() > 2000 and not trace and not allowtrace and
        not badidea):
-        estr = 'coefficients are not valid for altitudes above 2000 km. You'
-        estr += ' must either use field-line tracing (trace=True '
-        estr += 'or allowtrace=True) or indicate you know this is a bad idea'
-        estr += ' (badidea=True)'
+        estr = ''.join(['coefficients are not valid for altitudes above 2000 ',
+                        'km. You must either use field-line tracing (trace=',
+                        'True or allowtrace=True) or indicate you know this ',
+                        'is a bad idea (badidea=True)'])
         raise ValueError(estr)
 
     # construct a code from the boolian flags
