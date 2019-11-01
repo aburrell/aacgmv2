@@ -1,6 +1,13 @@
 
 Changelog
 =========
+2.5.3 (2019-11-XX)
+-----------------------------------------
+* Changed log warning about array functions to info
+* Changed default method from `TRACE` to `ALLOWTRACE`
+* Added C wrappers for list input, removing inefficient use of `np.vectorize`
+
+
 2.5.2 (2019-08-27)
 -----------------------------------------
 * Added FutureWarning to deprecated functions
