@@ -96,7 +96,6 @@ static PyObject *aacgm_v2_convert_arr(PyObject *self, PyObject *args)
   allOut = PyTuple_Pack(3, latOut, lonOut, rOut);
   
   return allOut;
-
 }
 
 static PyObject *aacgm_v2_convert(PyObject *self, PyObject *args)
@@ -121,6 +120,49 @@ static PyObject *aacgm_v2_convert(PyObject *self, PyObject *args)
     }
 
   return Py_BuildValue("ddd", out_lat, out_lon, out_r);
+}
+
+static PyObject *mltconvert_v2_arr(PyObject *self, PyObject *args)
+{
+  int i, in_yr, in_mo, in_dy, in_hr, in_mt, in_sc;
+
+  long int in_num;
+
+  double in_lon, out_mlt;
+
+  PyObject *yrIn, *moIn, *dyIn, *hrIn, *mtIn, *scIn, *lonIn, *mltOut;
+
+  /* Parse the input as a tupple */
+  if(!PyArg_ParseTuple(args, "O!O!O!O!O!O!O!", &PyList_Type, &yrIn,
+		       &PyList_Type, &moIn, &PyList_Type, &dyIn, &PyList_Type,
+		       &hrIn, &PyList_Type, &mtIn, &PyList_Type, &scIn,
+		       &PyList_Type, &lonIn))
+    return(NULL);
+
+  /* Allocate space for the output data */
+  in_num  = PyList_Size(lonIn);
+  mltOut = PyList_New(in_num);
+
+  /* Cycle through all of the inputs */
+  for(i=0; i<in_num; i++)
+    {
+      /* Read in the input */
+      in_yr = (int) PyInt_AsLong(PyList_GetItem(yrIn, i));
+      in_mo = (int) PyInt_AsLong(PyList_GetItem(moIn, i));
+      in_dy = (int) PyInt_AsLong(PyList_GetItem(dyIn, i));
+      in_hr = (int) PyInt_AsLong(PyList_GetItem(hrIn, i));
+      in_mt = (int) PyInt_AsLong(PyList_GetItem(mtIn, i));
+      in_sc = (int) PyInt_AsLong(PyList_GetItem(scIn, i));
+      in_lon = PyFloat_AsDouble(PyList_GetItem(lonIn, i));
+	       
+      /* Call the AACGM routine */
+      out_mlt = MLTConvertYMDHMS_v2(in_yr, in_mo, in_dy, in_hr, in_mt, in_sc,
+				    in_lon);
+      
+      PyList_SetItem(mltOut, i, PyFloat_FromDouble(out_mlt));
+    }
+
+  return mltOut;
 }
 
 static PyObject *mltconvert_v2(PyObject *self, PyObject *args)
@@ -153,6 +195,49 @@ static PyObject *mltconvert_yrsec_v2(PyObject *self, PyObject *args)
   mlt = MLTConvertYrsec_v2(yr, yr_sec, mlon);
 
   return Py_BuildValue("d", mlt);
+}
+
+static PyObject *inv_mltconvert_v2_arr(PyObject *self, PyObject *args)
+{
+  int i, in_yr, in_mo, in_dy, in_hr, in_mt, in_sc;
+
+  long int in_num;
+
+  double in_mlt, out_lon;
+
+  PyObject *yrIn, *moIn, *dyIn, *hrIn, *mtIn, *scIn, *mltIn, *lonOut;
+
+  /* Parse the input as a tupple */
+  if(!PyArg_ParseTuple(args, "O!O!O!O!O!O!O!", &PyList_Type, &yrIn,
+		       &PyList_Type, &moIn, &PyList_Type, &dyIn, &PyList_Type,
+		       &hrIn, &PyList_Type, &mtIn, &PyList_Type, &scIn,
+		       &PyList_Type, &mltIn))
+    return(NULL);
+
+  /* Allocate space for the output data */
+  in_num  = PyList_Size(mltIn);
+  lonOut = PyList_New(in_num);
+
+  /* Cycle through all of the inputs */
+  for(i=0; i<in_num; i++)
+    {
+      /* Read in the input */
+      in_yr = (int) PyInt_AsLong(PyList_GetItem(yrIn, i));
+      in_mo = (int) PyInt_AsLong(PyList_GetItem(moIn, i));
+      in_dy = (int) PyInt_AsLong(PyList_GetItem(dyIn, i));
+      in_hr = (int) PyInt_AsLong(PyList_GetItem(hrIn, i));
+      in_mt = (int) PyInt_AsLong(PyList_GetItem(mtIn, i));
+      in_sc = (int) PyInt_AsLong(PyList_GetItem(scIn, i));
+      in_mlt = PyFloat_AsDouble(PyList_GetItem(mltIn, i));
+	       
+      /* Call the AACGM routine */
+      out_lon = inv_MLTConvertYMDHMS_v2(in_yr, in_mo, in_dy, in_hr, in_mt,
+					in_sc, in_mlt);
+      
+      PyList_SetItem(lonOut, i, PyFloat_FromDouble(out_lon));
+    }
+
+  return lonOut;
 }
 
 static PyObject *inv_mltconvert_v2(PyObject *self, PyObject *args)
@@ -274,7 +359,33 @@ out_r : (list)\n\
 \n\
 Notes \n\
 -----\n\
-Return values will default to -666.0 if unable to calcuate output\n", },
+Return values of inf are usually raised when an error was encountered\n", },
+  {"mlt_convert_arr", mltconvert_v2_arr, METH_VARARGS,
+    "mlt_convert_arr(yr, mo, dy, hr, mt, sc, mlon)\n\
+\n\
+Converts from universal time to magnetic local time.\n\
+\n\
+Parameters\n\
+-------------\n\
+yr : (list)\n\
+    4 digit integer year (1900-2020)\n\
+mo : (list)\n\
+    Month of year (1-12)\n\
+dy : (list)\n\
+    Day of month (1-31)\n\
+hr : (list)\n\
+    hours of day (0-23)\n\
+mt : (list)\n\
+    Minutes of hour (0-59)\n\
+sc : (list)\n\
+    Seconds of minute (0-59)\n\
+mlon : (list)\n\
+    Magnetic longitude\n\
+\n\
+Returns	\n\
+-------\n\
+mlt : (list)\n\
+    Magnetic local time (hours)\n" },
   {"mlt_convert", mltconvert_v2, METH_VARARGS,
     "mlt_convert(yr, mo, dy, hr, mt, sc, mlon)\n\
 \n\
@@ -320,6 +431,33 @@ Returns	\n\
 -------\n\
 mlt : (float)\n\
     Magnetic local time (hours)\n" },
+    {"inv_mlt_convert_arr", inv_mltconvert_v2_arr, METH_VARARGS,
+    "inv_mlt_convert_arr(yr, mo, dy, hr, mt, sc, mlt)\n\
+\n\
+Converts from universal time and magnetic local time to magnetic longitude.\n\
+\n\
+Parameters\n\
+-------------\n\
+yr : (list)\n\
+    4 digit integer year (1900-2020)\n\
+mo : (list)\n\
+    Month of year (1-12)\n\
+dy : (list)\n\
+    Day of month (1-31)\n\
+hr : (list)\n\
+    hours of day (0-23)\n\
+mt : (list)\n\
+    Minutes of hour (0-59)\n\
+sc : (list)\n\
+    Seconds of minute (0-59)\n\
+mlt : (list)\n\
+    Magnetic local time\n\
+\n\
+Returns	\n\
+-------\n\
+mlon : (list)\n\
+    Magnetic longitude (degrees)\n" },
+
   {"inv_mlt_convert", inv_mltconvert_v2, METH_VARARGS,
     "inv_mlt_convert(yr, mo, dy, hr, mt, sc, mlt)\n\
 \n\

@@ -300,6 +300,10 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
     -------
     At least one of in_lat, in_lon, and height must be a list or array.
 
+    If errors are encountered, NaN or Inf will be included in the input so
+    that all successful calculations are returned.  To select only good values
+    use a function like `np.isfinite`.
+
     """
 
     # Recast the data as numpy arrays
@@ -384,20 +388,8 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
         raise RuntimeError("unable to set time for {:}: {:}".format(dtime,
                                                                     rerr))
 
-    # Vectorise the AACGM C routine
-    convert_vectorised = np.vectorize(c_aacgmv2.convert)
-
-    # convert
-    try:
-        lat_out, lon_out, r_out = convert_vectorised(in_lat, in_lon, height,
-                                                     bit_code)
-
-    except:
-        err = sys.exc_info()[0]
-        estr = "unable to perform vector conversion at {:} using ".format(dtime)
-        estr = "{:s}method {:}: {:}".format(estr, bit_code, err)
-        aacgmv2.logger.warning(estr)
-        pass
+    lat_out, lon_out, r_out = c_aacgmv2.convert_arr(list(in_lat), list(in_lon),
+                                                    list(height), bit_code)
 
     return lat_out, lon_out, r_out
 
@@ -575,9 +567,9 @@ def convert_mlt(arr, dtime, m2a=False):
 
     Parameters
     ------------
-    arr : (array_line or float)
+    arr : (array-like or float)
         Magnetic longitudes (degrees E) or MLTs (hours) to convert
-    dtime : (datetime.datetime)
+    dtime : (array-like or datetime.datetime)
         Date and time for MLT conversion in Universal Time (UT).
     m2a : (bool)
         Convert MLT to AACGM-v2 longitude (True) or magnetic longitude to MLT
@@ -595,22 +587,51 @@ def convert_mlt(arr, dtime, m2a=False):
 
     """
 
+    arr = np.asarray(arr)
+    if arr.shape == ():
+        arr = np.array([arr])
+
     # Test time
-    dtime = test_time(dtime)
-    
+    try:
+        dtime = test_time(dtime)
+        years = [dtime.year for dd in arr]
+        months = [dtime.month for dd in arr]
+        days = [dtime.day for dd in arr]
+        hours = [dtime.hour for dd in arr]
+        minutes = [dtime.minute for dd in arr]
+        seconds = [dtime.second for dd in arr]
+    except ValueError as verr:
+        dtime = np.asarray(dtime)
+        if dtime.shape == ():
+            raise ValueError(verr)
+        elif dtime.shape != arr.shape:
+            raise ValueError("array input for datetime and MLon/MLT must match")
+
+        years = [dd.year for dd in dtime]
+        months = [dd.month for dd in dtime]
+        days = [dd.day for dd in dtime]
+        hours = [dd.hour for dd in dtime]
+        minutes = [dd.minute for dd in dtime]
+        seconds = [dd.second for dd in dtime]
+    arr = list(arr)
+
     # Calculate desired location, C routines set date and time
     if m2a:
         # Get the magnetic longitude
-        inv_vectorised = np.vectorize(c_aacgmv2.inv_mlt_convert)
-        out = inv_vectorised(dtime.year, dtime.month, dtime.day, dtime.hour,
-                             dtime.minute, dtime.second, arr)
+        if len(arr) == 1:
+            out = c_aacgmv2.inv_mlt_convert(years[0], months[0], days[0],
+                                            hours[0], minutes[0], seconds[0],
+                                            arr[0])
+        else:
+            out = c_aacgmv2.inv_mlt_convert_arr(years, months, days, hours,
+                                                minutes, seconds, arr)
     else:
         # Get magnetic local time
-        mlt_vectorised = np.vectorize(c_aacgmv2.mlt_convert)
-        out = mlt_vectorised(dtime.year, dtime.month, dtime.day, dtime.hour,
-                             dtime.minute, dtime.second, arr)
-
-    if hasattr(out, "shape") and out.shape == ():
-        out = float(out)
+        if len(arr) == 1:
+            out = c_aacgmv2.mlt_convert(years[0], months[0], days[0], hours[0],
+                                        minutes[0], seconds[0], arr[0])
+        else:
+            out = c_aacgmv2.mlt_convert_arr(years, months, days, hours, minutes,
+                                            seconds, arr)
 
     return out

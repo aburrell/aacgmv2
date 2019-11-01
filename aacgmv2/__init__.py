@@ -45,8 +45,10 @@ _aacgmv2.convert
 _aacgmv2.convert_arr
 _aacgmv2.set_datetime
 _aacgmv2.mlt_convert
+_aacgmv2.mlt_convert_arr
 _aacgmv2.mlt_convert_yrsec
 _aacgmv2.inv_mlt_convert
+_aacgmv2.inv_mlt_convert_arr
 _aacgmv2.inv_mlt_convert_yrsec
 ---------------------------------------------------------------------------
 """
