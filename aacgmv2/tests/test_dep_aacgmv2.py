@@ -25,7 +25,7 @@ class TestFutureDepWarning:
         if self.test_routine is None:
             assert True
         else:
-            with warnings.catch_warnings(record=True) as w:
+            with warnings.catch_warnings(record=True) as wout:
                 # Cause all warnings to always be triggered.
                 warnings.simplefilter("always")
 
@@ -33,9 +33,9 @@ class TestFutureDepWarning:
                 self.test_routine(*self.test_args, **self.test_kwargs)
 
                 # Verify some things
-                assert len(w) == 1
-                assert issubclass(w[-1].category, FutureWarning)
-                assert "Deprecated routine" in str(w[-1].message)
+                assert len(wout) == 1
+                assert issubclass(wout[-1].category, FutureWarning)
+                assert "Deprecated routine" in str(wout[-1].message)
 
 
 class TestDepAACGMV2Warning(TestFutureDepWarning):
