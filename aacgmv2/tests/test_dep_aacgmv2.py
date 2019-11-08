@@ -242,7 +242,8 @@ class TestDepAACGMV2:
                                                                [63, 64, 65]]),
                                                      0, 300, self.dtime)
 
-    @pytest.mark.filterwarnings("ignore:AACGM_v2_Convert returned with error")
+    @pytest.mark.skipif(version_info.major == 2,
+                        reason='Not raised in Python 2')
     def test_convert_location_failure(self):
         """Test conversion with a bad location"""
         self.lat, self.lon = aacgmv2.convert([0], [0], [0], self.dtime)
