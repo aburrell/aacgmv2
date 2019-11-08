@@ -33,8 +33,8 @@ Convert between AACGM and geographic coordinates::
     >>> np.array(aacgmv2.get_aacgm_coord(60, 15, 300, dtime))
     array([57.4721, 93.6214, 1.4816])
     >>> # AACGM to geo, mix arrays/numbers
-    >>> np.array(aacgmv2.convert_latlon_arr([90, -90], 0, 0, dtime, method_code="A2G"))
-    array([[82.9666, -74.3385], [-84.6652, 125.8401], [14.1244, 12.8771]])
+    >>> np.array2string(np.array(aacgmv2.convert_latlon_arr([90, -90], 0, 0, dtime, method_code="A2G"))).replace('\n', '')
+    '[[82.9666, -74.3385], [-84.6652, 125.8401], [14.1244, 12.8771]]'
 
 Convert between AACGM and MLT::
 
