@@ -6,14 +6,10 @@ from io import StringIO
 import logging
 import numpy as np
 import os
-from sys import version_info
 import pytest
 import warnings
 
 import aacgmv2
-
-if version_info.major == 2:
-    warnings.filterwarnings('error')
 
 class TestConvertLatLon:
     def setup(self):
@@ -50,6 +46,7 @@ class TestConvertLatLon:
         self.out = aacgmv2.convert_latlon(*self.in_args)
         np.testing.assert_allclose(self.out, self.ref, rtol=self.rtol)
 
+    @pytest.mark.filterwarnings("ignore:AACGM_v2_Convert returned with error")
     def test_convert_latlon_location_failure(self):
         """Test single value latlon conversion with a bad location"""
         self.out = aacgmv2.convert_latlon(0, 0, 0, self.dtime, self.in_args[-1])
@@ -227,6 +224,7 @@ class TestConvertLatLonArr:
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, [self.ref[i]], rtol=self.rtol)
 
+    @pytest.mark.filterwarnings("ignore:AACGM_v2_Convert returned with error")
     def test_convert_latlon_arr_location_failure(self):
         """Test array latlon conversion with a bad location"""
 
@@ -305,6 +303,7 @@ class TestGetAACGMCoord:
         self.out = aacgmv2.get_aacgm_coord(*self.in_args)
         np.testing.assert_allclose(self.out, self.ref, rtol=self.rtol)
 
+    @pytest.mark.filterwarnings("ignore:AACGM_v2_Convert returned with error")
     def test_get_aacgm_coord_location_failure(self):
         """Test single value AACGMV2 calculation with a bad location"""
 
@@ -477,6 +476,7 @@ class TestGetAACGMCoordArr:
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
 
+    @pytest.mark.filterwarnings("ignore:AACGM_v2_Convert returned with error")
     def test_get_aacgm_coord_arr_location_failure(self):
         """Test array AACGMV2 calculation with a bad location"""
         self.out = aacgmv2.get_aacgm_coord_arr([0], [0], [0], self.dtime,

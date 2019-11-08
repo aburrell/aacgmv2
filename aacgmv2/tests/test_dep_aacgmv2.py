@@ -11,9 +11,6 @@ import warnings
 
 import aacgmv2
 
-if version_info.major == 2:
-    warnings.filterwarnings('error')
-
 class TestFutureDepWarning:
     def setup(self):
         # Initialize the routine to be tested
@@ -245,6 +242,7 @@ class TestDepAACGMV2:
                                                                [63, 64, 65]]),
                                                      0, 300, self.dtime)
 
+    @pytest.mark.filterwarnings("ignore:AACGM_v2_Convert returned with error")
     def test_convert_location_failure(self):
         """Test conversion with a bad location"""
         self.lat, self.lon = aacgmv2.convert([0], [0], [0], self.dtime)
