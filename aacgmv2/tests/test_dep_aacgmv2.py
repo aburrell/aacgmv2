@@ -11,6 +11,9 @@ import warnings
 
 import aacgmv2
 
+if version_info.major == 2:
+    warnings.filterwarnings('error')
+
 class TestFutureDepWarning:
     def setup(self):
         # Initialize the routine to be tested

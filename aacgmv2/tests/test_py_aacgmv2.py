@@ -6,10 +6,14 @@ from io import StringIO
 import logging
 import numpy as np
 import os
+from sys import version_info
 import pytest
 import warnings
 
 import aacgmv2
+
+if version_info.major == 2:
+    warnings.filterwarnings('error')
 
 class TestConvertLatLon:
     def setup(self):
