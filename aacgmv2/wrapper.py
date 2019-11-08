@@ -32,6 +32,10 @@ import aacgmv2
 import aacgmv2._aacgmv2 as c_aacgmv2
 from aacgmv2._aacgmv2 import TRACE, ALLOWTRACE, BADIDEA
 
+if sys.version_info.major == 2:
+    import warnings
+    warnings.filterwarnings('error')
+
 def test_time(dtime):
     """ Test the time input and ensure it is a dt.datetime object
 
