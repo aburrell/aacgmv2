@@ -235,7 +235,7 @@ class TestConvertLatLonArr:
 
             # Test the output
             assert len(self.out) == len(self.ref)
-            assert np.any(np.isinf(np.array(self.out)))
+            assert np.any(~np.isfinite(np.array(self.out)))
 
     def test_convert_latlon_arr_mult_arr_unequal_failure(self):
         """Test array latlon conversion for unequal sized arrays"""

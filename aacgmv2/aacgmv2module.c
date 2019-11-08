@@ -25,6 +25,10 @@
 
 PyObject *module;
 
+#ifndef PyInt_AsLong
+#define PyInt_AsLong PyLong_AsLong
+#endif
+
 static PyObject *aacgm_v2_setdatetime(PyObject *self, PyObject *args)
 {
   int year, month, day, hour, minute, second, err;

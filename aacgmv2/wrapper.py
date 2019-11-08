@@ -393,8 +393,12 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
         raise RuntimeError("unable to set time for {:}: {:}".format(dtime,
                                                                     rerr))
 
-    lat_out, lon_out, r_out = c_aacgmv2.convert_arr(list(in_lat), list(in_lon),
-                                                    list(height), bit_code)
+    try:
+        lat_out, lon_out, r_out = c_aacgmv2.convert_arr(list(in_lat),
+                                                        list(in_lon),
+                                                        list(height), bit_code)
+    except SystemError as serr:
+        aacgmv2.logger.warning('C Error encountered: {:}'.format(serr))
 
     return lat_out, lon_out, r_out
 

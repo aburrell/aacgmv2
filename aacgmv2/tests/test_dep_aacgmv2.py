@@ -6,6 +6,7 @@ from io import StringIO
 import logging
 import numpy as np
 import pytest
+from sys import version_info
 import warnings
 
 import aacgmv2
@@ -86,9 +87,9 @@ class TestDepLogging:
         self.log_capture = StringIO()
         aacgmv2.logger.addHandler(logging.StreamHandler(self.log_capture))
 
-        self.in_convert = ([60], [0], [-1], dt.datetime(2015, 1, 1, 0, 0, 0))
-        self.lwarn = u"conversion not intended for altitudes < 0 km"
+        self.in_convert = [[60], [0], [-1], dt.datetime(2015, 1, 1, 0, 0, 0)]
         self.lout = ''
+        self.lwarn = ''
 
     def teardown(self):
         """Runs after every method to clean up previous testing"""
@@ -97,12 +98,32 @@ class TestDepLogging:
 
     def test_warning_below_ground_convert(self):
         """ Test that a warning is issued if altitude is below zero"""
+        self.lwarn = u"conversion not intended for altitudes < 0 km"
 
         with warnings.catch_warnings():
             # Cause all warnings to be ignored
             warnings.simplefilter("ignore")
 
             # Trigger the below ground warning
+            aacgmv2.convert(*self.in_convert)
+
+            # Test the logging output
+            self.lout = self.log_capture.getvalue()
+            assert self.lout.find(self.lwarn) >= 0
+
+    @pytest.mark.skipif(version_info.major == 2,
+                        reason='Not raised in Python 2')
+    def test_warning_c_failure_convert(self):
+        """ Test that a warning is issued if the C routine exits with failure"""
+        self.lwarn = u"C Error encountered: "
+        self.in_convert[0] = [0]
+        self.in_convert[2] = [0]
+
+        with warnings.catch_warnings():
+            # Cause all warnings to be ignored
+            warnings.simplefilter("ignore")
+
+            # Trigger the C failure logger warning
             aacgmv2.convert(*self.in_convert)
 
             # Test the logging output
@@ -223,14 +244,10 @@ class TestDepAACGMV2:
 
     def test_convert_location_failure(self):
         """Test conversion with a bad location"""
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            self.lat, self.lon = aacgmv2.convert([0], [0], [0], self.dtime)
+        self.lat, self.lon = aacgmv2.convert([0], [0], [0], self.dtime)
 
-        assert isinstance(self.lat, list)
-        assert isinstance(self.lon, list)
         assert len(self.lat) == len(self.lon) and len(self.lat) == 1
-        assert np.all([np.isinf(self.lat), np.isinf(self.lon)])
+        assert np.all([~np.isfinite(self.lat), ~np.isfinite(self.lon)])
 
     def test_convert_time_failure(self):
         """Test conversion with a bad time"""
