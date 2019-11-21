@@ -109,7 +109,7 @@ class TestConvertLatLonArr:
                                               self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == 1 for oo in self.out]
+        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
 
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
@@ -122,7 +122,7 @@ class TestConvertLatLonArr:
                                               self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == 1 for oo in self.out]
+        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
 
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
@@ -134,7 +134,7 @@ class TestConvertLatLonArr:
                                               self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == len(self.ref[i])
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
                 for i, oo in enumerate(self.out)]
 
         for i, oo in enumerate(self.out):
@@ -148,7 +148,7 @@ class TestConvertLatLonArr:
                                               self.dtime, self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == 1 for oo in self.out]
+        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
 
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
@@ -161,7 +161,7 @@ class TestConvertLatLonArr:
                                               self.dtime, self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == len(self.ref[i])
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
                 for i, oo in enumerate(self.out)]
 
         for i, oo in enumerate(self.out):
@@ -174,7 +174,7 @@ class TestConvertLatLonArr:
                                               self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == len(self.ref[i])
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
                 for i, oo in enumerate(self.out)]
 
         for i, oo in enumerate(self.out):
@@ -187,7 +187,7 @@ class TestConvertLatLonArr:
                                               self.dtime, self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == len(self.ref[i])
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
                 for i, oo in enumerate(self.out)]
 
         for i, oo in enumerate(self.out):
@@ -208,7 +208,7 @@ class TestConvertLatLonArr:
                                               [3000], self.dtime, self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == 1 for oo in self.out]
+        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
 
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, [self.ref[i]], rtol=self.rtol)
@@ -221,7 +221,7 @@ class TestConvertLatLonArr:
                                               [7000], self.dtime, self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == 1 for oo in self.out]
+        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
 
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, [self.ref[i]], rtol=self.rtol)
@@ -261,7 +261,7 @@ class TestConvertLatLonArr:
                                               self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == len(self.ref[i])
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
                 for i, oo in enumerate(self.out)]
 
         for i, oo in enumerate(self.out):
@@ -373,7 +373,7 @@ class TestGetAACGMCoordArr:
                                                self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == 1 for oo in self.out]
+        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
 
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
@@ -386,7 +386,7 @@ class TestGetAACGMCoordArr:
                                                self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == 1 for oo in self.out]
+        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
 
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
@@ -398,7 +398,7 @@ class TestGetAACGMCoordArr:
                                                self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == len(self.lat_in)
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
                 for oo in self.out]
 
         for i, oo in enumerate(self.out):
@@ -413,7 +413,7 @@ class TestGetAACGMCoordArr:
 
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == 1 for oo in self.out]
+        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
 
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
@@ -426,7 +426,7 @@ class TestGetAACGMCoordArr:
                                                self.dtime, self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == len(self.lat_in)
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
                 for oo in self.out]
 
         for i, oo in enumerate(self.out):
@@ -439,7 +439,7 @@ class TestGetAACGMCoordArr:
                                                self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == len(self.lat_in)
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
                 for oo in self.out]
 
         for i, oo in enumerate(self.out):
@@ -452,7 +452,7 @@ class TestGetAACGMCoordArr:
                                                self.dtime, self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == len(self.lat_in)
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
                 for oo in self.out]
 
         for i, oo in enumerate(self.out):
@@ -474,7 +474,7 @@ class TestGetAACGMCoordArr:
                                                self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == 1 for oo in self.out]
+        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
 
         self.ref = [64.34650424987989, 83.30339395305012, 0.3307388620896745]
         for i, oo in enumerate(self.out):
@@ -489,7 +489,7 @@ class TestGetAACGMCoordArr:
 
         
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == 1 for oo in self.out]
+        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
         assert np.any([np.isnan(oo) for oo in self.out])
 
     def test_get_aacgm_coord_arr_time_failure(self):
@@ -517,7 +517,7 @@ class TestGetAACGMCoordArr:
                                                self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == len(self.lat_in)
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
                 for oo in self.out]
 
         for i, oo in enumerate(self.out):
@@ -532,7 +532,7 @@ class TestGetAACGMCoordArr:
                                                self.method)
 
         assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, list) and len(oo) == len(self.lat_in)
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
                 for oo in self.out]
         assert np.all(np.isnan(np.array(self.out)))
 

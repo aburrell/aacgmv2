@@ -111,25 +111,6 @@ class TestDepLogging:
             self.lout = self.log_capture.getvalue()
             assert self.lout.find(self.lwarn) >= 0
 
-    @pytest.mark.skipif(version_info.major == 2,
-                        reason='Not raised in Python 2')
-    def test_warning_c_failure_convert(self):
-        """ Test that a warning is issued if the C routine exits with failure"""
-        self.lwarn = u"C Error encountered: "
-        self.in_convert[0] = [0]
-        self.in_convert[2] = [0]
-
-        with warnings.catch_warnings():
-            # Cause all warnings to be ignored
-            warnings.simplefilter("ignore")
-
-            # Trigger the C failure logger warning
-            aacgmv2.convert(*self.in_convert)
-
-            # Test the logging output
-            self.lout = self.log_capture.getvalue()
-            assert self.lout.find(self.lwarn) >= 0
-
 
 class TestDepAACGMV2:
     def setup(self):
@@ -149,8 +130,8 @@ class TestDepAACGMV2:
             warnings.simplefilter("ignore")
             self.lat, self.lon = aacgmv2.convert(60, 0, 300, self.dtime)
 
-        assert isinstance(self.lat, list)
-        assert isinstance(self.lon, list)
+        assert isinstance(self.lat, np.ndarray)
+        assert isinstance(self.lon, np.ndarray)
         assert len(self.lat) == len(self.lon) and len(self.lat) == 1
         np.testing.assert_allclose(self.lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685], rtol=1e-4)
@@ -161,8 +142,8 @@ class TestDepAACGMV2:
             warnings.simplefilter("ignore")
             self.lat, self.lon = aacgmv2.convert([60], [0], [300], self.dtime)
 
-        assert isinstance(self.lat, list)
-        assert isinstance(self.lon, list)
+        assert isinstance(self.lat, np.ndarray)
+        assert isinstance(self.lon, np.ndarray)
         assert len(self.lat) == len(self.lon) and len(self.lat) == 1
         np.testing.assert_allclose(self.lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685], rtol=1e-4)
@@ -172,8 +153,8 @@ class TestDepAACGMV2:
             self.lat, self.lon = aacgmv2.convert([60, 61], [0, 0], [300, 300],
                                                  self.dtime)
 
-        assert isinstance(self.lat, list)
-        assert isinstance(self.lon, list)
+        assert isinstance(self.lat, np.ndarray)
+        assert isinstance(self.lon, np.ndarray)
         assert len(self.lat) == len(self.lon) and len(self.lat) == 2
         np.testing.assert_allclose(self.lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685, 81.6140], rtol=1e-4)
@@ -185,8 +166,8 @@ class TestDepAACGMV2:
             self.lat, self.lon = aacgmv2.convert(np.array([60]), np.array([0]),
                                                  np.array([300]), self.dtime)
 
-        assert isinstance(self.lat, list)
-        assert isinstance(self.lon, list)
+        assert isinstance(self.lat, np.ndarray)
+        assert isinstance(self.lon, np.ndarray)
         assert len(self.lat) == len(self.lon) and len(self.lat) == 1
         np.testing.assert_allclose(self.lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685], rtol=1e-4)
@@ -201,8 +182,8 @@ class TestDepAACGMV2:
                                                  np.array([300, 300]),
                                                  self.dtime)
 
-        assert isinstance(self.lat, list)
-        assert isinstance(self.lon, list)
+        assert isinstance(self.lat, np.ndarray)
+        assert isinstance(self.lon, np.ndarray)
         assert len(self.lat) == len(self.lon) and len(self.lat) == 2
         np.testing.assert_allclose(self.lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685, 81.6140], rtol=1e-4)
@@ -214,8 +195,8 @@ class TestDepAACGMV2:
             warnings.simplefilter("ignore")
             self.lat, self.lon = aacgmv2.convert([60, 61], 0, 300, self.dtime)
 
-        assert isinstance(self.lat, list)
-        assert isinstance(self.lon, list)
+        assert isinstance(self.lat, np.ndarray)
+        assert isinstance(self.lon, np.ndarray)
         assert len(self.lat) == len(self.lon) and len(self.lat) == 2
         np.testing.assert_allclose(self.lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685, 81.6140], rtol=1e-4)
@@ -227,8 +208,8 @@ class TestDepAACGMV2:
             self.lat, self.lon = aacgmv2.convert(np.array([60, 61]), 0, 300,
                                                  self.dtime)
 
-        assert isinstance(self.lat, list)
-        assert isinstance(self.lon, list)
+        assert isinstance(self.lat, np.ndarray)
+        assert isinstance(self.lon, np.ndarray)
         assert len(self.lat) == len(self.lon) and len(self.lat) == 2
         np.testing.assert_allclose(self.lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685, 81.6140], rtol=1e-4)
