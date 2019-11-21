@@ -402,7 +402,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
                                                                  list(in_lon),
                                                                  list(height),
                                                                  bit_code)
-        print(lat_out, lon_out, r_out)
+
         # Cast the output as numpy arrays or masks
         lat_out = np.array(lat_out)
         lon_out = np.array(lon_out)
@@ -411,7 +411,6 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
 
         # Replace any bad indices with NaN, casting output as numpy arrays
         if np.any(bad_ind):
-            print(lat_out, lon_out, r_out)
             lat_out[bad_ind] = np.nan
             lon_out[bad_ind] = np.nan
             r_out[bad_ind] = np.nan
@@ -503,13 +502,13 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="ALLOWTRACE"):
     mlat, mlon, _ = convert_latlon_arr(glat, glon, height, dtime,
                                        method_code=method_code)
 
-    if not np.all(np.isfinite(mlon)):
-        mlt = list(np.full(shape=len(mlat), fill_value=np.nan))
-    else:
+    if np.any(np.isfinite(mlon)):
         # Get magnetic local time
         mlt = convert_mlt(mlon, dtime, m2a=False)
         if not isinstance(mlt, type(mlat)):
-            mlt = [mlt]
+            mlt = np.array([mlt])
+    else:
+        mlt = np.full(shape=len(mlat), fill_value=np.nan)
 
     return mlat, mlon, mlt
 
@@ -667,4 +666,4 @@ def convert_mlt(arr, dtime, m2a=False):
             out = c_aacgmv2.mlt_convert_arr(years, months, days, hours, minutes,
                                             seconds, arr)
 
-    return out
+    return np.array(out)
