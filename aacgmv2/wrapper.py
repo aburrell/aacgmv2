@@ -457,8 +457,8 @@ def get_aacgm_coord(glat, glon, height, dtime, method="ALLOWTRACE"):
     mlat, mlon, _ = convert_latlon(glat, glon, height, dtime,
                                    method_code=method_code)
 
-    # Get magnetic local time
-    mlt = np.nan if np.isnan(mlon) else convert_mlt(mlon, dtime, m2a=False)
+    # Get magnetic local time (output is always an array, so extract value)
+    mlt = np.nan if np.isnan(mlon) else convert_mlt(mlon, dtime, m2a=False)[0]
 
     return mlat, mlon, mlt
 
@@ -662,8 +662,9 @@ def convert_mlt(arr, dtime, m2a=False):
         if len(arr) == 1:
             out = c_aacgmv2.mlt_convert(years[0], months[0], days[0], hours[0],
                                         minutes[0], seconds[0], arr[0])
+            out = np.array([out])
         else:
-            out = c_aacgmv2.mlt_convert_arr(years, months, days, hours, minutes,
-                                            seconds, arr)
+            out = np.array(c_aacgmv2.mlt_convert_arr(years, months, days, hours,
+                                                     minutes, seconds, arr))
 
-    return np.array(out)
+    return out
