@@ -86,6 +86,27 @@ class TestCAACGMV2:
 
         del lat_comp, lon_comp, r_comp
 
+    def test_convert_arr(self):
+        """Test convert_arr using from magnetic to geodetic coordinates"""
+        lat_comp = [30.7534, 50.0891]
+        lon_comp = [-94.1806, -77.3773]
+        r_comp = [1133.6241, 305.602877]
+
+        aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
+        (self.mlat, self.mlon, self.rshell,
+         bad_ind) = aacgmv2._aacgmv2.convert_arr(self.lat_in, self.lon_in,
+                                                 self.alt_in,
+                                                 aacgmv2._aacgmv2.A2G)
+
+        assert len(self.mlat) == len(self.lat_in)
+        for i, ll in enumerate(self.mlat):
+            np.testing.assert_almost_equal(ll, lat_comp[i], decimal=4)
+            np.testing.assert_almost_equal(self.mlon[i], lon_comp[i], decimal=4)
+            np.testing.assert_almost_equal(self.rshell[i], r_comp[i], decimal=4)
+            assert bad_ind[i] == -1
+
+        del lat_comp, lon_comp, r_comp
+
     def test_convert_G2A_TRACE(self):
         """Test convert from geodetic to magnetic coordinates using trace"""
         code = aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE
