@@ -368,10 +368,13 @@ out_lon : (list)\n\
     Output longitudes in degrees\n\
 out_r : (list)\n\
     Geocentric radial distances in Re\n\
+out_bad : (list)\n\
+    Indices at or greater than zero indicate filler data in previous outputs\n\
 \n\
 Notes \n\
 -----\n\
-Return values of inf are usually raised when an error was encountered\n", },
+Return values of -666 are used as filler values for lat/lon/r, while filler\n\
+values of -1 are used in out_bad if the output in out_lat/lon/r is good\n", },
   {"mlt_convert_arr", mltconvert_v2_arr, METH_VARARGS,
     "mlt_convert_arr(yr, mo, dy, hr, mt, sc, mlon)\n\
 \n\

@@ -398,9 +398,23 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
                                                                     rerr))
 
     try:
-        lat_out, lon_out, r_out = c_aacgmv2.convert_arr(list(in_lat),
-                                                        list(in_lon),
-                                                        list(height), bit_code)
+        lat_out, lon_out, r_out, bad_ind = c_aacgmv2.convert_arr(list(in_lat),
+                                                                 list(in_lon),
+                                                                 list(height),
+                                                                 bit_code)
+        print(lat_out, lon_out, r_out)
+        # Cast the output as numpy arrays or masks
+        lat_out = np.array(lat_out)
+        lon_out = np.array(lon_out)
+        r_out = np.array(r_out)
+        bad_ind = np.array(bad_ind) >= 0
+
+        # Replace any bad indices with NaN, casting output as numpy arrays
+        if np.any(bad_ind):
+            print(lat_out, lon_out, r_out)
+            lat_out[bad_ind] = np.nan
+            lon_out[bad_ind] = np.nan
+            r_out[bad_ind] = np.nan
     except SystemError as serr:
         aacgmv2.logger.warning('C Error encountered: {:}'.format(serr))
 
