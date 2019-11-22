@@ -6,6 +6,7 @@ from io import StringIO
 import logging
 import numpy as np
 import pytest
+from sys import version_info
 import warnings
 
 import aacgmv2
@@ -25,7 +26,7 @@ class TestFutureDepWarning:
         if self.test_routine is None:
             assert True
         else:
-            with warnings.catch_warnings(record=True) as w:
+            with warnings.catch_warnings(record=True) as wout:
                 # Cause all warnings to always be triggered.
                 warnings.simplefilter("always")
 
@@ -33,9 +34,9 @@ class TestFutureDepWarning:
                 self.test_routine(*self.test_args, **self.test_kwargs)
 
                 # Verify some things
-                assert len(w) == 1
-                assert issubclass(w[-1].category, FutureWarning)
-                assert "Deprecated routine" in str(w[-1].message)
+                assert len(wout) == 1
+                assert issubclass(wout[-1].category, FutureWarning)
+                assert "Deprecated routine" in str(wout[-1].message)
 
 
 class TestDepAACGMV2Warning(TestFutureDepWarning):
@@ -86,9 +87,9 @@ class TestDepLogging:
         self.log_capture = StringIO()
         aacgmv2.logger.addHandler(logging.StreamHandler(self.log_capture))
 
-        self.in_convert = ([60], [0], [-1], dt.datetime(2015, 1, 1, 0, 0, 0))
-        self.lwarn = u"conversion not intended for altitudes < 0 km"
+        self.in_convert = [[60], [0], [-1], dt.datetime(2015, 1, 1, 0, 0, 0)]
         self.lout = ''
+        self.lwarn = ''
 
     def teardown(self):
         """Runs after every method to clean up previous testing"""
@@ -97,10 +98,18 @@ class TestDepLogging:
 
     def test_warning_below_ground_convert(self):
         """ Test that a warning is issued if altitude is below zero"""
+        self.lwarn = u"conversion not intended for altitudes < 0 km"
 
-        aacgmv2.convert(*self.in_convert)
-        self.lout = self.log_capture.getvalue()
-        assert self.lout.find(self.lwarn) >= 0
+        with warnings.catch_warnings():
+            # Cause all warnings to be ignored
+            warnings.simplefilter("ignore")
+
+            # Trigger the below ground warning
+            aacgmv2.convert(*self.in_convert)
+
+            # Test the logging output
+            self.lout = self.log_capture.getvalue()
+            assert self.lout.find(self.lwarn) >= 0
 
 
 class TestDepAACGMV2:
@@ -123,7 +132,7 @@ class TestDepAACGMV2:
 
         assert isinstance(self.lat, np.ndarray)
         assert isinstance(self.lon, np.ndarray)
-        assert self.lat.shape == self.lon.shape and self.lat.shape == (1,)
+        assert len(self.lat) == len(self.lon) and len(self.lat) == 1
         np.testing.assert_allclose(self.lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685], rtol=1e-4)
 
@@ -135,7 +144,7 @@ class TestDepAACGMV2:
 
         assert isinstance(self.lat, np.ndarray)
         assert isinstance(self.lon, np.ndarray)
-        assert self.lat.shape == self.lon.shape and self.lat.shape == (1,)
+        assert len(self.lat) == len(self.lon) and len(self.lat) == 1
         np.testing.assert_allclose(self.lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685], rtol=1e-4)
 
@@ -146,7 +155,7 @@ class TestDepAACGMV2:
 
         assert isinstance(self.lat, np.ndarray)
         assert isinstance(self.lon, np.ndarray)
-        assert self.lat.shape == self.lon.shape and self.lat.shape == (2,)
+        assert len(self.lat) == len(self.lon) and len(self.lat) == 2
         np.testing.assert_allclose(self.lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685, 81.6140], rtol=1e-4)
 
@@ -159,7 +168,7 @@ class TestDepAACGMV2:
 
         assert isinstance(self.lat, np.ndarray)
         assert isinstance(self.lon, np.ndarray)
-        assert self.lat.shape == self.lon.shape and self.lat.shape == (1,)
+        assert len(self.lat) == len(self.lon) and len(self.lat) == 1
         np.testing.assert_allclose(self.lat, [58.2258], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685], rtol=1e-4)
 
@@ -175,7 +184,7 @@ class TestDepAACGMV2:
 
         assert isinstance(self.lat, np.ndarray)
         assert isinstance(self.lon, np.ndarray)
-        assert self.lat.shape == self.lon.shape and self.lat.shape == (2,)
+        assert len(self.lat) == len(self.lon) and len(self.lat) == 2
         np.testing.assert_allclose(self.lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685, 81.6140], rtol=1e-4)
 
@@ -188,7 +197,7 @@ class TestDepAACGMV2:
 
         assert isinstance(self.lat, np.ndarray)
         assert isinstance(self.lon, np.ndarray)
-        assert self.lat.shape == self.lon.shape and self.lat.shape == (2,)
+        assert len(self.lat) == len(self.lon) and len(self.lat) == 2
         np.testing.assert_allclose(self.lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685, 81.6140], rtol=1e-4)
 
@@ -201,57 +210,27 @@ class TestDepAACGMV2:
 
         assert isinstance(self.lat, np.ndarray)
         assert isinstance(self.lon, np.ndarray)
-        assert self.lat.shape == self.lon.shape and self.lat.shape == (2,)
+        assert len(self.lat) == len(self.lon) and len(self.lat) == 2
         np.testing.assert_allclose(self.lat, [58.2258, 59.3186], rtol=1e-4)
         np.testing.assert_allclose(self.lon, [81.1685, 81.6140], rtol=1e-4)
 
-    def test_convert_mult_array_mix(self):
+    def test_convert_mult_array_failure(self):
         """Test conversion for a multi-dim array and floats"""
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            self.lat, self.lon = aacgmv2.convert(np.array([[60, 61, 62],
-                                                           [63, 64, 65]]), 0,
-                                                 300, self.dtime)
+            with pytest.raises(ValueError):
+                self.lat, self.lon = aacgmv2.convert(np.array([[60, 61, 62],
+                                                               [63, 64, 65]]),
+                                                     0, 300, self.dtime)
 
-        assert isinstance(self.lat, np.ndarray)
-        assert isinstance(self.lon, np.ndarray)
-        assert self.lat.shape == self.lon.shape and self.lat.shape == (2, 3)
-        np.testing.assert_allclose(self.lat, [[58.2258, 59.3186, 60.4040],
-                                         [61.4820, 62.5528, 63.6164]],
-                                   rtol=1e-4)
-        np.testing.assert_allclose(self.lon, [[81.1685, 81.6140, 82.0872],
-                                         [82.5909, 83.1286, 83.7039]],
-                                   rtol=1e-4)
-
-    def test_convert_unequal_arra(self):
-        """Test conversion for unequal sized arrays"""
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            self.lat, self.lon = aacgmv2.convert(np.array([[60, 61, 62],
-                                                           [63, 64, 65]]),
-                                                 np.array([0]), np.array([300]),
-                                                 self.dtime)
-
-        assert isinstance(self.lat, np.ndarray)
-        assert isinstance(self.lon, np.ndarray)
-        assert self.lat.shape == self.lon.shape and self.lat.shape == (2, 3)
-        np.testing.assert_allclose(self.lat, [[58.2258, 59.3186, 60.4040],
-                                              [61.4820, 62.5528, 63.6164]],
-                                   rtol=1e-4)
-        np.testing.assert_allclose(self.lon, [[81.1685, 81.6140, 82.0872],
-                                              [82.5909, 83.1286, 83.7039]],
-                                   rtol=1e-4)
-
+    @pytest.mark.skipif(version_info.major == 2,
+                        reason='Not raised in Python 2')
     def test_convert_location_failure(self):
         """Test conversion with a bad location"""
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            self.lat, self.lon = aacgmv2.convert([0], [0], [0], self.dtime)
+        self.lat, self.lon = aacgmv2.convert([0], [0], [0], self.dtime)
 
-        assert isinstance(self.lat, np.ndarray)
-        assert isinstance(self.lon, np.ndarray)
-        assert self.lat.shape == self.lon.shape and self.lat.shape == (1,)
-        assert np.all([np.isnan(self.lat), np.isnan(self.lon)])
+        assert len(self.lat) == len(self.lon) and len(self.lat) == 1
+        assert np.all([~np.isfinite(self.lat), ~np.isfinite(self.lon)])
 
     def test_convert_time_failure(self):
         """Test conversion with a bad time"""
