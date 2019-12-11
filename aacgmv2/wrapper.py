@@ -27,13 +27,13 @@ import datetime as dt
 import numpy as np
 import os
 import sys
+import warnings
 
 import aacgmv2
 import aacgmv2._aacgmv2 as c_aacgmv2
 from aacgmv2._aacgmv2 import TRACE, ALLOWTRACE, BADIDEA
 
 if sys.version_info.major == 2:
-    import warnings
     warnings.filterwarnings('error')
 
 def test_time(dtime):
@@ -166,7 +166,7 @@ def set_coeff_path(igrf_file=False, coeff_prefix=False):
 
     return
 
-def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
+def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A", **kwargs):
     """Converts between geomagnetic coordinates and AACGM coordinates
 
     Parameters
@@ -205,6 +205,15 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
     TypeError or RuntimeError if unable to set AACGMV2 datetime
 
     """
+    # Handle deprecated keyword arguments
+    for kw, val in kwargs:
+        if kw not in ['code']:
+            raise TypeError('unexpected keyword argument [{:s}]'.format(kw))
+        else:
+            method_code = val
+            warnings.warn("".join(["Deprecated keyword argument 'code' will be",
+                                   " removed in version 2.5.4, please update ".
+                                   "your routine to use 'method_code'"]))
 
     # Test time
     dtime = test_time(dtime)
@@ -262,7 +271,8 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
 
     return lat_out, lon_out, r_out
 
-def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
+def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A",
+                       **kwargs):
     """Converts between geomagnetic coordinates and AACGM coordinates.
 
     Parameters
@@ -311,6 +321,15 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
     Multi-dimensional arrays are not allowed.
 
     """
+    # Handle deprecated keyword arguments
+    for kw, val in kwargs:
+        if kw not in ['code']:
+            raise TypeError('unexpected keyword argument [{:s}]'.format(kw))
+        else:
+            method_code = val
+            warnings.warn("".join(["Deprecated keyword argument 'code' will be",
+                                   " removed in version 2.5.4, please update ".
+                                   "your routine to use 'method_code'"]))
 
     # Recast the data as numpy arrays
     in_lat = np.array(in_lat)
