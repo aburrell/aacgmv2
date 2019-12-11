@@ -61,7 +61,7 @@ class TestDepConvertWarning(TestFutureDepWarning):
         """Test future warning for convert_latlon_arr"""
 
         self.test_routine = aacgmv2.wrapper.convert_latlon_arr
-        self.test_args = [60, 0, 300, self.dtime]
+        self.test_args = [[60, 60], [0, 0], [300, 300], self.dtime]
         self.test_kwargs = {'code': 'TRACE'}
         self.test_future_dep_warning()
 
@@ -76,7 +76,7 @@ class TestDepConvertWarning(TestFutureDepWarning):
     def test_convert_latlon_arr_time_error(self):
         """Test single value latlon conversion with a bad datetime"""
         self.test_routine = aacgmv2.wrapper.convert_latlon_arr
-        self.test_args = [60, 0, 300, self.dtime]
+        self.test_args = [[60, 60], [0, 0], [300, 300], self.dtime]
         self.test_kwargs = {'bad': 'keyword'}
         with pytest.raises(TypeError):
             self.test_routine(*self.test_args, **self.test_kwargs)
