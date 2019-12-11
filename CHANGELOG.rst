@@ -6,6 +6,8 @@ Changelog
 * Changed log warning about array functions to info
 * Changed default method from `TRACE` to `ALLOWTRACE`
 * Added C wrappers for list input, removing inefficient use of `np.vectorize`
+* Fixed documentation for use of `method_code`
+* Added deprecation warning for use of `code` keyword argument
 
 
 2.5.2 (2019-08-27)
@@ -18,6 +20,7 @@ Changelog
 * Removed logbook dependency
 * Added logic to avoid reseting environment variables if not necessary
 * Added copyright and license disclaimer to module-specific program files
+* Changed keyword argument `code` to `method_code`
   
 
 2.5.1 (2018-10-19)
