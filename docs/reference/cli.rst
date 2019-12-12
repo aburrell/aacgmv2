@@ -9,15 +9,15 @@ functions :py:func:`aacgmv2.convert_latlon_arr` and
 :py:func:`aacgmv2.convert_mlt`. See the documentation for these functions for a
 more thorough explanation of arguments and behaviour.
 
-You can get help on the two commands by running ``aacgmv2 convert -h`` and
-``aacgmv2 convert_mlt -h``.
+You can get help on the two commands by running ``python aacgmv2 convert -h``
+and ``python aacgmv2 convert_mlt -h``.
 
 convert
 -------
 
 .. code::
 
-    $ aacgmv2 convert -h
+    $ python aacgmv2 convert -h
     usage: aacgmv2 convert [-h] [-i FILE_IN] [-o FILE_OUT] [-d YYYYMMDD] [-v] [-t]
                            [-a] [-b] [-g]
 
@@ -43,7 +43,7 @@ convert_mlt
 
 .. code::
 
-    $ aacgmv2 convert_mlt -h
+    $ python aacgmv2 convert_mlt -h
     usage: aacgmv2 convert_mlt [-h] [-i FILE_IN] [-o FILE_OUT] [-v] YYYYMMDDHHMMSS
 
     positional arguments:
