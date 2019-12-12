@@ -7,19 +7,10 @@
 """Pythonic wrappers for AACGM-V2 C functions that were depricated in the
 change from version 2.0.0 to version 2.0.2
 
-Functions
--------------------------------------------------------------------------------
-convert : Converts array location
-subsol : finds subsolar geocentric longitude and latitude
-gc2gd_lat : Convert between geocentric and geodetic coordinates
-igrf_dipole_axis : Get Cartesian unit vector pointing at the IGRF north dipole
-------------------------------------------------------------------------------
-
 References
 -------------------------------------------------------------------------------
 Laundal, K. M. and A. D. Richmond (2016), Magnetic Coordinate Systems, Space
  Sci. Rev., doi:10.1007/s11214-016-0275-y.
--------------------------------------------------------------------------------
 
 """
 
