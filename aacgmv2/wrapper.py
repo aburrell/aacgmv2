@@ -6,20 +6,6 @@
 # -*- coding: utf-8 -*-
 """Pythonic wrappers for AACGM-V2 C functions.
 
-Functions
---------------
-test_time : Test the time and ensure it is a datetime.datetime object
-test_height : Test the height and see if it is appropriate for the method
-set_coeff_path : Set the coefficient paths using default or supplied values
-convert_latlon : Converts scalar location
-convert_latlon_arr : Converts array location
-get_aacgm_coord : Get scalar magnetic lat, lon, mlt from geographic location
-get_aacgm_coord_arr : Get array magnetic lat, lon, mlt from geographic location
-convert_str_to_bit : Convert human readible AACGM flag to bits
-convert_bool_to_bit : Convert boolian flags to bits
-convert_mlt : Get array mlt
---------------
-
 """
 
 from __future__ import division, absolute_import, unicode_literals
