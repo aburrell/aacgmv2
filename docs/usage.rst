@@ -5,7 +5,8 @@ Usage examples
 Python library
 ==============
 
-For full documentation of the functions, see :doc:`Reference → aacgmv2 <reference/aacgmv2>`.
+For full documentation of the functions, see
+:doc:`Reference → aacgmv2 <reference/aacgmv2>`.
 
 For examples on converting between AACGM and geographic coordinates and AACGM
 and MLT, see :doc:`Overview → Quick Start <readme>`.
@@ -61,9 +62,9 @@ you're converting)::
     23
 
 To convert these MLTs to magnetic longitudes at 2015-02-24 14:00:15, run e.g.
-``aacgmv2 convert_mlt 20150224140015 -i input.txt -o output.txt -v`` (note that
-the date/time is a required parameter). The output file will then look like
-this::
+``python aacgmv2 convert_mlt 20150224140015 -i input.txt -o output.txt -v``
+(note that the date/time is a required parameter). The output file will then
+look like this::
 
     -120.34354125
     44.65645875
