@@ -1,13 +1,17 @@
 
 Changelog
 =========
-2.5.3 (2019-11-XX)
+2.5.3 (2019-12-23)
 -----------------------------------------
 * Changed log warning about array functions to info
 * Changed default method from `TRACE` to `ALLOWTRACE`
 * Added C wrappers for list input, removing inefficient use of `np.vectorize`
 * Fixed documentation for use of `method_code`
-* Added deprecation warning for use of `code` keyword argument
+* Added FutureWarning for deprecated use of `code` keyword argument
+* Updated previous version's changelog to encompass all changes
+* Improved docstrings to make documentation easier to read
+* Removed failing twine commands from `appveyor.yml`
+* Removed `RuntimeWarning` filter from `tox.ini`
 
 
 2.5.2 (2019-08-27)
