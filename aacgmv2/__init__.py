@@ -4,50 +4,22 @@
 # the root in the LICENSE file
 #
 # -*- coding: utf-8 -*-
-"""aacgmv2
+""" Functions to convert between geographic/geodetic and AACGM-V2 magnetic
+coordinates
 
-Modules
+Attributes
 ---------------------------------------------------------------------------
-_aacgmv2 : Contains functions and variables from c code
-deprecated : Contains deprecated functions from previous versions
-wrapper : Contains current python functions
----------------------------------------------------------------------------
+logger : (logger)
+    Logger handle
+high_alt_coeff : (float)
+    Upper altitude limit for using coefficients in km
+high_alt_trace : (float)
+    Upper altitude limit for using field-line tracing in km
+AACGM_V2_DAT_PREFIX : (str)
+    Location of AACGM-V2 coefficient files with the file prefix
+IGRF_12_COEFFS : (str)
+    Filename, with directory, of IGRF coefficients
 
-Parameters
----------------------------------------------------------------------------
-logger
-high_alt_coeff
-high_alt_trace
-AACGM_V2_DAT_PREFIX
-IGRF_12_COEFFS
-_aacgmv2.G2A
-_aacgmv2.A2G
-_aacgmv2.TRACE
-_aacgmv2.ALLOWTRACE
-_aacgmv2.BADIDEA
-_aacgmv2.GEOCENTRIC
----------------------------------------------------------------------------
-
-Functions
----------------------------------------------------------------------------
-convert_latlon_arr
-convert_str_to_bit
-convert_bool_to_bit
-get_aacgm_coord
-get_aacgm_coord_arr
-convert
-convert_mlt
-wrapper.set_coeff_path
-wrapper.test_height
-wrapper.test_time
-deprecated.subsol
-_aacgmv2.convert
-_aacgmv2.set_datetime
-_aacgmv2.mlt_convert
-_aacgmv2.mlt_convert_yrsec
-_aacgmv2.inv_mlt_convert
-_aacgmv2.inv_mlt_convert_yrsec
----------------------------------------------------------------------------
 """
 # Imports
 #---------------------------------------------------------------------
@@ -66,7 +38,7 @@ from aacgmv2 import (_aacgmv2)
 # Define global variables
 #---------------------------------------------------------------------
 
-__version__ = "2.5.2"
+__version__ = "2.5.3"
 
 # Define a logger object to allow easier log handling
 logger = logging.getLogger('aacgmv2_logger')

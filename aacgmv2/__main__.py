@@ -96,12 +96,16 @@ def main():
                                            geocentric=args.geocentric)
         lats, lons, alts = aacgmv2.convert_latlon_arr(array[:, 0], array[:, 1],
                                                       array[:, 2], dtime=date,
-                                                      code=code)
+                                                      method_code=code)
         np.savetxt(args.file_out, np.column_stack((lats, lons, alts)),
                    fmt='%.8f')
     elif args.subcommand == 'convert_mlt':
         dtime = dt.datetime.strptime(args.datetime, '%Y%m%d%H%M%S')
-        out = aacgmv2.convert_mlt(array[:, 0], dtime, m2a=args.m2a)
+        out = np.array(aacgmv2.convert_mlt(array[:, 0], dtime, m2a=args.m2a))
+
+        if len(out.shape) == 0:
+            out = np.array([out])
+
         np.savetxt(args.file_out, out, fmt='%.8f')
 
 

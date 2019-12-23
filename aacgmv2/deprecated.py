@@ -7,19 +7,10 @@
 """Pythonic wrappers for AACGM-V2 C functions that were depricated in the
 change from version 2.0.0 to version 2.0.2
 
-Functions
--------------------------------------------------------------------------------
-convert : Converts array location
-subsol : finds subsolar geocentric longitude and latitude
-gc2gd_lat : Convert between geocentric and geodetic coordinates
-igrf_dipole_axis : Get Cartesian unit vector pointing at the IGRF north dipole
-------------------------------------------------------------------------------
-
 References
 -------------------------------------------------------------------------------
 Laundal, K. M. and A. D. Richmond (2016), Magnetic Coordinate Systems, Space
  Sci. Rev., doi:10.1007/s11214-016-0275-y.
--------------------------------------------------------------------------------
 
 """
 
@@ -63,16 +54,16 @@ def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
         Output longitude in degrees E
     """
 
-    dstr = "Deprecated routine, will be removed in version 2.6.  Recommend "
-    dstr += "using convert_latlon or convert_latlon_arr"
+    dstr = "".join(["Deprecated routine, will be removed in version 2.6.  ",
+                    "Recommend using convert_latlon or convert_latlon_arr"])
     warnings.warn(dstr, category=FutureWarning)
 
     if(np.array(alt).max() > 2000 and not trace and not allowtrace and
        not badidea):
-        estr = 'coefficients are not valid for altitudes above 2000 km. You'
-        estr += ' must either use field-line tracing (trace=True '
-        estr += 'or allowtrace=True) or indicate you know this is a bad idea'
-        estr += ' (badidea=True)'
+        estr = ''.join(['coefficients are not valid for altitudes above 2000 ',
+                        'km. You must either use field-line tracing (trace=',
+                        'True or allowtrace=True) or indicate you know this ',
+                        'is a bad idea (badidea=True)'])
         raise ValueError(estr)
 
     # construct a code from the boolian flags

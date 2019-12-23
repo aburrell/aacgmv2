@@ -31,10 +31,10 @@ Convert between AACGM and geographic coordinates::
     >>> # geo to AACGM, single numbers
     >>> dtime = dt.datetime(2013, 11, 3)
     >>> np.array(aacgmv2.get_aacgm_coord(60, 15, 300, dtime))
-    array([57.4698, 93.6300, 1.4822])
+    array([57.4721, 93.6214, 1.4816])
     >>> # AACGM to geo, mix arrays/numbers
-    >>> aacgmv2.convert_latlon_arr([90, -90], 0, 0, dtime, method_code="A2G")
-    (array([82.9666, -74.3385]), array([-84.6652, 125.8401]), array([14.1244, 12.8771]))
+    >>> np.array2string(np.array(aacgmv2.convert_latlon_arr([90, -90], 0, 0, dtime, method_code="A2G"))).replace('\n', '')
+    '[[82.9666 -74.3385] [-84.6652 125.8401] [14.1244 12.8771]]'
 
 Convert between AACGM and MLT::
 
@@ -44,7 +44,7 @@ Convert between AACGM and MLT::
     >>> np.set_printoptions(formatter={'float_kind': lambda x:'{:.4f}'.format(x)})
     >>> # MLT to AACGM
     >>> dtime = dt.datetime(2013, 11, 3, 0, 0, 0)
-    >>> aacgmv2.convert_mlt([1.4822189, 12], dtime, m2a=True)
+    >>> np.array(aacgmv2.convert_mlt([1.4822189, 12], dtime, m2a=True))
     array([93.6300, -108.6033])
 
 If you don't know or use Python, you can also use the command line. See details
