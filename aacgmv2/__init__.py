@@ -17,7 +17,7 @@ high_alt_trace : (float)
     Upper altitude limit for using field-line tracing in km
 AACGM_V2_DAT_PREFIX : (str)
     Location of AACGM-V2 coefficient files with the file prefix
-IGRF_12_COEFFS : (str)
+IGRF_COEFFS : (str)
     Filename, with directory, of IGRF coefficients
 
 """
@@ -32,7 +32,6 @@ from aacgmv2.wrapper import (convert_latlon, convert_mlt, get_aacgm_coord)
 from aacgmv2.wrapper import (convert_latlon_arr, get_aacgm_coord_arr)
 from aacgmv2.wrapper import (convert_bool_to_bit, convert_str_to_bit)
 from aacgmv2 import (deprecated)
-from aacgmv2.deprecated import (convert)
 from aacgmv2 import (_aacgmv2)
 
 # Define global variables
@@ -50,9 +49,9 @@ high_alt_trace = 6378.0 # 1 RE, these are ionospheric coordinates
 # path and filename prefix for the IGRF coefficients
 AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath( \
                                                 _os.path.dirname(__file__)),
-                                    'aacgm_coeffs', 'aacgm_coeffs-12-')
+                                    'aacgm_coeffs', 'aacgm_coeffs-13-')
 IGRF_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)),
-                            'magmodel_1590-2015.txt')
+                            'magmodel_1590-2020.txt')
 
 # If not defined, set the IGRF and AACGM environment variables
 __reset_warn__ = False
