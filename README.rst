@@ -7,7 +7,7 @@ Overview
 This is a Python wrapper for the `AACGM-v2 C library
 <http://superdarn.thayer.dartmouth.edu/aacgm.html>`_, which allows
 converting between geographic and magnetic coordinates. The currently included
-version of the C library is 2.5.  The package is free software
+version of the C library is 2.6.  The package is free software
 (MIT license).  When referencing this package, please cite both the package DOI
 and the AACGM-v2 journal article:
 
