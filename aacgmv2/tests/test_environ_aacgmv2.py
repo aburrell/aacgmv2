@@ -8,9 +8,9 @@ import pytest
 class TestPyEnviron:
     def setup(self):
         self.igrf_path = os.path.join("aacgmv2", "aacgmv2",
-                                      "magmodel_1590-2015.txt")
+                                      "magmodel_1590-2020.txt")
         self.aacgm_path = os.path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
-                                       "aacgm_coeffs-12-")
+                                       "aacgm_coeffs-13-")
 
     def teardown(self):
         del self.igrf_path, self.aacgm_path
