@@ -42,6 +42,18 @@ environment:
       PYTHON_HOME: C:\python37-x64
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '64'
+    - TOXENV: '3.8-buildonly-nocover'
+      TOXPYTHON: C:\python38\python.exe
+      WINDOWS_SDK_VERSION: v7.1
+      PYTHON_HOME: C:\python38
+      PYTHON_VERSION: '3.8'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.8-buildonly-nocover'
+      TOXPYTHON: C:\python37-x64\python.exe
+      WINDOWS_SDK_VERSION: v7.1
+      PYTHON_HOME: C:\python38-x64
+      PYTHON_VERSION: '3.8'
+      PYTHON_ARCH: '64'
     - TOXENV: check
       PYTHON_HOME: C:\Python27
       PYTHON_VERSION: '2.7'
@@ -79,11 +91,12 @@ test_script:
 after_test:
   # if tagged commit, build/upload wheel
   - IF "%TOXENV%"=="2.7-buildonly-nocover" IF "%PYTHON_ARCH%"=="32" (%WITH_COMPILER% %TOXPYTHON% setup.py sdist)
-  - IF "%APPVEYOR_REPO_TAG%"=="true" IF NOT "%TOXENV%"=="%TOXENV:buildonly=%" (
-      %WITH_COMPILER% %TOXPYTHON% setup.py bdist_wheel &&
-      %PYTHON_HOME%\Scripts\pip install twine &&
-      %PYTHON_HOME%\Scripts\twine upload -u %PYPI_USER% -p %PYPI_PASS% dist/*
-    )
+### Twine commands not working, remove for now
+#  - IF "%APPVEYOR_REPO_TAG%"=="true" IF NOT "%TOXENV%"=="%TOXENV:buildonly=%" (
+#      %WITH_COMPILER% %TOXPYTHON% setup.py bdist_wheel &&
+#      %PYTHON_HOME%\Scripts\pip install twine &&
+#      %PYTHON_HOME%\Scripts\twine upload -u %PYPI_USER% -p %PYPI_PASS% dist/*
+#    )
 
 on_failure:
   - ps: dir "env:"
