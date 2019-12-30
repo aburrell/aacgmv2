@@ -1,5 +1,5 @@
 AACGM-v2 Software
-v2.5 20180511
+v2.6 20191228
 
 C Instructions:
 
@@ -7,23 +7,23 @@ C Instructions:
 
 2. Set the environment variable AACGM_v2_DAT_PREFIX to the directory that
    you are storing the coefficients in AND include the prefix of the
-   coefficient files, i.e., aacgm_coeffs-12-
+   coefficient files, i.e., aacgm_coeffs-13-
 
    e.g.:
 
-   AACGM_v2_DAT_PREFIX=/mnt/thayerfs/shepherd/AACGM/idl/coeffs/aacgm_coeffs-12-
+   AACGM_v2_DAT_PREFIX=/mnt/thayerfs/shepherd/AACGM/idl/coeffs/aacgm_coeffs-13-
 
    Note that if you used the old AACGM software from JHU/APL you should have
    a similar variable already set.
 
 3. Untar the contents of the .tar file into a directory
 
-4. Setup the magnetic field model by putting the GUFM1/IGRF coefficients
-   (magmodel_1590-2015.txt) somewhere or leaving them in the current directory
+4. Setup the magnetic field model by putting the GUFM1/IGRF coefficients file
+   (magmodel_1590-2020.txt) somewhere or leaving them in the current directory
    and setting the environment variable IGRF_COEFFS to the fully qualified
    path, i.e.,
 
-   IGRF_COEFFS=/directory_you_put_IGRF_coefs_in/magmodel_1590-2015.txt
+   IGRF_COEFFS=/directory_you_put_IGRF_coefs_in/magmodel_1590-2020.txt
 
 5. Build the test program by running:
 
@@ -62,25 +62,25 @@ TEST: no date/time (this will return an error.)
 * that was set, so update to the actual date and time that is desired.   *
 **************************************************************************
 
-TEST: Setting time to : 20140322 0311:00
+TEST: Setting time to : 20240322 0311:00
 
 TEST: geographic to AACGM-v2
      GLAT       GLON        HEIGHT       MLAT       MLON       R
-     45.500000  -23.500000  1135.000000  48.189618  57.763454  1.177533
+     45.500000  -23.500000  1135.000000  47.588773  56.761655  1.177533
 
 TEST: AACGM-v2 to geographic
      MLAT       MLON        HEIGHT       GLAT       GLON       HEIGHT
-     48.189618  57.763454  1131.097495  45.440775  -23.472757  1134.977896
+     47.588773  56.761655  1131.097495  45.439106  -23.475908  1134.977273
 
 Do the same thing but use field-line tracing
 
 TEST: geographic to AACGM-v2 (TRACE)
      GLAT       GLON        HEIGHT       MLAT       MLON       R
-     45.500000  -23.500000  1135.000000  48.194757  57.758831  1.177533
+     45.500000  -23.500000  1135.000000  47.594236  56.760096  1.177533
 
 TEST: AACGM-v2 to geographic (TRACE)
      MLAT       MLON        HEIGHT       GLAT       GLON       HEIGHT
-     48.194757  57.758831  1131.097495  45.500000  -23.500000  1135.000000
+     47.594236  56.760096  1131.097495  45.500002  -23.500000  1135.000001
 
 --------------------------------------------------------------------------------
 
@@ -88,31 +88,31 @@ Testing MLT
 --------------------------------------------------------------------------------
 
       GLAT       GLON        HEIGHT       MLAT       MLON       MLT
-TRACE 37.000000  -88.000000  300.000000  48.840368  -17.006090  1.977745
-COEFF 37.000000  -88.000000  300.000000  48.844355  -16.999464  1.978187
+TRACE 37.000000  -88.000000  300.000000  48.839634  -17.004932  1.977822
+COEFF 37.000000  -88.000000  300.000000  48.844360  -16.999467  1.978187
 
 
 Array:
-      45.0000   0.0000    150.0000     40.2841     76.6676      8.2227
-      45.0000   1.0000    150.0000     40.2447     77.4899      8.2775
-      45.0000   2.0000    150.0000     40.2108     78.3157      8.3325
-      45.0000   3.0000    150.0000     40.1822     79.1452      8.3878
-      45.0000   4.0000    150.0000     40.1587     79.9785      8.4434
-      45.0000   5.0000    150.0000     40.1400     80.8157      8.4992
-      45.0000   6.0000    150.0000     40.1261     81.6569      8.5553
-      45.0000   7.0000    150.0000     40.1165     82.5020      8.6116
-      45.0000   8.0000    150.0000     40.1111     83.3513      8.6682
-      45.0000   9.0000    150.0000     40.1097     84.2048      8.7251
-      45.0000  10.0000    150.0000     40.1121     85.0624      8.7823
-      45.0000  11.0000    150.0000     40.1179     85.9243      8.8398
-      45.0000  12.0000    150.0000     40.1271     86.7904      8.8975
-      45.0000  13.0000    150.0000     40.1394     87.6608      8.9555
-      45.0000  14.0000    150.0000     40.1546     88.5354      9.0138
-      45.0000  15.0000    150.0000     40.1725     89.4143      9.0724
-      45.0000  16.0000    150.0000     40.1930     90.2976      9.1313
-      45.0000  17.0000    150.0000     40.2157     91.1850      9.1905
-      45.0000  18.0000    150.0000     40.2405     92.0768      9.2499
-      45.0000  19.0000    150.0000     40.2673     92.9728      9.3097
+      45.0000   0.0000    150.0000     40.2851     76.6686      8.2227
+      45.0000   1.0000    150.0000     40.2456     77.4908      8.2775
+      45.0000   2.0000    150.0000     40.2116     78.3166      8.3326
+      45.0000   3.0000    150.0000     40.1830     79.1461      8.3879
+      45.0000   4.0000    150.0000     40.1594     79.9794      8.4434
+      45.0000   5.0000    150.0000     40.1407     80.8166      8.4993
+      45.0000   6.0000    150.0000     40.1267     81.6577      8.5553
+      45.0000   7.0000    150.0000     40.1171     82.5029      8.6117
+      45.0000   8.0000    150.0000     40.1116     83.3521      8.6683
+      45.0000   9.0000    150.0000     40.1102     84.2055      8.7252
+      45.0000  10.0000    150.0000     40.1125     85.0631      8.7824
+      45.0000  11.0000    150.0000     40.1184     85.9250      8.8398
+      45.0000  12.0000    150.0000     40.1275     86.7910      8.8976
+      45.0000  13.0000    150.0000     40.1398     87.6614      8.9556
+      45.0000  14.0000    150.0000     40.1550     88.5360      9.0139
+      45.0000  15.0000    150.0000     40.1730     89.4149      9.0725
+      45.0000  16.0000    150.0000     40.1934     90.2981      9.1314
+      45.0000  17.0000    150.0000     40.2161     91.1856      9.1905
+      45.0000  18.0000    150.0000     40.2409     92.0774      9.2500
+      45.0000  19.0000    150.0000     40.2677     92.9734      9.3097
 
 
 IMPORTANT NOTES:
@@ -164,21 +164,21 @@ This package include the following files:
 AACGM C software:
 
 README.txt            ; this file
-release_notes.txt     ; details of changes to v2.5
+release_notes.txt     ; details of changes to v2.6
 aacgmlib_v2.c         ; AACGM-v2 functions
 aacgmlib_v2.h         ; AACGM-v2 header file
 genmag.c              ; general purpose functions
 genmag.h              ; general purpose header file
 igrflib.c             ; internal IGRF functions
 igrflib.h             ; internal IGRF header file
-time.c                ; internal date/time functions
-time.h                ; internal date/time header file
+rtime.c               ; internal date/time functions
+rtime.h               ; internal date/time header file
 astalg.c              ; Astronomical algorithms functions
 astalg.h              ; Astronomical algorithms header file
 mlt_v2.c              ; MLT-v2 functions
 mlt_v2.h              ; MLT-v2 header file
-igrf12coeffs.txt      ; IGRF12 coefficients (1900-2015)
-magmodel_1590-2015.txt; magnetic field coefficients (1590-2015)
+igrf13coeffs.txt      ; IGRF13 coefficients (1900-2020)
+magmodel_1590-2020.txt; magnetic field coefficients (1590-2020)
 test_aacgm.c          ; testing and example program
 LICENSE-AstAlg.txt    ; license file for Astro algrorithms
 

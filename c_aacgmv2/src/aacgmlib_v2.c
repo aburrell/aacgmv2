@@ -1057,7 +1057,7 @@ int AACGM_v2_Convert(double in_lat, double in_lon, double height,
 ;       err = AACGM_v2_SetDateTime(year, month, day, hour, minute, second);
 ;     
 ;     Input Arguments:  
-;       year          - year [1900-2020)
+;       year          - year [1900-2025)
 ;       month         - month of year [01-12]
 ;       day           - day of month [01-31]
 ;       hour          - hour of day [00-24]
@@ -1253,7 +1253,7 @@ void AACGM_v2_errmsg(int ecode)
   fprintf(stderr,
   "* AACGM-v2 ERROR: Date out of bounds                                     *\n"
   "*                                                                        *\n"
-  "* The current date range for AACGM-v2 coordinates is [1990-2020), which  *\n"
+  "* The current date range for AACGM-v2 coordinates is [1990-2025), which  *\n"
   "* corresponds to the date range for the IGRF12 model, including the      *\n"
   "* 5-year secular variation.                                              *"
   "\n");
@@ -1417,7 +1417,7 @@ int AACGM_v2_Trace(double lat_in, double lon_in, double alt,
     }
     niter += kk;
   } else {
-    /* if (below) printf("BELOW\n"); */ /* AGB: commented out debug statement */
+    /*if (below) printf("BELOW\n");*/
     for (k=0;k<3;k++) xyzc[k] = xyzg[k];    /* just use last value */
   }
 

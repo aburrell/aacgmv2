@@ -233,6 +233,8 @@ int IGRF_loadcoeffs(void)
   for (l=1; l<=IGRF_ORDER; l++) {
     k = l * (l+1);                  /* 1D index for l,m=0 */
     fscanf(fp, "%c", &jnk);         /* g or h */
+    if (jnk != 'g' && jnk != 'h')   /* for extra character in file */
+      fscanf(fp, "%c", &jnk);         /* g or h */
     fscanf(fp, "%d %d", &ll, &mm);  /* l amd m */
     for (n=0; n<nyear; n++) {
       fscanf(fp, "%lf", &coef);     /* coefficient */
@@ -248,6 +250,8 @@ int IGRF_loadcoeffs(void)
     for (m=1; m<=l; m++) {
       k = l * (l+1) + m;            /* 1D index for l,m */
       fscanf(fp, "%c", &jnk);         /* g or h */
+      if (jnk != 'g' && jnk != 'h')   /* for extra character in file */
+        fscanf(fp, "%c", &jnk);         /* g or h */
       fscanf(fp, "%d %d", &ll, &mm);  /* l amd m */
 
       for (n=0; n<nyear; n++) {
@@ -263,6 +267,8 @@ int IGRF_loadcoeffs(void)
 
       k = l * (l+1) - m;            /* 1D index for l,m */
       fscanf(fp, "%c", &jnk);         /* g or h */
+      if (jnk != 'g' && jnk != 'h')   /* for extra character in file */
+        fscanf(fp, "%c", &jnk);         /* g or h */
       fscanf(fp, "%d %d", &ll, &mm);  /* l amd m */
       for (n=0; n<nyear; n++) {
         fscanf(fp, "%lf", &coef);     /* coefficient */
@@ -1504,7 +1510,6 @@ int AACGM_v2_RK45(double xyz[], int idir, double *ds, double eps, int code) {
         /*newds = ds * delt;
         //ds = newds;*/
         *ds *= delt;
-
         /* maximum stepsize is fixed to max_ds in units of Re */
         /*if keyword_set(max_ds) then ds = min([max_ds,ds])*/
         /* maximum stepsize is r^2 * 1km, where r is in units of Re */
