@@ -20,6 +20,9 @@ import numpy as np
 import warnings
 import aacgmv2
 
+dep_str = "".join(["Deprecated routine will be removed in version 2.6.1 ",
+                   "unless users express interest in keeping it"])
+
 def subsol(year, doy, utime):
     """Finds subsolar geocentric longitude and latitude.
 
@@ -53,9 +56,7 @@ def subsol(year, doy, utime):
     by K. Laundal.
 
     """
-
-    dstr = "Deprecated routine, may be removed in future versions"
-    warnings.warn(dstr, category=FutureWarning)
+    warnings.warn(dep_str, category=FutureWarning)
 
     # Convert from 4 digit year to 2 digit year
     yr2 = year - 2000
@@ -129,8 +130,7 @@ def gc2gd_lat(gc_lat):
     gd_lat : (same as input)
         Geodetic latitude in degrees N
     """
-    dstr = "Deprecated routine, may be removed in future versions"
-    warnings.warn(dstr, category=FutureWarning)
+    warnings.warn(dep_str, category=FutureWarning)
 
     
     wgs84_e2 = 0.006694379990141317 - 1.0
@@ -157,10 +157,7 @@ def igrf_dipole_axis(date):
     work after IGRF updates.  The dipole coefficients are interpolated to the
     date, or extrapolated if date > latest IGRF model
     """
-
-    dstr = "Deprecated routine, may be removed in future versions"
-    warnings.warn(dstr, category=FutureWarning)
-
+    warnings.warn(dep_str, category=FutureWarning)
 
     # get time in years, as float:
     year = date.year
