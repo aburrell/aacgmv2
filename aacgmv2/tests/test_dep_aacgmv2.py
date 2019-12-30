@@ -49,6 +49,9 @@ class TestDepAACGMV2Warning(TestFutureDepWarning):
     def teardown(self):
         del self.dtime, self.test_routine, self.test_args, self.test_kwargs
 
+    def test_gc2gd_lat_warning(self):
+        """Test future deprecation warning for gc2gd_lat"""
+
         self.test_routine = aacgmv2.deprecated.gc2gd_lat
         self.test_args = [60.0]
         self.test_future_dep_warning()
@@ -116,5 +119,4 @@ class TestDepAACGMV2:
             warnings.simplefilter("ignore")
             m = aacgmv2.deprecated.igrf_dipole_axis(self.dtime)
 
-        np.testing.assert_allclose(m, [0.050253, -0.160608, 0.985738],
-                                   rtol=1.0e-4)
+        np.testing.assert_allclose(m, [0.050281,-0.16057,0.98574], rtol=1.0e-4)
