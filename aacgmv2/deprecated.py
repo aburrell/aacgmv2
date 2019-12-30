@@ -20,64 +20,6 @@ import numpy as np
 import warnings
 import aacgmv2
 
-def convert(lat, lon, alt, date=None, a2g=False, trace=False, allowtrace=False,
-            badidea=False, geocentric=False):
-    """Converts between geomagnetic coordinates and AACGM coordinates
-
-    Parameters
-    ------------
-    lat : (float)
-        Input latitude in degrees N (code specifies type of latitude)
-    lon : (float)
-        Input longitude in degrees E (code specifies type of longitude)
-    alt : (float)
-        Altitude above the surface of the earth in km
-    date : (datetime)
-        Datetime for magnetic field
-    a2g : (bool)
-        True for AACGM-v2 to geographic (geodetic), False otherwise
-        (default=False)
-    trace : (bool)
-        If True, use field-line tracing, not coefficients (default=False)
-    allowtrace : (bool)
-        If True, use trace only above 2000 km (default=False)
-    badidea : (bool)
-        If True, use coefficients above 2000 km (default=False)
-    geocentric : (bool)
-        True for geodetic, False for geocentric w/RE=6371.2 (default=False)
-
-    Returns
-    -------
-    lat_out : (float)
-        Output latitude in degrees N
-    lon_out : (float)
-        Output longitude in degrees E
-    """
-
-    dstr = "".join(["Deprecated routine, will be removed in version 2.6.  ",
-                    "Recommend using convert_latlon or convert_latlon_arr"])
-    warnings.warn(dstr, category=FutureWarning)
-
-    if(np.array(alt).max() > 2000 and not trace and not allowtrace and
-       not badidea):
-        estr = ''.join(['coefficients are not valid for altitudes above 2000 ',
-                        'km. You must either use field-line tracing (trace=',
-                        'True or allowtrace=True) or indicate you know this ',
-                        'is a bad idea (badidea=True)'])
-        raise ValueError(estr)
-
-    # construct a code from the boolian flags
-    bit_code = aacgmv2.convert_bool_to_bit(a2g=a2g, trace=trace,
-                                           allowtrace=allowtrace,
-                                           badidea=badidea,
-                                           geocentric=geocentric)
-
-    # convert location
-    lat_out, lon_out, _ = aacgmv2.convert_latlon_arr(lat, lon, alt, date,
-                                                     method_code=bit_code)
-
-    return lat_out, lon_out
-
 def subsol(year, doy, utime):
     """Finds subsolar geocentric longitude and latitude.
 
