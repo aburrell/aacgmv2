@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import division, absolute_import, unicode_literals
+from __future__ import division, absolute_import, unicode_literals, print_function
 
 import subprocess
 import numpy as np
@@ -64,6 +64,7 @@ class TestCmdAACGMV2:
         p.communicate()
         p.wait()
         data = np.loadtxt(self.output)
+        raise RuntimeError("DATA!", data)
         assert data.shape == (3,3)
         
     def test_convert_single_line(self):
