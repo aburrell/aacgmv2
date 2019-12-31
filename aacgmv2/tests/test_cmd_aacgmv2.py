@@ -76,9 +76,8 @@ class TestCmdAACGMV2:
         p = subprocess.Popen(['python', '-m', 'aacgmv2', 'convert', '-i',
                               self.single, '-d', '20150224', '-o', self.output])
         p.communicate()
-        pret = p.wait()
+        p.wait()
         assert os.path.isfile(self.output)
-        raise RuntimeError(pret, os.path.getsize(self.output))
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, [57.4810, 93.5290, 1.04566],
                                    rtol=self.rtol)
