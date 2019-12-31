@@ -5,10 +5,10 @@ import subprocess
 import numpy as np
 import os
 import pytest
-from sys import version_info
 
 import aacgmv2
 
+@pytest.mark.xfail
 class TestCmdAACGMV2:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
