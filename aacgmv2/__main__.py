@@ -8,17 +8,20 @@
 
 from __future__ import division, print_function, absolute_import
 
-import sys
 import argparse
 import datetime as dt
 import numpy as np
+import sys
+
+import warnings
+
 import aacgmv2
 
-try:
+if sys.version_info.major >= 3:
     # Python 3
     STDIN = sys.stdin.buffer
     STDOUT = sys.stdout.buffer
-except AttributeError:
+else:
     # Python 2
     STDIN = sys.stdin
     STDOUT = sys.stdout
@@ -97,6 +100,7 @@ def main():
         lats, lons, alts = aacgmv2.convert_latlon_arr(array[:, 0], array[:, 1],
                                                       array[:, 2], dtime=date,
                                                       method_code=code)
+
         np.savetxt(args.file_out, np.column_stack((lats, lons, alts)),
                    fmt='%.8f')
     elif args.subcommand == 'convert_mlt':

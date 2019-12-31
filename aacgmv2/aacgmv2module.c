@@ -53,7 +53,7 @@ static PyObject *aacgm_v2_setdatetime(PyObject *self, PyObject *args)
 
 static PyObject *aacgm_v2_convert_arr(PyObject *self, PyObject *args)
 {
-  int i, code, err, raise_warn;
+  int i, code, err;
 
   long int in_num;
 

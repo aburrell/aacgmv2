@@ -198,7 +198,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A", **kwargs):
         else:
             method_code = kwargs[kw]
             warnings.warn("".join(["Deprecated keyword argument 'code' will be",
-                                   " removed in version 2.5.4, please update ",
+                                   " removed in version 2.6.1, please update ",
                                    "your routine to use 'method_code'"]),
                           category=FutureWarning)
 
@@ -315,7 +315,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A",
         else:
             method_code = kwargs[kw]
             warnings.warn("".join(["Deprecated keyword argument 'code' will be",
-                                   " removed in version 2.5.4, please update ",
+                                   " removed in version 2.6.1, please update ",
                                    "your routine to use 'method_code'"]),
                           category=FutureWarning)
 

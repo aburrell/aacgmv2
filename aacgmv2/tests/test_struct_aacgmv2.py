@@ -79,8 +79,7 @@ class TestModuleStructure:
 class TestDepStructure(TestModuleStructure):
     def setup(self):
         self.module_name = None
-        self.reference_list = ["convert", "subsol", "gc2gd_lat",
-                               "igrf_dipole_axis"]
+        self.reference_list = ["subsol", "gc2gd_lat", "igrf_dipole_axis"]
 
     def teardown(self):
         del self.module_name, self.reference_list
@@ -159,7 +158,7 @@ class TestTopStructure(TestModuleStructure):
         self.reference_list = ["convert_bool_to_bit", "convert_str_to_bit",
                                "convert_mlt", "convert_latlon",
                                "convert_latlon_arr", "get_aacgm_coord",
-                               "get_aacgm_coord_arr", "convert"]
+                               "get_aacgm_coord_arr"]
         self.test_module_functions()
 
     def test_top_modules(self):
