@@ -59,8 +59,6 @@ class TestCmdAACGMV2:
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, ref, rtol=self.rtol)
 
-    @pytest.mark.skip(version_info.major == 3,
-                      reason='only works locally for Python 3')
     def test_convert_today(self):
         """ Test the shape of the output for today's date """
         p = subprocess.Popen(['python', '-m', 'aacgmv2', 'convert', '-i',
@@ -81,6 +79,13 @@ class TestCmdAACGMV2:
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, [57.4810, 93.5290, 1.04566],
                                    rtol=self.rtol)
+
+    def test_main_help(self):
+        p = subprocess.Popen('python -m aacgmv2 -h', shell=True,
+                             stdout=subprocess.PIPE)
+        stdout, _ = p.communicate()
+        p.wait()
+        assert b'usage' in stdout
 
     def test_convert_stdin_stdout(self):
         p = subprocess.Popen(
