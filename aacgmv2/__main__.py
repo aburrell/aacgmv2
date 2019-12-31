@@ -101,7 +101,6 @@ def main():
                                                       array[:, 2], dtime=date,
                                                       method_code=code)
 
-        warnings.warn("{:}, {:}, {:}".format(lats, lons, alts), UserWarning)
         np.savetxt(args.file_out, np.column_stack((lats, lons, alts)),
                    fmt='%.8f')
     elif args.subcommand == 'convert_mlt':
