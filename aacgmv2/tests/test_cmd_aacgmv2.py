@@ -55,6 +55,7 @@ class TestCmdAACGMV2:
         p = subprocess.Popen(p_commands)
         p.communicate()
         p.wait()
+        assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, ref, rtol=self.rtol)
 
@@ -66,6 +67,7 @@ class TestCmdAACGMV2:
                               self.convert, '-o', self.output])
         p.communicate()
         p.wait()
+        assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
         assert data.shape == (3,3)
         
@@ -75,6 +77,7 @@ class TestCmdAACGMV2:
                               self.single, '-d', '20150224', '-o', self.output])
         p.communicate()
         p.wait()
+        assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, [57.4810, 93.5290, 1.04566],
                                    rtol=self.rtol)
@@ -99,6 +102,7 @@ class TestCmdAACGMV2:
         p = subprocess.Popen(p_command)
         p.communicate()
         p.wait()
+        assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, ref, rtol=self.rtol)
 
@@ -109,6 +113,7 @@ class TestCmdAACGMV2:
                               self.output])
         p.communicate()
         p.wait()
+        assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, 9.0912, rtol=self.rtol)
 
