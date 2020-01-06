@@ -1,7 +1,7 @@
 
 Changelog
 =========
-2.6.0 (2019-12-31)
+2.6.0 (2020-01-06)
 -----------------------------------------
 * Updated AACGM-v2 coefficients derived using the IGRF13 model
 * Updated IGRF and GUFM1 coefficients using the IGRF13 model
