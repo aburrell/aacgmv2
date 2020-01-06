@@ -19,10 +19,19 @@ class TestCAACGMV2:
         self.lon_in = [-23.5, 0]
         self.alt_in = [1135, 300]
 
+        self.lat_comp = {'G2A': [48.1902, 58.2194], 'A2G': [30.7550, 50.4371],
+                         'TG2A': [48.1954, 58.2189], 'TA2G': [30.7661, 50.4410]}
+        self.lon_comp = {'G2A': [57.7505, 80.7282], 'A2G': [-94.1724, -77.5323],
+                         'TG2A': [57.7456, 80.7362],
+                         'TA2G': [-94.1727, -77.5440]}
+        self.r_comp = {'G2A': [1.1775, 1.0457], 'A2G': [1133.6246, 305.7308],
+                       'TG2A': [1.1775,  1.0457], 'TA2G': [1133.6282, 305.7322]}
+
     def teardown(self):
         """Runs after every method to clean up previous testing"""
         del self.date_args, self.long_date, self.mlat, self.mlon, self.mlt
-        del self.lat_in, self.lon_in, self.alt_in
+        del self.lat_in, self.lon_in, self.alt_in, self.lat_comp, self.lon_comp
+        del self.r_comp
 
     def test_constants(self):
         """Test module constants"""
@@ -50,10 +59,6 @@ class TestCAACGMV2:
 
     def test_convert_G2A_coeff(self):
         """Test convert from geographic to magnetic coordinates"""
-        lat_comp = [48.1896, 58.1633]
-        lon_comp = [57.7635, 81.0719]
-        r_comp = [1.1775, 1.0457]
-
         for i,darg in enumerate(self.date_args):
             aacgmv2._aacgmv2.set_datetime(*darg)
             (self.mlat, self.mlon,
@@ -61,18 +66,15 @@ class TestCAACGMV2:
                                                      self.lon_in[i],
                                                      self.alt_in[i],
                                                      aacgmv2._aacgmv2.G2A)
-            np.testing.assert_almost_equal(self.mlat, lat_comp[i], decimal=4)
-            np.testing.assert_almost_equal(self.mlon, lon_comp[i], decimal=4)
-            np.testing.assert_almost_equal(self.rshell, r_comp[i], decimal=4)
-
-        del lat_comp, lon_comp, r_comp
+            np.testing.assert_almost_equal(self.mlat, self.lat_comp['G2A'][i],
+                                           decimal=4)
+            np.testing.assert_almost_equal(self.mlon, self.lon_comp['G2A'][i],
+                                           decimal=4)
+            np.testing.assert_almost_equal(self.rshell, self.r_comp['G2A'][i],
+                                           decimal=4)
 
     def test_convert_A2G_coeff(self):
         """Test convert from magnetic to geodetic coordinates"""
-        lat_comp = [30.7534, 50.3910]
-        lon_comp = [-94.1806, -77.7919]
-        r_comp = [1133.6241, 305.7138]
-
         for i,darg in enumerate(self.date_args):
             aacgmv2._aacgmv2.set_datetime(*darg)
             (self.mlat, self.mlon,
@@ -80,18 +82,15 @@ class TestCAACGMV2:
                                                      self.lon_in[i],
                                                      self.alt_in[i],
                                                      aacgmv2._aacgmv2.A2G)
-            np.testing.assert_almost_equal(self.mlat, lat_comp[i], decimal=4)
-            np.testing.assert_almost_equal(self.mlon, lon_comp[i], decimal=4)
-            np.testing.assert_almost_equal(self.rshell, r_comp[i], decimal=4)
-
-        del lat_comp, lon_comp, r_comp
+            np.testing.assert_almost_equal(self.mlat, self.lat_comp['A2G'][i],
+                                           decimal=4)
+            np.testing.assert_almost_equal(self.mlon, self.lon_comp['A2G'][i],
+                                           decimal=4)
+            np.testing.assert_almost_equal(self.rshell, self.r_comp['A2G'][i],
+                                           decimal=4)
 
     def test_convert_arr(self):
         """Test convert_arr using from magnetic to geodetic coordinates"""
-        lat_comp = [30.7534, 50.0891]
-        lon_comp = [-94.1806, -77.3773]
-        r_comp = [1133.6241, 305.602877]
-
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon, self.rshell,
          bad_ind) = aacgmv2._aacgmv2.convert_arr(self.lat_in, self.lon_in,
@@ -99,20 +98,17 @@ class TestCAACGMV2:
                                                  aacgmv2._aacgmv2.A2G)
 
         assert len(self.mlat) == len(self.lat_in)
-        for i, ll in enumerate(self.mlat):
-            np.testing.assert_almost_equal(ll, lat_comp[i], decimal=4)
-            np.testing.assert_almost_equal(self.mlon[i], lon_comp[i], decimal=4)
-            np.testing.assert_almost_equal(self.rshell[i], r_comp[i], decimal=4)
-            assert bad_ind[i] == -1
-
-        del lat_comp, lon_comp, r_comp
+        np.testing.assert_almost_equal(self.mlat[0], self.lat_comp['A2G'][0],
+                                       decimal=4)
+        np.testing.assert_almost_equal(self.mlon[0], self.lon_comp['A2G'][0],
+                                       decimal=4)
+        np.testing.assert_almost_equal(self.rshell[0], self.r_comp['A2G'][0],
+                                       decimal=4)
+        assert bad_ind[0] == -1
 
     def test_convert_G2A_TRACE(self):
         """Test convert from geodetic to magnetic coordinates using trace"""
         code = aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE
-        trace_lat = [48.1948, 58.1633]
-        trace_lon = [57.7588, 81.0756]
-        trace_r = [1.1775,  1.0457]
 
         for i,dargs in enumerate(self.date_args):
             aacgmv2._aacgmv2.set_datetime(*dargs)
@@ -120,18 +116,18 @@ class TestCAACGMV2:
              self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[i],
                                                      self.lon_in[i],
                                                      self.alt_in[i], code)
-            np.testing.assert_almost_equal(self.mlat, trace_lat[i], decimal=4)
-            np.testing.assert_almost_equal(self.mlon, trace_lon[i], decimal=4)
-            np.testing.assert_almost_equal(self.rshell, trace_r[i], decimal=4)
+            np.testing.assert_almost_equal(self.mlat, self.lat_comp['TG2A'][i],
+                                           decimal=4)
+            np.testing.assert_almost_equal(self.mlon, self.lon_comp['TG2A'][i],
+                                           decimal=4)
+            np.testing.assert_almost_equal(self.rshell, self.r_comp['TG2A'][i],
+                                           decimal=4)
 
-        del code, trace_lat, trace_lon, trace_r
+        del code
 
     def test_convert_A2G_TRACE(self):
         """Test convert from magnetic to geodetic coordinates using trace"""
         code = aacgmv2._aacgmv2.A2G + aacgmv2._aacgmv2.TRACE
-        trace_lat = [30.7644, 50.3958]
-        trace_lon = [-94.1809, -77.8019]
-        trace_r = [1133.6277, 305.7156]
         
         for i,dargs in enumerate(self.date_args):
             aacgmv2._aacgmv2.set_datetime(*dargs)
@@ -139,11 +135,14 @@ class TestCAACGMV2:
              self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[i],
                                                      self.lon_in[i],
                                                      self.alt_in[i], code)
-            np.testing.assert_almost_equal(self.mlat, trace_lat[i], decimal=4)
-            np.testing.assert_almost_equal(self.mlon, trace_lon[i], decimal=4)
-            np.testing.assert_almost_equal(self.rshell, trace_r[i], decimal=4)
+            np.testing.assert_almost_equal(self.mlat, self.lat_comp['TA2G'][i],
+                                           decimal=4)
+            np.testing.assert_almost_equal(self.mlon, self.lon_comp['TA2G'][i],
+                                           decimal=4)
+            np.testing.assert_almost_equal(self.rshell, self.r_comp['TA2G'][i],
+                                           decimal=4)
 
-        del code, trace_lat, trace_lon, trace_r
+        del code
 
     def test_convert_high_denied(self):
         """Test for failure when converting to high altitude geodetic to
@@ -153,101 +152,49 @@ class TestCAACGMV2:
             aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0], 5500,
                                      aacgmv2._aacgmv2.G2A)
 
-    def test_convert_high_TRACE(self):
-        """Test convert from high altitude geodetic to magnetic coordinates
-        using trace"""
-        code = aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE
+    @pytest.mark.parametrize('code,lat_comp,lon_comp,r_comp',
+                             [(aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE,
+                               59.9753, 57.7294, 1.8626),
+                              (aacgmv2._aacgmv2.G2A
+                               + aacgmv2._aacgmv2.ALLOWTRACE, 59.9753, 57.7294,
+                               1.8626),
+                             (aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.BADIDEA,
+                              58.7286, 56.4296, 1.8626)])
+    def test_convert_high(self, code, lat_comp, lon_comp, r_comp):
+        """Test convert from high altitude geodetic to magnetic coordinates"""
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon,
          self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
                                                  5500, code)
-        np.testing.assert_almost_equal(self.mlat, 59.9748, decimal=4)
-        np.testing.assert_almost_equal(self.mlon, 57.7425, decimal=4)
-        np.testing.assert_almost_equal(self.rshell, 1.8626, decimal=4)
+        np.testing.assert_almost_equal(self.mlat, lat_comp, decimal=4)
+        np.testing.assert_almost_equal(self.mlon, lon_comp, decimal=4)
+        np.testing.assert_almost_equal(self.rshell, r_comp, decimal=4)
 
-        del code
-
-    def test_convert_high_ALLOWTRACE(self):
-        """Test convert from high altitude geodetic to magnetic coordinates
-        by allowing IGRF tracing"""
-        code = aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.ALLOWTRACE
-        aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
-        (self.mlat, self.mlon,
-         self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 5500, code)
-        np.testing.assert_almost_equal(self.mlat, 59.9748, decimal=4)
-        np.testing.assert_almost_equal(self.mlon, 57.7425, decimal=4)
-        np.testing.assert_almost_equal(self.rshell, 1.8626, decimal=4)
-
-        del code
-
-    def test_convert_high_BADIDEA(self):
-        """Test convert from high altitude geodetic to magnetic coordinates
-        using coefficients"""
-        code = aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.BADIDEA
-        aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
-        (self.mlat, self.mlon,
-         self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 5500, code)
-        np.testing.assert_almost_equal(self.mlat, 58.7154, decimal=4)
-        np.testing.assert_almost_equal(self.mlon, 56.5830, decimal=4)
-        np.testing.assert_almost_equal(self.rshell, 1.8626, decimal=4)
-
-        del code
-
-    def test_convert_GEOCENTRIC_G2A_coeff(self):
-        """Test convert from geographic to magnetic coordinates"""
-        code = aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.GEOCENTRIC
+    @pytest.mark.parametrize('code,lat_comp,lon_comp,r_comp',
+                             [(aacgmv2._aacgmv2.G2A
+                               + aacgmv2._aacgmv2.GEOCENTRIC, 48.3784, 57.7844,
+                               1.1781),
+                              (aacgmv2._aacgmv2.G2A
+                               + aacgmv2._aacgmv2.GEOCENTRIC, 48.3784, 57.7844,
+                               1.1781),
+                              (aacgmv2._aacgmv2.A2G
+                               + aacgmv2._aacgmv2.GEOCENTRIC, 30.6117, -94.1724,
+                               1135.0000),
+                              (aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE +
+                               aacgmv2._aacgmv2.GEOCENTRIC, 48.3836, 57.7793,
+                               1.1781),
+                              (aacgmv2._aacgmv2.A2G + aacgmv2._aacgmv2.TRACE +
+                               aacgmv2._aacgmv2.GEOCENTRIC, 30.6227, -94.1727,
+                               1135.0000)])
+    def test_convert(self, code, lat_comp, lon_comp, r_comp):
+        """Test convert for different code inputs"""
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon,
          self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
                                                  self.alt_in[0], code)
-        np.testing.assert_almost_equal(self.mlat, 48.3779, decimal=4)
-        np.testing.assert_almost_equal(self.mlon, 57.7974, decimal=4)
-        np.testing.assert_almost_equal(self.rshell, 1.1781, decimal=4)
-
-        del code
-        
-    def test_convert_GEOCENTRIC_A2G_coeff(self):
-        """Test convert from magnetic to geocentric coordinates"""
-        code = aacgmv2._aacgmv2.A2G + aacgmv2._aacgmv2.GEOCENTRIC
-        aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
-        (self.mlat, self.mlon,
-         self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 self.alt_in[0], code)
-        np.testing.assert_almost_equal(self.mlat, 30.6101, decimal=4)
-        np.testing.assert_almost_equal(self.mlon, -94.1806, decimal=4)
-        np.testing.assert_almost_equal(self.rshell, 1135.0000, decimal=4)
-
-        del code
-
-    def test_convert_GEOCENTRIC_G2A_TRACE(self):
-        """Test convert from geographic to magnetic coordinates using trace"""
-        code = aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE + \
-               aacgmv2._aacgmv2.GEOCENTRIC
-        aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
-        (self.mlat, self.mlon,
-         self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 self.alt_in[0], code)
-        np.testing.assert_almost_equal(self.mlat, 48.3830, decimal=4)
-        np.testing.assert_almost_equal(self.mlon, 57.7926, decimal=4)
-        np.testing.assert_almost_equal(self.rshell, 1.1781, decimal=4)
-
-        del code
-
-    def test_convert_GEOCENTRIC_A2G_TRACE(self):
-        """Test convert from magnetic to geographic coordinates using trace"""
-        code = aacgmv2._aacgmv2.A2G + aacgmv2._aacgmv2.TRACE + \
-               aacgmv2._aacgmv2.GEOCENTRIC
-        aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
-        (self.mlat, self.mlon,
-         self.rshell) = aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0],
-                                                 self.alt_in[0], code)
-        np.testing.assert_almost_equal(self.mlat, 30.6211, decimal=4)
-        np.testing.assert_almost_equal(self.mlon, -94.1809, decimal=4)
-        np.testing.assert_almost_equal(self.rshell, 1135.0000, decimal=4)
-
-        del code
+        np.testing.assert_almost_equal(self.mlat, lat_comp, decimal=4)
+        np.testing.assert_almost_equal(self.mlon, lon_comp, decimal=4)
+        np.testing.assert_almost_equal(self.rshell, r_comp, decimal=4)
 
     @classmethod
     def test_forbidden(self):
@@ -255,76 +202,55 @@ class TestCAACGMV2:
         with pytest.raises(RuntimeError):
             aacgmv2._aacgmv2.convert(7, 0, 0, aacgmv2._aacgmv2.G2A)
 
-    def test_inv_mlt_convert(self):
+    @pytest.mark.parametrize('marg,mlt_comp',
+                             [(12.0, -153.6033), (25.0, 41.3967),
+                              (-1.0, 11.3967)])
+    def test_inv_mlt_convert(self, marg, mlt_comp):
         """Test MLT inversion"""
         mlt_args = list(self.long_date)
-        mlt_args.extend([12.0])
+        mlt_args.append(marg)
         self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
-        np.testing.assert_almost_equal(self.mlon, -153.5931, decimal=4)
-
-        mlt_args[-1] = 25.0
-        self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
-        np.testing.assert_almost_equal(self.mlon, 41.4069, decimal=4)
-
-        mlt_args[-1] = -1.0
-        self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
-        np.testing.assert_almost_equal(self.mlon, 11.4069, decimal=4)
+        np.testing.assert_almost_equal(self.mlon, mlt_comp, decimal=4)
 
         del mlt_args
 
-    def test_inv_mlt_convert_yrsec(self):
+    @pytest.mark.parametrize('marg,mlt_comp',
+                             [(12.0, -153.6033), (25.0, 41.3967),
+                              (-1.0, 11.3967)])
+    def test_inv_mlt_convert_yrsec(self, marg, mlt_comp):
         """Test MLT inversion with year and seconds of year"""
         dtime = dt.datetime(*self.long_date)
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
               dtime.minute * 60 + dtime.second
         
-        mlt_args_1 = [dtime.year, soy, 12.0]
-        mlt_args_2 = [dtime.year, soy, 25.0]
-        mlt_args_3 = [dtime.year, soy, -1.0]
+        self.mlon = aacgmv2._aacgmv2.inv_mlt_convert_yrsec(dtime.year, soy,
+                                                           marg)
 
-        mlon_1 = aacgmv2._aacgmv2.inv_mlt_convert_yrsec(*mlt_args_1)
-        mlon_2 = aacgmv2._aacgmv2.inv_mlt_convert_yrsec(*mlt_args_2)
-        mlon_3 = aacgmv2._aacgmv2.inv_mlt_convert_yrsec(*mlt_args_3)
+        np.testing.assert_almost_equal(self.mlon, mlt_comp, decimal=4)
 
-        np.testing.assert_almost_equal(mlon_1, -153.5931, decimal=4)
-        np.testing.assert_almost_equal(mlon_2, 41.4069, decimal=4)
-        np.testing.assert_almost_equal(mlon_3, 11.4069, decimal=4)
+        del dtime, soy
 
-        del dtime, soy, mlt_args_1, mlt_args_2, mlt_args_3, mlon_1, mlon_2
-        del mlon_3
-
-    def test_mlt_convert(self):
+    @pytest.mark.parametrize('marg,mlt_comp',
+                             [(270.0, 16.2402), (80.0, 3.5736),
+                              (-90.0, 16.2402)])
+    def test_mlt_convert(self, marg, mlt_comp):
         """Test MLT calculation with different longitudes"""
         mlt_args = list(self.long_date)
-        mlt_args.extend([270.0])
+        mlt_args.append(marg)
         self.mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
-        np.testing.assert_almost_equal(self.mlt, 16.2395, decimal=4)
+        np.testing.assert_almost_equal(self.mlt, mlt_comp, decimal=4)
 
-        mlt_args[-1] = 80.0
-        self.mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
-        np.testing.assert_almost_equal(self.mlt, 3.5729, decimal=4)
-
-        mlt_args[-1] = -90.0
-        self.mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
-        np.testing.assert_almost_equal(self.mlt, 16.2395, decimal=4)
-
-        del mlt_args
-
-    def test_mlt_convert_yrsec(self):
+    @pytest.mark.parametrize('marg,mlt_comp',
+                             [(270.0, 16.2402), (80.0, 3.5736),
+                              (-90.0, 16.2402)])
+    def test_mlt_convert_yrsec(self, marg, mlt_comp):
         """Test MLT calculation using year and seconds of year"""
         dtime = dt.datetime(*self.long_date)
         soy = (int(dtime.strftime("%j"))-1) * 86400 + dtime.hour * 3600 + \
             dtime.minute * 60 + dtime.second
-        mlt_args_1 = [dtime.year, soy, 270.0]
-        mlt_args_2 = [dtime.year, soy, 80.0]
-        mlt_args_3 = [dtime.year, soy, -90.0]
         
-        mlt_1 = aacgmv2._aacgmv2.mlt_convert_yrsec(*mlt_args_1)
-        mlt_2 = aacgmv2._aacgmv2.mlt_convert_yrsec(*mlt_args_2)
-        mlt_3 = aacgmv2._aacgmv2.mlt_convert_yrsec(*mlt_args_3)
+        self.mlt = aacgmv2._aacgmv2.mlt_convert_yrsec(dtime.year, soy, marg)
 
-        np.testing.assert_almost_equal(mlt_1, 16.2395, decimal=4)
-        np.testing.assert_almost_equal(mlt_2, 3.5729, decimal=4)
-        np.testing.assert_equal(mlt_1, mlt_3)
+        np.testing.assert_almost_equal(self.mlt, mlt_comp, decimal=4)
 
-        del dtime, soy, mlt_args_1, mlt_args_2, mlt_args_3, mlt_1, mlt_2, mlt_3
+        del dtime, soy

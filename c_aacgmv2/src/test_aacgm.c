@@ -37,18 +37,22 @@ if (err == 0) {
 #if (DEBUG > 1)
 next();
 
-printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d  (will fail)\n", 1850,1,22,0,0,0);
-AACGM_v2_SetDateTime(1850, 1, 22, 0,0,0); /* this should fail */
+printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d  (will fail)\n", 1350,1,22,0,0,0);
+AACGM_v2_SetDateTime(1350, 1, 22, 0,0,0); /* should fail */
+printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d\n", 1850,1,22,0,0,0);
+AACGM_v2_SetDateTime(1850, 1, 22, 0,0,0); /* this is now valid */
 printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d\n", 1900,1,22,0,0,0);
 AACGM_v2_SetDateTime(1900, 1, 22, 0,0,0); /* this is valid */
-printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d  (will fail)\n", 2020,1,22,0,0,0);
-AACGM_v2_SetDateTime(2020, 1, 22, 0,0,0); /* this shoudl fail */
+printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d\n", 2020,1,22,0,0,0);
+AACGM_v2_SetDateTime(2020, 1, 22, 0,0,0); /* this is now valid */
 printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d\n", 2019,1,22,0,0,0);
 AACGM_v2_SetDateTime(2019, 1, 22, 0,0,0); /* this is valid */
+printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d  (will fail)\n", 2025,1,22,0,0,0);
+AACGM_v2_SetDateTime(2025, 1, 22, 0,0,0); /* should fail*/
 next();
 #endif
 
-yr = 2014;
+yr = 2024;
 mo = 3;
 dy = 22;
 hr = 3;
@@ -226,7 +230,7 @@ void next(void)
     scanf("%c", &ch);
   } while (ch != '\n');
 
-//  printf("\n\n");
+  /*  printf("\n\n"); AGB: Fixed C++ style commenting */
   printf("\f");
 }
 

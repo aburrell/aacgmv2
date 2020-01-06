@@ -1,0 +1,20 @@
+
+v2.6 Changes
+
+Features:
+
++ 20191228 added AACGM-v2 coefficients derived using IGRF13 model. Note that
+                 
+                 Note that there are some small differences (less than 1 km)
+
+           added file magmodel_1590-2020.txt which contains GUFM1 and IGRF13
+                 coefficients
+
+           added additional checks in igrflib.c for reading new coefficients.
+                 Note: igrf13coeffs.txt had an additional space at the end of
+                       each line that required these additional checks.
+
+           changed error message in aacgmlib_v2.c for date/time out of bounds
+
+Bug fixes:
+

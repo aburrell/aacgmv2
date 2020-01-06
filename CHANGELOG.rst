@@ -1,6 +1,19 @@
 
 Changelog
 =========
+2.6.0 (2020-01-06)
+-----------------------------------------
+* Updated AACGM-v2 coefficients derived using the IGRF13 model
+* Updated IGRF and GUFM1 coefficients using the IGRF13 model
+* Added additional checks to the C code for reading the IGRF13 coefficient file
+* Removed `convert` routine in `deprecated.py`
+* Pushed back keyword argument deprecation of `code`
+* Scheduled deprecation for remaining routines in `deprecated.py`
+* Parametrized several unit tests
+* Updated `README.md` examples
+* Updated CI to include python 3.8
+  
+
 2.5.3 (2019-12-23)
 -----------------------------------------
 * Changed log warning about array functions to info

@@ -2,7 +2,7 @@
 #define _IGRFLIB_
 
 #define IGRF_FIRST_EPOCH 1590
-#define IGRF_LAST_EPOCH 2015
+#define IGRF_LAST_EPOCH 2020
 /* SGS using IGRF_COEFFS environment variable */
 /*#define IGRF_FILE "igrf12coeffs.txt"*/  /* current IGRF model */
 
