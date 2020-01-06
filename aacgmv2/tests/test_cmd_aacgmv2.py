@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import division, absolute_import, unicode_literals, print_function
+from __future__ import division, absolute_import, unicode_literals
 
 import subprocess
 import numpy as np
