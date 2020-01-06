@@ -230,7 +230,7 @@ void next(void)
     scanf("%c", &ch);
   } while (ch != '\n');
 
-//  printf("\n\n");
+  /*  printf("\n\n"); AGB: Fixed C++ style commenting */
   printf("\f");
 }
 
