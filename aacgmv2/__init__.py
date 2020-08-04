@@ -1,4 +1,4 @@
-# Copyright (C) 2019 NRL 
+# Copyright (C) 2019 NRL
 # Author: Angeline Burrell
 # Disclaimer: This code is under the MIT license, whose details can be found at
 # the root in the LICENSE file
@@ -22,8 +22,6 @@ IGRF_COEFFS : (str)
 
 """
 # Imports
-#---------------------------------------------------------------------
-
 import logging
 import os as _os
 from sys import stderr
@@ -35,21 +33,18 @@ from aacgmv2 import (deprecated)
 from aacgmv2 import (_aacgmv2)
 
 # Define global variables
-#---------------------------------------------------------------------
-
 __version__ = "2.6.0"
 
 # Define a logger object to allow easier log handling
 logger = logging.getLogger('aacgmv2_logger')
 
 # Altitude constraints
-high_alt_coeff = 2000.0 # Tested and published in Shepherd (2014)
-high_alt_trace = 6378.0 # 1 RE, these are ionospheric coordinates
+high_alt_coeff = 2000.0  # Tested and published in Shepherd (2014)
+high_alt_trace = 6378.0  # 1 RE, these are ionospheric coordinates
 
 # path and filename prefix for the IGRF coefficients
-AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath( \
-                                                _os.path.dirname(__file__)),
-                                    'aacgm_coeffs', 'aacgm_coeffs-13-')
+AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath(
+    _os.path.dirname(__file__)), 'aacgm_coeffs', 'aacgm_coeffs-13-')
 IGRF_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)),
                             'magmodel_1590-2020.txt')
 
@@ -72,5 +67,6 @@ if 'AACGM_v2_DAT_PREFIX' in _os.environ.keys():
 _os.environ['AACGM_v2_DAT_PREFIX'] = AACGM_v2_DAT_PREFIX
 
 if __reset_warn__:
-    stderr.write("non-default coefficient files may be specified by running " +
-                 "aacgmv2.wrapper.set_coeff_path before any other functions\n")
+    stderr.write("".join(["non-default coefficient files may be specified by ",
+                          "running aacgmv2.wrapper.set_coeff_path before any ",
+                          "other functions\n"]))
