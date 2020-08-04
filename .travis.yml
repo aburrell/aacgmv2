@@ -1,25 +1,26 @@
 language: python
 python:
-  - "2.7"
-  - "3.6"
-  - "3.7"
-  - "3.8"
+  - 2.7
+  - 3.6
+  - 3.7
+  - 3.8
 sudo: false
 env:
   global:
-    LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+    - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+  jobs:
+    - TOXENV=check
+    - TOXENV=TRAVIS_PYTHON_ENV-nocover
+    - TOXENV=TRAVIS_PYTHON_ENV,extension-coveralls,coveralls
 before_install:
   - python --version
   - uname -a
   - lsb_release -a
 install:
-  - pip install coveralls
-  - "python setup.py install"
+  - python setup.py install
   - pip install tox-travis
 script:
-  - tox
-  - coverage run --source aacgmv2 -m py.test
-after_sucess: coveralls
+  - tox -v
 notifications:
   email:
     on_success: never
