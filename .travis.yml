@@ -10,8 +10,8 @@ env:
     - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
   jobs:
     - TOXENV=check
-    - TOXENV=TRAVIS_PYTHON_ENV-nocover
-    - TOXENV=TRAVIS_PYTHON_ENV,extension-coveralls,coveralls
+    - TOXENV=$TRAVIS_PYTHON_ENV-nocover
+    - TOXENV=$TRAVIS_PYTHON_ENV,extension-coveralls,coveralls
 before_install:
   - python --version
   - uname -a
