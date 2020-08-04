@@ -22,9 +22,9 @@ install:
 script:
   - |
     if [ $TOX_FLAG == "check" ]; then
-      tox -v TOXENV=$TOX_FLAG
+      tox -v TESTENV=$TOX_FLAG
     else
-      tox -v TOXENV=$TRAVIS_PYTHON_VERSION$TOX_FLAG
+      tox -v TESTENV=$TRAVIS_PYTHON_VERSION$TOX_FLAG
     fi
 notifications:
   email:
