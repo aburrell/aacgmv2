@@ -27,7 +27,7 @@ class TestUtilsAACGMV2:
 
     def test_igrf_dipole_axis(self):
         """Test the IGRF dipole axis calculation"""
-        self.out = aacgmv2.deprecated.igrf_dipole_axis(self.dtime)
+        self.out = utils.igrf_dipole_axis(self.dtime)
 
         np.testing.assert_allclose(self.out, [0.050281, -0.16057, 0.98574],
                                    rtol=1.0e-4)
