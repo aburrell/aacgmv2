@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, absolute_import, unicode_literals
 
-import datetime as dt
 import logging
-import numpy as np
 import os
 import pkgutil
-import pytest
 
 import aacgmv2
 
-#@pytest.mark.skip(reason="Not meant to be run alone")
+
+# @pytest.mark.skip(reason="Not meant to be run alone")
 class TestModuleStructure:
     def setup(self):
 
@@ -69,12 +67,13 @@ class TestModuleStructure:
         else:
             # Get the submodules and make sure they are supposed to be there
             retrieved_list = list()
-            for imp,name,ispkg in pkgutil.iter_modules(path=aacgmv2.__path__):
+            for imp, name, ispkg in pkgutil.iter_modules(path=aacgmv2.__path__):
                 assert name in self.reference_list
-                retrieved_list.append(name)                
+                retrieved_list.append(name)
 
             # Test to see if all of the modules match
             assert len(retrieved_list) == len(self.reference_list)
+
 
 class TestDepStructure(TestModuleStructure):
     def setup(self):
@@ -93,6 +92,7 @@ class TestDepStructure(TestModuleStructure):
         """ Test the deprecated functions"""
         self.module_name = "deprecated"
         self.test_module_functions()
+
 
 class TestCStructure(TestModuleStructure):
     def setup(self):
@@ -173,7 +173,7 @@ class TestTopStructure(TestModuleStructure):
         """Test module constants"""
 
         path1 = os.path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
-                          "aacgm_coeffs-12-")
+                             "aacgm_coeffs-12-")
         if aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) < 0:
             raise AssertionError()
 
@@ -202,6 +202,6 @@ class TestTopStructure(TestModuleStructure):
     @classmethod
     def test_module_logger(self):
         """ Test the module logger instance"""
-        
+
         if not isinstance(aacgmv2.logger, logging.Logger):
             raise TypeError("Logger incorrect type")
