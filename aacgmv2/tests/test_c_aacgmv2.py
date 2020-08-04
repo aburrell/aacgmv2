@@ -29,7 +29,7 @@ class TestCAACGMV2:
                          'TG2A': [57.7456, 80.7362],
                          'TA2G': [-94.1727, -77.5440]}
         self.r_comp = {'G2A': [1.1775, 1.0457], 'A2G': [1133.6246, 305.7308],
-                       'TG2A': [1.1775,  1.0457], 'TA2G': [1133.6282, 305.7322]}
+                       'TG2A': [1.1775, 1.0457], 'TA2G': [1133.6282, 305.7322]}
 
     def teardown(self):
         """Runs after every method to clean up previous testing"""
@@ -134,11 +134,11 @@ class TestCAACGMV2:
                               (aacgmv2._aacgmv2.A2G
                                + aacgmv2._aacgmv2.GEOCENTRIC, 30.6117, -94.1724,
                                1135.0000),
-                              (aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE +
-                               aacgmv2._aacgmv2.GEOCENTRIC, 48.3836, 57.7793,
+                              (aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE
+                               + aacgmv2._aacgmv2.GEOCENTRIC, 48.3836, 57.7793,
                                1.1781),
-                              (aacgmv2._aacgmv2.A2G + aacgmv2._aacgmv2.TRACE +
-                               aacgmv2._aacgmv2.GEOCENTRIC, 30.6227, -94.1727,
+                              (aacgmv2._aacgmv2.A2G + aacgmv2._aacgmv2.TRACE
+                               + aacgmv2._aacgmv2.GEOCENTRIC, 30.6227, -94.1727,
                                1135.0000)])
     def test_convert_geocentric(self, code, lat_comp, lon_comp, r_comp):
         """Test convert for different code inputs with geocentric coords"""

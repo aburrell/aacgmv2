@@ -598,8 +598,8 @@ class TestConvertCode:
 
     def test_convert_str_to_bit_spaces(self):
         """Test conversion from string code to bit for a code with spaces"""
-        if(aacgmv2.convert_str_to_bit("G2A | trace") !=
-           aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE):
+        if(aacgmv2.convert_str_to_bit("G2A | trace")
+           != aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE):
             raise AssertionError()
 
     def test_convert_str_to_bit_invalid(self):

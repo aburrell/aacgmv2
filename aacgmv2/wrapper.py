@@ -90,8 +90,8 @@ def test_height(height, bit_code):
         aacgmv2.logger.warning('conversion not intended for altitudes < 0 km')
 
     # Test the conditions for using the coefficient method
-    if(height > aacgmv2.high_alt_coeff and
-       not (bit_code & (TRACE | ALLOWTRACE | BADIDEA))):
+    if(height > aacgmv2.high_alt_coeff
+       and not (bit_code & (TRACE | ALLOWTRACE | BADIDEA))):
         estr = ''.join(['coefficients are not valid for altitudes above ',
                         '{:.0f} km. You '.format(aacgmv2.high_alt_coeff),
                         'must either use field-line tracing (trace=True or',
