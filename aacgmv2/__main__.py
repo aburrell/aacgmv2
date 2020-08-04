@@ -1,4 +1,4 @@
-# Copyright (C) 2019 NRL 
+# Copyright (C) 2019 NRL
 # Author: Angeline Burrell
 # Disclaimer: This code is under the MIT license, whose details can be found at
 # the root in the LICENSE file
@@ -12,8 +12,6 @@ import argparse
 import datetime as dt
 import numpy as np
 import sys
-
-import warnings
 
 import aacgmv2
 
