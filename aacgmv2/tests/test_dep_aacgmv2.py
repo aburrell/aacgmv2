@@ -22,7 +22,7 @@ class TestFutureDepWarning:
         del self.test_routine, self.test_args, self.test_kwargs
 
     def test_future_dep_warning(self):
-        """Test the implementation of FutureWarning for deprecated routines"""
+        """Test the implementation of FutureWarning for dupicate routines"""
         if self.test_routine is None:
             assert True
         else:
@@ -36,7 +36,7 @@ class TestFutureDepWarning:
                 # Verify some things
                 assert len(wout) == 1
                 assert issubclass(wout[-1].category, FutureWarning)
-                assert "Deprecated routine" in str(wout[-1].message)
+                assert "Duplicate routine" in str(wout[-1].message)
 
 
 class TestDepAACGMV2Warning(TestFutureDepWarning):
