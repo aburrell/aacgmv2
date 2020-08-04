@@ -79,7 +79,7 @@ class TestModuleStructure:
 class TestDepStructure(TestModuleStructure):
     def setup(self):
         self.module_name = None
-        self.reference_list = ["subsol", "gc2gd_lat", "igrf_dipole_axis"]
+        self.reference_list = ["subsol", "igrf_dipole_axis"]
 
     def teardown(self):
         del self.module_name, self.reference_list
@@ -92,6 +92,24 @@ class TestDepStructure(TestModuleStructure):
     def test_dep_functions(self):
         """ Test the deprecated functions"""
         self.module_name = "deprecated"
+        self.test_module_functions()
+
+class TestUtilsStructure(TestModuleStructure):
+    def setup(self):
+        self.module_name = None
+        self.reference_list = ["subsol", "igrf_dipole_axis"]
+
+    def teardown(self):
+        del self.module_name, self.reference_list
+
+    def test_dep_existence(self):
+        """ Test the utility functions"""
+        self.module_name = "utils"
+        self.test_module_existence()
+
+    def test_dep_functions(self):
+        """ Test the utility functions"""
+        self.module_name = "utils"
         self.test_module_functions()
 
 class TestCStructure(TestModuleStructure):
@@ -164,7 +182,7 @@ class TestTopStructure(TestModuleStructure):
     def test_top_modules(self):
         """ Test the deprecated functions"""
         self.module_name = "aacgmv2"
-        self.reference_list = ["_aacgmv2", "wrapper",
+        self.reference_list = ["_aacgmv2", "wrapper", "utils",
                                "deprecated", "__main__"]
         self.test_modules()
 
@@ -173,7 +191,7 @@ class TestTopStructure(TestModuleStructure):
         """Test module constants"""
 
         path1 = os.path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
-                          "aacgm_coeffs-12-")
+                             "aacgm_coeffs-12-")
         if aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) < 0:
             raise AssertionError()
 
