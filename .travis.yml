@@ -9,9 +9,9 @@ env:
   global:
     - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
   jobs:
-    - TOXENV=check
-    - TOXENV=$TRAVIS_PYTHON_VERSION-nocover
-    - TOXENV=$TRAVIS_PYTHON_VERSION,extension-coveralls,coveralls
+    - TOXPY=0, TOXENV=check
+    - TOXPY=1, TOXENV=-nocover
+    - TOXPY=1, TOXENV=,extension-coveralls,coveralls
 before_install:
   - python --version
   - uname -a
@@ -20,6 +20,10 @@ install:
   - python setup.py install
   - pip install tox-travis
 script:
+  - |
+    if [ $TOXPY == 1 ]; then
+      export TOXENV=$TRAVIS_PYTHON_VERSION$TOXENV
+    fi
   - tox -v
 notifications:
   email:
