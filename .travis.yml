@@ -17,7 +17,7 @@ before_install:
   - lsb_release -a
 install:
   - python setup.py install
-  - pip install tox-travis, pytest, coveralls
+  - pip install tox-travis pytest coveralls
 script:
   - |
     if [ $TOX_FLAG == "check" ]; then
