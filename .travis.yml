@@ -16,14 +16,14 @@ before_install:
   - uname -a
   - lsb_release -a
 install:
-  - pip install tox-travis pytest coveralls pytest-cov numpy
+  - pip install tox-travis pytest coveralls coverage numpy
   - python setup.py install
 script:
   - |
     if [ $TOX_FLAG == "check" ]; then
       tox -e $TOX_FLAG
     elif [ $TOX_FLAG == "cover" ]; then
-      pytest -vs aacgmv2/tests/ --cov=aacgmv2 --cov-config=setup.cfg
+      coverage run --rcfile=setup.cfg -m pytest -vv
     else
       tox -e $TRAVIS_PYTHON_VERSION$TOX_FLAG
     fi
