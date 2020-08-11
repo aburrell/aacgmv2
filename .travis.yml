@@ -23,7 +23,7 @@ script:
     if [ $TOX_FLAG == "check" ]; then
       tox -e $TOX_FLAG
     elif [ $TOX_FLAG == "cover" ]; then
-      pytest -vs aacgmv2/tests/ --cov-config=setup.cfg
+      pytest -vs aacgmv2/tests/ --cov=aacgmv2 --cov-config=setup.cfg
     else
       tox -e $TRAVIS_PYTHON_VERSION$TOX_FLAG
     fi
