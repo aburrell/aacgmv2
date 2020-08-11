@@ -10,22 +10,25 @@ env:
     - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
   jobs:
     - TOX_FLAG=check
-    - TOX_FLAG=-nocover
-    - TOX_FLAG=,extension-coveralls,coveralls
+    - TOX_FLAG=cover
 before_install:
   - python --version
   - uname -a
   - lsb_release -a
 install:
   - python setup.py install
-  - pip install tox-travis
+  - pip install tox-travis, pytest, coveralls
 script:
   - |
     if [ $TOX_FLAG == "check" ]; then
       tox -e $TOX_FLAG
+    elif [ $TOX_FLAG == "cover" ]; then
+      pytest -vs --rcfile=setup.cfg
     else
       tox -e $TRAVIS_PYTHON_VERSION$TOX_FLAG
     fi
+after_success:
+  - coveralls --rcfile=setup.cfg
 notifications:
   email:
     on_success: never
