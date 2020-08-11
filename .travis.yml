@@ -16,8 +16,8 @@ before_install:
   - uname -a
   - lsb_release -a
 install:
+  - pip install tox-travis pytest coveralls pytest-cov numpy
   - python setup.py install
-  - pip install tox-travis pytest coveralls pytest-cov
 script:
   - |
     if [ $TOX_FLAG == "check" ]; then
