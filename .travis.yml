@@ -17,13 +17,13 @@ before_install:
   - lsb_release -a
 install:
   - python setup.py install
-  - pip install tox-travis pytest coveralls
+  - pip install tox-travis pytest coveralls pytest-cov
 script:
   - |
     if [ $TOX_FLAG == "check" ]; then
       tox -e $TOX_FLAG
     elif [ $TOX_FLAG == "cover" ]; then
-      pytest -vs --rcfile=setup.cfg
+      pytest -vs --cov-config=setup.cfg
     else
       tox -e $TRAVIS_PYTHON_VERSION$TOX_FLAG
     fi
