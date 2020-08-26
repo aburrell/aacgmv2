@@ -8,9 +8,6 @@ sudo: false
 env:
   global:
     - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
-  jobs:
-    - TOX_FLAG=check,docs
-    - TOX_FLAG=cover
 before_install:
   - python --version
   - uname -a
@@ -20,15 +17,10 @@ install:
   - python setup.py install
 script:
   - |
-    if [ $TOX_FLAG == "check,docs,spell" ]; then
-      if [ $TRAVIS_PYTHON_VERSION == "3.7" ]; then
-        tox -e $TOX_FLAG
-      fi
-    elif [ $TOX_FLAG == "cover" ]; then
-      tox -e $TRAVIS_PYTHON_VERSION
-    else
-      tox -e $TRAVIS_PYTHON_VERSION$TOX_FLAG
+    if [ $TRAVIS_PYTHON_VERSION == "3.7" ]; then
+        tox -e check,docs
     fi
+  - tox -e $TRAVIS_PYTHON_VERSION
 after_success:
   - coveralls --rcfile=setup.cfg
 notifications:
