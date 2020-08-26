@@ -7,11 +7,9 @@ recursive-include aacgmv2 *.asc
 recursive-include aacgmv2 *.txt
 recursive-include c_aacgmv2 *.txt
 
+include setup.cfg
 include .bumpversion.cfg
-include .coveragerc
 include .cookiecutterrc
-include .isort.cfg
-include .pylintrc
 
 include AUTHORS.rst
 include CHANGELOG.rst
