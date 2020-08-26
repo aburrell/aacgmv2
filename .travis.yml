@@ -23,7 +23,7 @@ script:
     if [ $TOX_FLAG == "check" ]; then
       tox -e $TOX_FLAG
     elif [ $TOX_FLAG == "cover" ]; then
-      python -m pytest --cov --cov-report=term-missing -vv --doctest-glob='*.rst'
+      python -m pytest --cov --cov-report=term-missing -vv --doctest-glob='*.rst' --cov-config=setup.cfg
     else
       tox -e $TRAVIS_PYTHON_VERSION$TOX_FLAG
     fi
