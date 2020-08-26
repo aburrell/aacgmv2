@@ -51,6 +51,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Scientific/Engineering :: Physics',
         'Topic :: Utilities',
@@ -69,7 +70,7 @@ setup(
     install_requires=[
         'numpy',
     ],
-    extras_require={'test':['pytest'],
+    extras_require={'test': ['pytest'],
     },
     ext_modules=[
         Extension('aacgmv2._aacgmv2',
