@@ -9,7 +9,7 @@ env:
   global:
     - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
   jobs:
-    - TOX_FLAG=check,docs,spell
+    - TOX_FLAG=check,docs
     - TOX_FLAG=cover
 before_install:
   - python --version
