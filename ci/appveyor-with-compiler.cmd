@@ -35,13 +35,6 @@ IF "%PYTHON_ARCH%"=="32" (
     GOTO main
 )
 
-IF "%PYTHON_VERSION%"=="3.7" (
-    IF "%PYTHON_ARCH%"=="64" (
-        SET %PATH%=%PATH%;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1
-    )
-    GOTO main
-)
-
 SET DISTUTILS_USE_SDK=1
 SET MSSdk=1
 "%WIN_SDK_ROOT%\%WINDOWS_SDK_VERSION%\Setup\WindowsSdkVer.exe" -q -version:%WINDOWS_SDK_VERSION%
