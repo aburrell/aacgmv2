@@ -1,8 +1,8 @@
 language: python
 python:
-{% for ver in python_versions|sort %}
-    {{  - ver }},
-{% endfor % }
+{% for env, config in tox_environments|dictsort %}{% if not config.cover %}
+  - {{ config.python[-3:] }}
+{% endif %}{% endfor %}
 sudo: false
 env:
   global:
