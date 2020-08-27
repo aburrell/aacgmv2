@@ -63,7 +63,7 @@ To set up `aacgmv2` for local development:
    ``assert`` statement for testing output, or use the numpy testing suite.
 
 4. When you're done making changes, run all the checks, doc builder and spell
-   checker with `tox <http://tox.readthedocs.org/en/latest/install.html>`_ [1]_::
+   checker with `tox <https://tox.readthedocs.io/en/latest/install.html>`_ [1]_::
 
     tox
 

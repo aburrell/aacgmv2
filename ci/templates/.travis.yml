@@ -1,25 +1,27 @@
 language: python
 python:
-  - "2.7"
-  - "3.6"
-  - "3.7"
-  - "3.8"
+{% for env, config in tox_environments|dictsort %}{% if not config.cover %}
+  - {{ config.python[-3:] }}
+{% endif %}{% endfor %}
 sudo: false
 env:
   global:
-    LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+    - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
 before_install:
   - python --version
   - uname -a
   - lsb_release -a
 install:
-  - pip install coveralls
-  - "python setup.py install"
-  - pip install tox-travis
+  - pip install numpy tox-travis coveralls
+  - python setup.py install
 script:
-  - tox
-  - coverage run --source aacgmv2 -m py.test
-after_sucess: coveralls
+  - |
+    if [ $TRAVIS_PYTHON_VERSION == "3.7" ]; then
+        tox -e check,docs
+    fi
+  - tox -e $TRAVIS_PYTHON_VERSION
+after_success:
+  - coveralls --rcfile=setup.cfg
 notifications:
   email:
     on_success: never

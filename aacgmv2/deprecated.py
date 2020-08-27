@@ -1,4 +1,4 @@
-# Copyright (C) 2019 NRL 
+# Copyright (C) 2019 NRL
 # Author: Angeline Burrell
 # Disclaimer: This code is under the MIT license, whose details can be found at
 # the root in the LICENSE file
@@ -22,6 +22,7 @@ import aacgmv2
 
 dep_str = "".join(["Deprecated routine will be removed in version 2.6.1 ",
                    "unless users express interest in keeping it"])
+
 
 def subsol(year, doy, utime):
     """Finds subsolar geocentric longitude and latitude.
@@ -117,6 +118,7 @@ def subsol(year, doy, utime):
 
     return sbsllon, sbsllat
 
+
 def gc2gd_lat(gc_lat):
     """Convert geocentric latitude to geodetic latitude using WGS84.
 
@@ -132,9 +134,9 @@ def gc2gd_lat(gc_lat):
     """
     warnings.warn(dep_str, category=FutureWarning)
 
-    
     wgs84_e2 = 0.006694379990141317 - 1.0
     return np.rad2deg(-np.arctan(np.tan(np.deg2rad(gc_lat)) / wgs84_e2))
+
 
 def igrf_dipole_axis(date):
     """Get Cartesian unit vector pointing at dipole pole in the north,

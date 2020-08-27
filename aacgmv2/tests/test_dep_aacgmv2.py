@@ -2,14 +2,11 @@
 from __future__ import division, absolute_import, unicode_literals
 
 import datetime as dt
-from io import StringIO
-import logging
 import numpy as np
-import pytest
-from sys import version_info
 import warnings
 
 import aacgmv2
+
 
 class TestFutureDepWarning:
     def setup(self):
@@ -63,6 +60,7 @@ class TestDepAACGMV2Warning(TestFutureDepWarning):
         self.test_args = [self.dtime]
         self.test_future_dep_warning()
 
+
 class TestDepAACGMV2:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
@@ -77,8 +75,8 @@ class TestDepAACGMV2:
     def test_subsol(self):
         """Test the subsolar calculation"""
         doy = int(self.dtime.strftime("%j"))
-        ut = self.dtime.hour * 3600.0 + self.dtime.minute * 60.0 + \
-             self.dtime.second
+        ut = self.dtime.hour * 3600.0 + self.dtime.minute * 60.0 \
+            + self.dtime.second
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self.lon, self.lat = aacgmv2.deprecated.subsol(self.dtime.year,
@@ -119,4 +117,5 @@ class TestDepAACGMV2:
             warnings.simplefilter("ignore")
             m = aacgmv2.deprecated.igrf_dipole_axis(self.dtime)
 
-        np.testing.assert_allclose(m, [0.050281,-0.16057,0.98574], rtol=1.0e-4)
+        np.testing.assert_allclose(m, [0.050281, -0.16057, 0.98574],
+                                   rtol=1.0e-4)

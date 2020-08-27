@@ -1,4 +1,4 @@
-# Copyright (C) 2019 NRL 
+# Copyright (C) 2019 NRL
 # Author: Angeline Burrell
 # Disclaimer: This code is under the MIT license, whose details can be found at
 # the root in the LICENSE file
@@ -12,8 +12,6 @@ import argparse
 import datetime as dt
 import numpy as np
 import sys
-
-import warnings
 
 import aacgmv2
 
@@ -91,8 +89,10 @@ def main():
     array = np.loadtxt(args.file_in, ndmin=2)
 
     if args.subcommand == 'convert':
-        date = dt.date.today() if args.date is None else \
-               dt.datetime.strptime(args.date, '%Y%m%d')
+        if args.date is None:
+            date = dt.date.today()
+        else:
+            date = dt.datetime.strptime(args.date, '%Y%m%d')
         code = aacgmv2.convert_bool_to_bit(a2g=args.a2g, trace=args.trace,
                                            allowtrace=args.allowtrace,
                                            badidea=args.badidea,

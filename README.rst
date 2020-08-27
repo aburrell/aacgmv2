@@ -53,7 +53,7 @@ in the full documentation.
 Documentation
 =============
 
-https://aacgmv2.readthedocs.org/
+https://aacgmv2.readthedocs.io/en/latest/
 
 http://superdarn.thayer.dartmouth.edu/aacgm.html
 
@@ -67,8 +67,7 @@ Badges
       - |docs|
     * - tests
       - | |travis| |appveyor| |requires|
-        | |landscape|  |codeclimate|
-        | |scrutinizer| |codacy|
+        | |codeclimate| |scrutinizer| |codacy| |coveralls|
     * - package
       - | |version| |supported-versions|
         | |wheel| |supported-implementations|
@@ -77,9 +76,9 @@ Badges
     :target: https://readthedocs.org/projects/aacgmv2
     :alt: Documentation Status
 
-.. |travis| image:: https://travis-ci.org/aburrell/aacgmv2.svg?branch=master
+.. |travis| image:: https://api.travis-ci.org/aburrell/aacgmv2.svg?branch=master
     :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/aburrell/aacgmv2
+    :target: https://travis-ci.org/github/aburrell/aacgmv2
 
 .. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/aburrell/aacgmv2?branch=master&svg=true
     :alt: AppVeyor Build Status
@@ -89,48 +88,46 @@ Badges
     :alt: Requirements Status
     :target: https://requires.io/github/aburrell/aacgmv2/requirements/?branch=master
 
-.. |coveralls| image:: https://coveralls.io/repos/aburrell/aacgmv2/badge.svg?branch=master&service=github
-    :alt: Coverage Status
+.. |coveralls| image:: https://coveralls.io/repos/github/aburrell/aacgmv2/badge.svg
+    :alt: Coverage Status (Coveralls)
     :target: https://coveralls.io/github/aburrell/aacgmv2
 
 .. |codecov| image:: https://codecov.io/github/aburrell/aacgmv2/coverage.svg?branch=master
-    :alt: Coverage Status
+    :alt: Coverage Status (CodeCov)
     :target: https://codecov.io/github/aburrell/aacgmv2
 
-.. |landscape| image:: https://landscape.io/github/aburrell/aacgmv2/master/landscape.svg?style=flat
-    :target: https://landscape.io/github/aburrell/aacgmv2/master
-    :alt: Code Quality Status
-
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/b64ee44194f148f5bdb0f00c7cf16ab8
-    :target: https://www.codacy.com/app/aburrell/aacgmv2?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aburrell/aacgmv2&amp;utm_campaign=Badge_Grade
-   :alt: Codacy Code Quality Status
+    :alt: Codacy Code Quality Status
+    :target: https://app.codacy.com/manual/aburrell/aacgmv2/dashboard
 
-.. |codeclimate| image:: https://codeclimate.com/github/aburrell/aacgmv2/badges/gpa.svg
+.. |codeclimate| image:: https://api.codeclimate.com/v1/badges/91f5a91bf3d9ba90cb57/maintainability.svg
    :target: https://codeclimate.com/github/aburrell/aacgmv2
    :alt: CodeClimate Quality Status
+
 .. |version| image:: https://img.shields.io/pypi/v/aacgmv2.svg?style=flat
     :alt: PyPI Package latest release
-    :target: https://pypi.python.org/pypi/aacgmv2
+    :target: https://pypi.org/project/aacgmv2/
 
 .. |downloads| image:: https://img.shields.io/pypi/dm/aacgmv2.svg?style=flat
     :alt: PyPI Package monthly downloads
-    :target: https://pypi.python.org/pypi/aacgmv2
+    :target: https://pypi.org/project/aacgmv2/
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/aacgmv2.svg?style=flat
     :alt: PyPI Wheel
-    :target: https://pypi.python.org/pypi/aacgmv2
+    :target: https://pypi.org/project/aacgmv2/
 
 .. |supported-versions| image:: https://img.shields.io/pypi/pyversions/aacgmv2.svg?style=flat
     :alt: Supported versions
-    :target: https://pypi.python.org/pypi/aacgmv2
+    :target: https://pypi.org/project/aacgmv2/
 
 .. |supported-implementations| image:: https://img.shields.io/pypi/implementation/aacgmv2.svg?style=flat
     :alt: Supported implementations
-    :target: https://pypi.python.org/pypi/aacgmv2
+    :target: https://pypi.org/project/aacgmv2/
 
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/aburrell/aacgmv2/master.svg?style=flat
+.. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/aburrell/aacgmv2/master.svg?style=flat
     :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/aburrell/aacgmv2/
 
-.. |doi| image:: https://zenodo.org/badge/42864636.svg
-   :target: https://zenodo.org/badge/latestdoi/42864636
+.. |doi| image:: https://zenodo.org/badge/doi/10.5281/zenodo.3598705.svg
+   :alt: DOI
+   :target: https://zenodo.org/record/3598705

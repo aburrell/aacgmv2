@@ -7,11 +7,7 @@ recursive-include aacgmv2 *.asc
 recursive-include aacgmv2 *.txt
 recursive-include c_aacgmv2 *.txt
 
-include .bumpversion.cfg
-include .coveragerc
-include .cookiecutterrc
-include .isort.cfg
-include .pylintrc
+include setup.cfg
 
 include AUTHORS.rst
 include CHANGELOG.rst
@@ -21,6 +17,8 @@ include LICENSE-AstAlg.txt
 include README.rst
 include CODE_OF_CONDUCT.md
 
-include tox.ini .travis.yml appveyor.yml .codeclimate.yml .landscape.yaml
+include tox.ini
+include *.yml
+include .*.yml
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib *.dSYM .pytest_cache
