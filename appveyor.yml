@@ -12,88 +12,100 @@ environment:
       PYTHON_HOME: C:\python27
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '32'
+      MINGW_HOME: ''
     - TOXENV: '2.7-buildonly-nocover'
       TOXPYTHON: C:\python27-x64\python.exe
       WINDOWS_SDK_VERSION: v7.0
       PYTHON_HOME: C:\python27-x64
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '64'
+      MINGW_HOME: ''
     - TOXENV: '3.6-buildonly-nocover'
       TOXPYTHON: C:\python36\python.exe
       WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python36
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '32'
+      MINGW_HOME: ''
     - TOXENV: '3.6-buildonly-nocover'
       TOXPYTHON: C:\python36-x64\python.exe
       WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python36-x64
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '64'
+      MINGW_HOME: ''
     - TOXENV: '3.7-buildonly-nocover'
       TOXPYTHON: C:\python37\python.exe
       WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python37
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '32'
+      MINGW_HOME: ''
     - TOXENV: '3.7-buildonly-nocover'
       TOXPYTHON: C:\python37-x64\python.exe
       WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python37-x64
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '64'
+      MINGW_HOME: ''
     - TOXENV: '3.8-buildonly-nocover'
       TOXPYTHON: C:\python38\python.exe
       WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python38
       PYTHON_VERSION: '3.8'
       PYTHON_ARCH: '32'
+      MINGW_HOME: ''
     - TOXENV: '3.8-buildonly-nocover'
       TOXPYTHON: C:\python38-x64\python.exe
       WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python38-x64
       PYTHON_VERSION: '3.8'
       PYTHON_ARCH: '64'
+      MINGW_HOME: ''
     - TOXENV: check
       PYTHON_HOME: C:\Python36
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '32'
+      MINGW_HOME: ''
     - TOXENV: '2.7-nocover'
       TOXPYTHON: C:\python27\python.exe
-
       PYTHON_HOME: C:\python27
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '32'
+      MINGW_HOME: ''
     - TOXENV: '2.7-nocover'
       TOXPYTHON: C:\python27-x64\python.exe
       WINDOWS_SDK_VERSION: v7.0
       PYTHON_HOME: C:\python27-x64
       PYTHON_VERSION: '2.7'
       PYTHON_ARCH: '64'
+      MINGW_HOME: ''
     - TOXENV: '3.6-nocover'
       TOXPYTHON: C:\python36\python.exe
-
       PYTHON_HOME: C:\python36
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '32'
+      MINGW_HOME: ''
     - TOXENV: '3.6-nocover'
       TOXPYTHON: C:\python36-x64\python.exe
       WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python36-x64
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '64'
+      MINGW_HOME: ''
     - TOXENV: '3.7-nocover'
       TOXPYTHON: C:\python37\python.exe
-
       PYTHON_HOME: C:\python37
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '32'
+      MINGW_HOME: ''
     - TOXENV: '3.7-nocover'
       TOXPYTHON: C:\python37-x64\python.exe
       WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python37-x64
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '64'
+      MINGW_HOME: 'C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1'
 init:
   - ps: echo $env:TOXENV
   - ps: ls C:\Python*
@@ -104,7 +116,7 @@ install:
   - '%PYTHON_HOME%\Scripts\pip --version'
   - '%PYTHON_HOME%\Scripts\tox --version'
 test_script:
-  - '%WITH_COMPILER% %PYTHON_HOME%\Scripts\tox'
+  - '%WITH_COMPILER% %PYTHON_HOME%\Scripts\tox %MINGW_HOME%'
 
 after_test:
 ### if tagged commit, build/upload wheel
