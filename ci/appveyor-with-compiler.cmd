@@ -37,7 +37,7 @@ IF "%PYTHON_ARCH%"=="32" (
 
 IF "%PYTHON_VERSION%"=="3.7" (
     IF "%PYTHON_ARCH%"=="64" (
-        SET %PATH%=%PATH%;"C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1"
+        SET %PATH%=%PATH%;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1
     )
     GOTO main
 )
