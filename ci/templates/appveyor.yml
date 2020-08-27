@@ -10,18 +10,16 @@ environment:
     - TOXENV: '{{ var }}-buildonly-nocover'
       TOXPYTHON: C:\python{{ var.replace('.', '') }}\python.exe
       WINDOWS_SDK_VERSION: v7.{{ '1' if config.python[-3] == '3' else '0' }}
-      {% endif %}
       PYTHON_HOME: C:\python{{ var.replace('.', '') }}
       PYTHON_VERSION: '{{ var }}'
       PYTHON_ARCH: '32'
     - TOXENV: '{{ var }}-buildonly-nocover'
       TOXPYTHON: C:\python{{ var.replace('.', '') }}-x64\python.exe
       WINDOWS_SDK_VERSION: v7.{{ '1' if config.python[-3] == '3' else '0' }}
-      {% endif %}
       PYTHON_HOME: C:\{{ var.replace('.', '') }}-x64
       PYTHON_VERSION: '{{ var }}'
       PYTHON_ARCH: '64'
-{% endif %}{% endfor %}
+{% endfor %}
     - TOXENV: check
       PYTHON_HOME: C:\Python37
       PYTHON_VERSION: '3.7'
