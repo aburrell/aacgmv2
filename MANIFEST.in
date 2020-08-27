@@ -8,7 +8,6 @@ recursive-include aacgmv2 *.txt
 recursive-include c_aacgmv2 *.txt
 
 include setup.cfg
-include .bumpversion.cfg
 
 include AUTHORS.rst
 include CHANGELOG.rst
