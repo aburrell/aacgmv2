@@ -67,7 +67,7 @@ Badges
       - |docs|
     * - tests
       - | |travis| |appveyor| |requires|
-        | |codeclimate| |scrutinizer| |codacy|
+        | |codeclimate| |scrutinizer| |codacy| |coveralls|
     * - package
       - | |version| |supported-versions|
         | |wheel| |supported-implementations|
@@ -88,12 +88,12 @@ Badges
     :alt: Requirements Status
     :target: https://requires.io/github/aburrell/aacgmv2/requirements/?branch=master
 
-.. |coveralls| image:: https://coveralls.io/repos/aburrell/aacgmv2/badge.svg?branch=master&service=github
-    :alt: Coverage Status
+.. |coveralls| image:: https://coveralls.io/repos/github/aburrell/aacgmv2/badge.svg
+    :alt: Coverage Status (Coveralls)
     :target: https://coveralls.io/github/aburrell/aacgmv2
 
 .. |codecov| image:: https://codecov.io/github/aburrell/aacgmv2/coverage.svg?branch=master
-    :alt: Coverage Status
+    :alt: Coverage Status (CodeCov)
     :target: https://codecov.io/github/aburrell/aacgmv2
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/b64ee44194f148f5bdb0f00c7cf16ab8
