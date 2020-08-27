@@ -61,8 +61,6 @@ if __name__ == "__main__":
 
     for name in os.listdir(os.path.join("ci", "templates")):
         with open(os.path.join(base_path, name), "w") as fh:
-            fh.write(jinja.get_template(name).render(
-                tox_environments=tox_envs,
-                python_versions=conf["python_versions"]))
+            fh.write(jinja.get_template(name).render(tox_environments=tox_envs))
         print("Wrote {}".format(name))
     print("DONE.")
