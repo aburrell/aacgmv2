@@ -13,7 +13,7 @@ before_install:
   - uname -a
   - lsb_release -a
 install:
-  - pip install tox-travis pytest coveralls numpy pytest-cov
+  - pip install numpy tox-travis coveralls
   - python setup.py install
 script:
   - |
