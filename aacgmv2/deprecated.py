@@ -1,4 +1,4 @@
-# Copyright (C) 2019 NRL 
+# Copyright (C) 2019 NRL
 # Author: Angeline Burrell
 # Disclaimer: This code is under the MIT license, whose details can be found at
 # the root in the LICENSE file
@@ -17,6 +17,7 @@ dep_str = "".join(["Routine no longer deprecated, and so has been moved to ",
                    "new utils module.  Duplicate routine in deprecated module",
                    "will be removed in version 2.6.2"])
 
+
 def subsol(year, doy, utime):
     """Deprecated call to aacgmv2.utils.subsol
     """
@@ -26,6 +27,27 @@ def subsol(year, doy, utime):
 
     return sbsllon, sbsllat
 
+
+def gc2gd_lat(gc_lat):
+    """Convert geocentric latitude to geodetic latitude using WGS84.
+    
+    Move to aacgmv2.utils.gc2gd_lat
+
+    Parameters
+    -----------
+    gc_lat : (array_like or float)
+        Geocentric latitude in degrees N
+
+    Returns
+    ---------
+    gd_lat : (same as input)
+        Geodetic latitude in degrees N
+    """
+    warnings.warn(dep_str, category=FutureWarning)
+
+    wgs84_e2 = 0.006694379990141317 - 1.0
+    return np.rad2deg(-np.arctan(np.tan(np.deg2rad(gc_lat)) / wgs84_e2))
+  
 
 def igrf_dipole_axis(date):
     """Deprecated call to aacgmv2.utils.igrf_dipole_axis

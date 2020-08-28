@@ -4,6 +4,7 @@ from __future__ import division, absolute_import, unicode_literals
 import os
 import pytest
 
+
 @pytest.mark.skip(reason='only works for first import')
 class TestPyEnviron:
     def setup(self):
@@ -40,7 +41,6 @@ class TestPyEnviron:
 
         if igrf_test.find(self.igrf_path) < 0:
             raise AssertionError('BAD IGRF PATH')
-
 
     def test_top_parameters_default(self):
         """Test default module coefficients"""

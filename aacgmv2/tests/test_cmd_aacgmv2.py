@@ -8,6 +8,7 @@ import pytest
 
 import aacgmv2
 
+
 @pytest.mark.xfail
 class TestCmdAACGMV2:
     def setup(self):
@@ -67,8 +68,8 @@ class TestCmdAACGMV2:
         p.wait()
         assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
-        assert data.shape == (3,3)
-        
+        assert data.shape == (3, 3)
+
     def test_convert_single_line(self):
         """ Test the command line with a single line as input """
         p = subprocess.Popen(['python', '-m', 'aacgmv2', 'convert', '-i',
@@ -90,15 +91,14 @@ class TestCmdAACGMV2:
     def test_convert_stdin_stdout(self):
         p = subprocess.Popen(
             'echo 60 15 300 | python -m aacgmv2 convert -d 20150224',
-                             shell=True, stdout=subprocess.PIPE)
+            shell=True, stdout=subprocess.PIPE)
         stdout, _ = p.communicate()
         p.wait()
         assert b'57.48099198 93.52895314' in stdout
 
     @pytest.mark.parametrize('pin,ref',
                              [([], [9.0912, 9.8246, 10.5579]),
-                              (['-v'], [-120.3687, 44.6313, -150.3687])
-                             ])
+                              (['-v'], [-120.3687, 44.6313, -150.3687])])
     def test_convert_mlt_command_line(self, pin, ref):
         """ Test the command line MLT conversion options"""
         p_command = ['python', '-m', 'aacgmv2', 'convert_mlt', '-i',
@@ -110,7 +110,6 @@ class TestCmdAACGMV2:
         assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, ref, rtol=self.rtol)
-
 
     def test_convert_mlt_single_line(self):
         p = subprocess.Popen(['python', '-m', 'aacgmv2', 'convert_mlt', '-i',

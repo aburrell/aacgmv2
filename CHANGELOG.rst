@@ -1,8 +1,16 @@
 
 Changelog
 =========
+2.6.1 (2020-09-XX)
+------------------
+* Updated CI to include python 3.8 everywhere
+* Moved all configuration information to setup.cfg
+* Fixed coveralls implementation
+* Fixed broken links in the documentation
+* Make PEP8 changes
+
 2.6.0 (2020-01-06)
------------------------------------------
+------------------
 * Updated AACGM-v2 coefficients derived using the IGRF13 model
 * Updated IGRF and GUFM1 coefficients using the IGRF13 model
 * Added additional checks to the C code for reading the IGRF13 coefficient file
@@ -91,7 +99,8 @@ Changelog
 1.0.13 (2015-10-30)
 -----------------------------------------
 
-* Correctly convert output of subsol() to geodetic coordinates (the error in MLT/mlon conversion was not large, typically two decimal places and below)
+* Correctly convert output of subsol() to geodetic coordinates (the error in
+  MLT/mlon conversion was not large, typically two decimal places and below)
 
 
 1.0.12 (2015-10-26)
@@ -109,7 +118,8 @@ Changelog
 1.0.10 (2015-10-08)
 -----------------------------------------
 
-* No code changes, debugged automatic build/upload process and needed new version numbers along the way
+* No code changes, debugged automatic build/upload process and needed new
+  version numbers along the way
 
 
 1.0.0 (2015-10-07)

@@ -12,6 +12,7 @@ import warnings
 
 import aacgmv2
 
+
 class TestFutureDepWarning:
     def setup(self):
         # Initialize the routine to be tested
@@ -38,6 +39,7 @@ class TestFutureDepWarning:
                 assert len(wout) == 1
                 assert issubclass(wout[-1].category, FutureWarning)
                 assert "Deprecated keyword" in str(wout[-1].message)
+
 
 class TestDepConvertWarning(TestFutureDepWarning):
     def setup(self):
@@ -96,10 +98,11 @@ class TestConvertLatLon:
         del self.out, self.in_args, self.rtol, self.dtime, self.ddate
 
     @pytest.mark.parametrize('alt,method_code,ref',
-                             [(300, 'TRACE', [58.2268,81.1613,1.0457]),
-                              (3000.0, "G2A|BADIDEA", [64.3578,83.2895,1.4694]),
+                             [(300, 'TRACE', [58.2268, 81.1613, 1.0457]),
+                              (3000.0, "G2A|BADIDEA", [64.3578, 83.2895,
+                                                       1.4694]),
                               (7000.0, "G2A|TRACE|BADIDEA",
-                               [69.3187,85.0845,2.0973])])
+                               [69.3187, 85.0845, 2.0973])])
     def test_convert_latlon(self, alt, method_code, ref):
         """Test single value latlon conversion"""
         self.in_args.extend([alt, self.dtime, method_code])
@@ -110,7 +113,7 @@ class TestConvertLatLon:
         """Test single latlon conversion with date and datetime input"""
         self.in_args.extend([300, self.ddate, 'TRACE'])
         self.out = aacgmv2.convert_latlon(*self.in_args)
-        np.testing.assert_allclose(self.out, [58.2268,81.1613,1.0457],
+        np.testing.assert_allclose(self.out, [58.2268, 81.1613, 1.0457],
                                    rtol=self.rtol)
 
     @pytest.mark.skipif(version_info.major == 2,
@@ -141,6 +144,7 @@ class TestConvertLatLon:
         """Test error return for co-latitudes below -90 for a single value"""
         with pytest.raises(ValueError):
             aacgmv2.convert_latlon(-91, 0, 300, self.dtime)
+
 
 class TestConvertLatLonArr:
     def setup(self):
@@ -254,13 +258,13 @@ class TestConvertLatLonArr:
     def test_convert_latlon_arr_mult_failure(self):
         """Test array latlon conversion for mix type with multi-dim array"""
         with pytest.raises(ValueError):
-            aacgmv2.convert_latlon_arr(np.full(shape=(3,2), fill_value=50.0),
+            aacgmv2.convert_latlon_arr(np.full(shape=(3, 2), fill_value=50.0),
                                        0, 300, self.dtime)
 
     @pytest.mark.parametrize('method_code,alt,ref',
-                             [("BADIDEA", 3000.0, [64.3580,83.2895,1.4694]),
+                             [("BADIDEA", 3000.0, [64.3580, 83.2895, 1.4694]),
                               ("BADIDEA|TRACE", 7000.0,
-                               [69.3187,85.0845,2.0973])])
+                               [69.3187, 85.0845, 2.0973])])
     def test_convert_latlon_arr_badidea(self, method_code, alt, ref):
         """Test array latlon conversion for BADIDEA"""
         self.out = aacgmv2.convert_latlon_arr(self.lat_in[0], self.lon_in[0],
@@ -325,6 +329,7 @@ class TestConvertLatLonArr:
         with pytest.raises(ValueError):
             aacgmv2.convert_latlon_arr([91, 60, -91], 0, 300, self.dtime)
 
+
 class TestGetAACGMCoord:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
@@ -339,10 +344,11 @@ class TestGetAACGMCoord:
         del self.out, self.in_args, self.rtol, self.dtime, self.ddate
 
     @pytest.mark.parametrize('alt,method_code,ref',
-                             [(300, 'TRACE', [58.2268,81.1613,0.1888]),
-                              (3000.0, "G2A|BADIDEA", [64.3578,83.2895,0.3307]),
+                             [(300, 'TRACE', [58.2268, 81.1613, 0.1888]),
+                              (3000.0, "G2A|BADIDEA", [64.3578, 83.2895,
+                                                       0.3307]),
                               (7000.0, "G2A|TRACE|BADIDEA",
-                               [69.3187,85.0845,0.4503])])
+                               [69.3187, 85.0845, 0.4503])])
     def test_get_aacgm_coord(self, alt, method_code, ref):
         """Test single value AACGMV2 calculation, defaults to TRACE"""
         self.in_args.extend([alt, self.dtime, method_code])
@@ -353,7 +359,7 @@ class TestGetAACGMCoord:
         """Test single AACGMV2 calculation with date and datetime input"""
         self.in_args.extend([300.0, self.ddate, 'TRACE'])
         self.out = aacgmv2.get_aacgm_coord(*self.in_args)
-        np.testing.assert_allclose(self.out, [58.2268,81.1613,0.1888],
+        np.testing.assert_allclose(self.out, [58.2268, 81.1613, 0.1888],
                                    rtol=self.rtol)
 
     @pytest.mark.skipif(version_info.major == 2,
@@ -371,7 +377,7 @@ class TestGetAACGMCoord:
         self.in_args.extend([2001, self.dtime, ""])
         self.out = aacgmv2.get_aacgm_coord(*self.in_args)
         assert np.all(np.isnan(np.array(self.out)))
-    
+
     @pytest.mark.parametrize('in_index,value',
                              [(3, None), (0, 91.0), (0, -91.0)])
     def test_get_aacgm_coord_raise_value_error(self, in_index, value):
@@ -392,7 +398,8 @@ class TestGetAACGMCoordArr:
         self.alt_in = [300.0, 300.0]
         self.method = 'TRACE'
         self.out = None
-        self.ref = [[58.22676,59.31847], [81.16135,81.60797], [0.18880,0.21857]]
+        self.ref = [[58.22676, 59.31847], [81.16135, 81.60797],
+                    [0.18880, 0.21857]]
         self.rtol = 1.0e-4
 
     def teardown(self):
@@ -427,7 +434,7 @@ class TestGetAACGMCoordArr:
 
     def test_get_aacgm_coord_arr_list(self):
         """Test array AACGMV2 calculation for list input"""
-        self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in,self.lon_in,
+        self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in, self.lon_in,
                                                self.alt_in, self.dtime,
                                                self.method)
 
@@ -444,7 +451,6 @@ class TestGetAACGMCoordArr:
                                                np.array([self.lon_in[0]]),
                                                np.array([self.alt_in[0]]),
                                                self.dtime, self.method)
-
 
         assert len(self.out) == len(self.ref)
         assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
@@ -477,7 +483,7 @@ class TestGetAACGMCoordArr:
                 for oo in self.out]
 
         for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)  
+            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
 
     def test_get_aacgm_coord_arr_arr_mix(self):
         """Test array AACGMV2 calculation for an array and floats"""
@@ -521,7 +527,6 @@ class TestGetAACGMCoordArr:
         self.out = aacgmv2.get_aacgm_coord_arr([0], [0], [0], self.dtime,
                                                self.method)
 
-        
         assert len(self.out) == len(self.ref)
         assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
         assert np.any([np.isnan(oo) for oo in self.out])
@@ -591,11 +596,10 @@ class TestConvertCode:
 
         assert aacgmv2.convert_str_to_bit(method_code) == self.c_method_code
 
-
     def test_convert_str_to_bit_spaces(self):
         """Test conversion from string code to bit for a code with spaces"""
-        if(aacgmv2.convert_str_to_bit("G2A | trace") !=
-           aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE):
+        if(aacgmv2.convert_str_to_bit("G2A | trace")
+           != aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE):
             raise AssertionError()
 
     def test_convert_str_to_bit_invalid(self):
@@ -632,7 +636,7 @@ class TestMLTConvert:
         self.mlon_list = [270.0, 80.0, -95.0]
         self.mlt_list = [12.0, 25.0, -1.0]
         self.mlon_comp = [-101.670617955439, 93.329382044561, 63.329382044561]
-        self.mlt_comp = [12.7780412 ,  0.11137453, 12.44470786]
+        self.mlt_comp = [12.7780412, 0.11137453, 12.44470786]
         self.diff_comp = np.ones(shape=(3,)) * -10.52411552
 
     def teardown(self):
@@ -653,7 +657,7 @@ class TestMLTConvert:
 
     def test_inv_convert_mlt_single(self):
         """Test MLT inversion for a single value"""
-        for i,mlt in enumerate(self.mlt_list):
+        for i, mlt in enumerate(self.mlt_list):
             self.mlon_out = aacgmv2.convert_mlt(mlt, self.dtime, m2a=True)
             np.testing.assert_almost_equal(self.mlon_out, self.mlon_comp[i],
                                            decimal=4)
@@ -692,7 +696,7 @@ class TestMLTConvert:
 
     def test_mlt_convert_single(self):
         """Test MLT calculation for a single value"""
-        for i,mlon in enumerate(self.mlon_list):
+        for i, mlon in enumerate(self.mlon_list):
             self.mlt_out = aacgmv2.convert_mlt(mlon, self.dtime, m2a=False)
             np.testing.assert_almost_equal(self.mlt_out, self.mlt_comp[i],
                                            decimal=4)
@@ -726,7 +730,7 @@ class TestMLTConvert:
 
     def test_mlt_convert_multidim_failure(self):
         """Test MLT calculation failure for multi-dimensional arrays"""
-        self.mlon_list = np.full(shape=(3,2), fill_value=50.0)
+        self.mlon_list = np.full(shape=(3, 2), fill_value=50.0)
         with pytest.raises(ValueError):
             aacgmv2.convert_mlt(self.mlon_list, self.dtime, m2a=False)
 
@@ -735,6 +739,7 @@ class TestMLTConvert:
         with pytest.raises(ValueError):
             aacgmv2.convert_mlt(self.mlon_list, [self.dtime, self.dtime2],
                                 m2a=False)
+
 
 class TestCoeffPath:
 
@@ -806,13 +811,14 @@ class TestCoeffPath:
         if os.environ['AACGM_v2_DAT_PREFIX'] != "hi":
             raise AssertionError()
 
+
 class TestHeightReturns:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
         self.code = aacgmv2._aacgmv2.A2G
         self.bad_code = aacgmv2._aacgmv2.BADIDEA
         self.trace_code = aacgmv2._aacgmv2.TRACE
-        
+
     def teardown(self):
         """Runs after every method to clean up previous testing"""
         del self.code, self.bad_code
@@ -825,33 +831,33 @@ class TestHeightReturns:
     def test_high_coeff_bad(self):
         """ Test to see that a high altitude for coefficent use fails"""
 
-        assert not aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff+10.0,
+        assert not aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff + 10.0,
                                                self.code)
 
     def test_high_coeff_good(self):
         """ Test a high altitude for coefficent use with badidea """
 
-        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff+10.0,
+        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff + 10.0,
                                            self.bad_code)
 
     def test_low_coeff_good(self):
         """ Test that a normal height succeeds"""
-        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff*0.5,
+        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff * 0.5,
                                            self.code)
 
     def test_high_trace_bad(self):
         """ Test that a high trace height fails"""
-        assert not aacgmv2.wrapper.test_height(aacgmv2.high_alt_trace+10.0,
+        assert not aacgmv2.wrapper.test_height(aacgmv2.high_alt_trace + 10.0,
                                                self.code)
 
     def test_low_trace_good(self):
         """ Test that a high coefficient height succeeds with trace"""
-        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff+10.0,
+        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff + 10.0,
                                            self.trace_code)
 
     def test_high_trace_good(self):
         """ Test that a high trace height succeeds with badidea"""
-        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_trace+10.0,
+        assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_trace + 10.0,
                                            self.bad_code)
 
 
@@ -869,7 +875,6 @@ class TestPyLogging:
         """Runs after every method to clean up previous testing"""
         self.log_capture.close()
         del self.lwarn, self.lout, self.log_capture
-
 
     def test_warning_below_ground(self):
         """ Test that a warning is issued if height < 0 for height test """
@@ -902,10 +907,11 @@ class TestPyLogging:
         """ Test that user is warned they should be using simpler routine"""
         self.lwarn = u"for a single location, consider using"
 
-        aacgmv2.convert_latlon_arr(60, 0, 300, dt.datetime(2015,1,1,0,0,0))
+        aacgmv2.convert_latlon_arr(60, 0, 300, dt.datetime(2015, 1, 1, 0, 0, 0))
         self.lout = self.log_capture.getvalue()
         if self.lout.find(self.lwarn) < 0:
             raise AssertionError()
+
 
 class TestTimeReturns:
     def setup(self):
@@ -913,7 +919,7 @@ class TestTimeReturns:
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
         self.dtime2 = dt.datetime(2015, 1, 1, 10, 10, 10)
         self.ddate = dt.date(2015, 1, 1)
-        
+
     def teardown(self):
         """Runs after every method to clean up previous testing"""
         del self.dtime, self.ddate, self.dtime2
