@@ -116,7 +116,7 @@ def set_coeff_path(igrf_file=False, coeff_prefix=False):
     """Sets the IGRF_COEFF and AACGMV_V2_DAT_PREFIX environment variables.
 
     Parameters
-    -----------
+    ----------
     igrf_file : (str or bool)
         Full filename of IGRF coefficient file, True to use
         aacgmv2.IGRF_COEFFS, or False to leave as is. (default=False)
@@ -159,7 +159,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A", **kwargs):
     """Converts between geomagnetic coordinates and AACGM coordinates
 
     Parameters
-    ------------
+    ----------
     in_lat : (float)
         Input latitude in degrees N (code specifies type of latitude)
     in_lon : (float)
@@ -267,7 +267,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A",
     """Converts between geomagnetic coordinates and AACGM coordinates.
 
     Parameters
-    ------------
+    ----------
     in_lat : (np.ndarray or list or float)
         Input latitude in degrees N (method_code specifies type of latitude)
     in_lon : (np.ndarray or list or float)
@@ -302,7 +302,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A",
     TypeError or RuntimeError if unable to set AACGMV2 datetime
 
     Notes
-    -------
+    -----
     At least one of in_lat, in_lon, and height must be a list or array.
 
     If errors are encountered, NaN or Inf will be included in the input so
@@ -435,7 +435,7 @@ def get_aacgm_coord(glat, glon, height, dtime, method="ALLOWTRACE"):
     """Get AACGM latitude, longitude, and magnetic local time
 
     Parameters
-    ------------
+    ----------
     glat : (float)
         Geodetic latitude in degrees N
     glon : (float)
@@ -479,7 +479,7 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="ALLOWTRACE"):
     """Get AACGM latitude, longitude, and magnetic local time
 
     Parameters
-    ------------
+    ----------
     glat : (np.array or list)
         Geodetic latitude in degrees N
     glon : (np.array or list)
@@ -529,7 +529,7 @@ def convert_str_to_bit(method_code):
     """convert string code specification to bit code specification
 
     Parameters
-    ------------
+    ----------
     method_code : (str)
         Bitwise code for passing options into converter (default=0)
         G2A        - geographic (geodetic) to AACGM-v2
@@ -540,12 +540,12 @@ def convert_str_to_bit(method_code):
         GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
 
     Returns
-    --------
+    -------
     bit_code : (int)
         Method code specification in bits
 
     Notes
-    --------
+    -----
     Multiple codes should be seperated by pipes '|'.  Invalid parts of the code
     are ignored and no code defaults to 'G2A'.
 
@@ -585,7 +585,7 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
         True for geodetic, False for geocentric w/RE=6371.2 (default=False)
 
     Returns
-    --------
+    -------
     bit_code : (int)
         code specification in bits
 
@@ -609,7 +609,7 @@ def convert_mlt(arr, dtime, m2a=False):
     """Converts between magnetic local time (MLT) and AACGM-v2 longitude
 
     Parameters
-    ------------
+    ----------
     arr : (array-like or float)
         Magnetic longitudes (degrees E) or MLTs (hours) to convert
     dtime : (array-like or datetime.datetime)
@@ -619,12 +619,12 @@ def convert_mlt(arr, dtime, m2a=False):
         (False).  (default=False)
 
     Returns
-    --------
+    -------
     out : (np.ndarray)
         Converted coordinates/MLT in degrees E or hours (as appropriate)
 
     Notes
-    -------
+    -----
     This routine previously based on Laundal et al. 2016, but now uses the
     improved calculation available in AACGM-V2.4.
 
