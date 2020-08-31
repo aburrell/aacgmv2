@@ -78,7 +78,7 @@ class TestModuleStructure:
 class TestDepStructure(TestModuleStructure):
     def setup(self):
         self.module_name = None
-        self.reference_list = ["subsol", "igrf_dipole_axis"]
+        self.reference_list = ["subsol", "igrf_dipole_axis", "gc2gd_lat"]
 
     def teardown(self):
         del self.module_name, self.reference_list
@@ -97,7 +97,7 @@ class TestDepStructure(TestModuleStructure):
 class TestUtilsStructure(TestModuleStructure):
     def setup(self):
         self.module_name = None
-        self.reference_list = ["subsol", "igrf_dipole_axis"]
+        self.reference_list = ["subsol", "igrf_dipole_axis", "gc2gd_lat"]
 
     def teardown(self):
         del self.module_name, self.reference_list
