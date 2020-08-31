@@ -155,7 +155,7 @@ def set_coeff_path(igrf_file=False, coeff_prefix=False):
     return
 
 
-def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A", **kwargs):
+def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
     """Converts between geomagnetic coordinates and AACGM coordinates
 
     Parameters
@@ -194,17 +194,6 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A", **kwargs):
     TypeError or RuntimeError if unable to set AACGMV2 datetime
 
     """
-    # Handle deprecated keyword arguments
-    for kw in kwargs.keys():
-        if kw not in ['code']:
-            raise TypeError('unexpected keyword argument [{:s}]'.format(kw))
-        else:
-            method_code = kwargs[kw]
-            warnings.warn("".join(["Deprecated keyword argument 'code' will be",
-                                   " removed in version 2.6.1, please update ",
-                                   "your routine to use 'method_code'"]),
-                          category=FutureWarning)
-
     # Test time
     dtime = test_time(dtime)
 
@@ -262,8 +251,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A", **kwargs):
     return lat_out, lon_out, r_out
 
 
-def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A",
-                       **kwargs):
+def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
     """Converts between geomagnetic coordinates and AACGM coordinates.
 
     Parameters
@@ -312,17 +300,6 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A",
     Multi-dimensional arrays are not allowed.
 
     """
-    # Handle deprecated keyword arguments
-    for kw in kwargs.keys():
-        if kw not in ['code']:
-            raise TypeError('unexpected keyword argument [{:s}]'.format(kw))
-        else:
-            method_code = kwargs[kw]
-            warnings.warn("".join(["Deprecated keyword argument 'code' will be",
-                                   " removed in version 2.6.1, please update ",
-                                   "your routine to use 'method_code'"]),
-                          category=FutureWarning)
-
     # Recast the data as numpy arrays
     in_lat = np.array(in_lat)
     in_lon = np.array(in_lon)
