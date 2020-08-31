@@ -7,6 +7,7 @@ import pytest
 
 from aacgmv2 import utils
 
+
 class TestUtilsAACGMV2:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
@@ -31,3 +32,17 @@ class TestUtilsAACGMV2:
 
         np.testing.assert_allclose(self.out, [0.050281, -0.16057, 0.98574],
                                    rtol=1.0e-4)
+
+    @pytest.mark.parametrize('gc_lat,gc_lat,mult',
+                             [(45.0, 45.1924, False),
+                              ([45.0, -45.0], [45.1924, -45.1924], True),
+                              (np.array([45.0, -45.0]),
+                               np.array([45.1924, -45.1924]), True)])
+    def test_gc2gd_lat(self, gc_lat, gd_lat, mult):
+        """Test the geocentric to geodetic conversion"""
+        self.out = utils.gc2gd_lat(gc_lat)
+
+        if mult:
+            np.testing.assert_allclose(self.out, gd_lat, rtol=1.0e-4)
+        else:
+            np.testing.assert_almost_equal(self.out, gd_lat, decimal=4)
