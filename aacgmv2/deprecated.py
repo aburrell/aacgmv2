@@ -33,7 +33,7 @@ def gc2gd_lat(gc_lat):
     """
     warnings.warn(dep_str, category=FutureWarning)
 
-    gd_lat = gc2gd_lat(gc_lat)
+    gd_lat = aacgmv2.utils.gc2gd_lat(gc_lat)
 
     return gd_lat
 
