@@ -15,7 +15,7 @@ import aacgmv2
 
 dep_str = "".join(["Routine no longer deprecated, and so has been moved to ",
                    "new utils module.  Duplicate routine in deprecated module",
-                   "will be removed in version 2.7.0"])
+                   " will be removed in version 2.7.0"])
 
 
 def subsol(year, doy, utime):
