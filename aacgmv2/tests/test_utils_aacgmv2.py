@@ -33,7 +33,7 @@ class TestUtilsAACGMV2:
         np.testing.assert_allclose(self.out, [0.050281, -0.16057, 0.98574],
                                    rtol=1.0e-4)
 
-    @pytest.mark.parametrize('gc_lat,gc_lat,mult',
+    @pytest.mark.parametrize('gc_lat,gd_lat,mult',
                              [(45.0, 45.1924, False),
                               ([45.0, -45.0], [45.1924, -45.1924], True),
                               (np.array([45.0, -45.0]),
