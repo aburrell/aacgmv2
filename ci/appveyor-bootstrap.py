@@ -54,6 +54,9 @@ def download_file(url, path):
     print("Downloading: {} (into {})".format(url, path))
     progress = 0
 
+    # urllib requires a reporthook function with these three inputs.
+    # This is why the incremental progress variable is defined above
+    # the report funciton.
     def report(count, size, total):
         progress_total = count * size
         if progress_total - progress > 1000000:
