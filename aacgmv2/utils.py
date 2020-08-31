@@ -1,4 +1,4 @@
-# Copyright (C) 2019 NRL 
+# Copyright (C) 2019 NRL
 # Author: Angeline Burrell
 # Disclaimer: This code is under the MIT license, whose details can be found at
 # the root in the LICENSE file
@@ -18,6 +18,28 @@ import datetime as dt
 import numpy as np
 
 import aacgmv2
+
+
+def gc2gd_lat(gc_lat):
+    """Convert geocentric latitude to geodetic latitude using WGS84.
+
+    Parameters
+    -----------
+    gc_lat : (array_like or float)
+        Geocentric latitude in degrees N
+
+    Returns
+    ---------
+    gd_lat : (same as input)
+        Geodetic latitude in degrees N
+
+    """
+
+    wgs84_e2 = 0.006694379990141317 - 1.0
+    gd_lat = np.rad2deg(-np.arctan(np.tan(np.deg2rad(gc_lat)) / wgs84_e2))
+
+    return gd_lat
+
 
 def subsol(year, doy, utime):
     """Finds subsolar geocentric longitude and latitude.
