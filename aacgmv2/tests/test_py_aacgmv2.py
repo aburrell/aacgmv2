@@ -250,7 +250,7 @@ class TestConvertLatLonArr:
     def test_convert_latlon_arr_clip(self):
         """Test array latlon conversion with latitude clipping"""
         self.lat_in = [90.01, -90.01]
-        self.ref = [[83.92716, -75.09343], [170.14714,  17.81937],
+        self.ref = [[83.92716, -75.09343], [170.14714, 17.81937],
                     [1.044819, 1.052667]]
         self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in,
                                               self.alt_in, self.ddate,
