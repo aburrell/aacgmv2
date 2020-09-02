@@ -38,6 +38,16 @@ class TestConvertLatLon:
         self.out = aacgmv2.convert_latlon(*self.in_args)
         np.testing.assert_allclose(self.out, ref, rtol=self.rtol)
 
+    @pytest.mark.parametrize('lat,ref',
+                             [(90.01, [83.927161, 170.1471396, 1.04481923]),
+                              (-90.01, [-74.9814852, 17.990332, 1.044819236])])
+    def test_convert_latlon_high_lat(self, lat, ref):
+        """Test single latlon conversion with latitude just out of bounds"""
+        self.in_args[0] = lat
+        self.in_args.extend([300, self.dtime, 'G2A'])
+        self.out = aacgmv2.convert_latlon(*self.in_args)
+        np.testing.assert_allclose(self.out, ref, rtol=self.rtol)
+
     def test_convert_latlon_datetime_date(self):
         """Test single latlon conversion with date and datetime input"""
         self.in_args.extend([300, self.ddate, 'TRACE'])
@@ -52,27 +62,22 @@ class TestConvertLatLon:
         self.out = aacgmv2.convert_latlon(0, 0, 0, self.dtime, self.in_args[-1])
         assert np.all(np.isnan(np.array(self.out)))
 
-    def test_convert_latlon_time_failure(self):
-        """Test single value latlon conversion with a bad datetime"""
-        self.in_args.extend([300, None, 'TRACE'])
-        with pytest.raises(ValueError):
-            self.out = aacgmv2.convert_latlon(*self.in_args)
-
     def test_convert_latlon_maxalt_failure(self):
         """test convert_latlon failure for an altitude too high for coeffs"""
         self.in_args.extend([2001, self.dtime, ""])
         self.out = aacgmv2.convert_latlon(*self.in_args)
         assert np.all(np.isnan(np.array(self.out)))
 
-    def test_convert_latlon_lat_high_failure(self):
-        """Test error return for co-latitudes above 90 for a single value"""
-        with pytest.raises(ValueError):
-            aacgmv2.convert_latlon(91, 0, 300, self.dtime)
-
-    def test_convert_latlon_lat_low_failure(self):
-        """Test error return for co-latitudes below -90 for a single value"""
-        with pytest.raises(ValueError):
-            aacgmv2.convert_latlon(-91, 0, 300, self.dtime)
+    @pytest.mark.parametrize('in_rep,in_irep,msg',
+                             [(None, 3, "must be a datetime object"),
+                              (91, 0, "unrealistic latitude"),
+                              (-91, 0, "unrealistic latitude"),
+                              (None, 4, "unknown method code")])
+    def test_convert_latlon_failure(self, in_rep, in_irep, msg):
+        self.in_args.extend([300, self.dtime, "G2A"])
+        self.in_args[in_irep] = in_rep
+        with pytest.raises(ValueError, match=msg):
+            aacgmv2.convert_latlon(*self.in_args)
 
 
 class TestConvertLatLonArr:
@@ -184,11 +189,19 @@ class TestConvertLatLonArr:
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
 
-    def test_convert_latlon_arr_mult_failure(self):
-        """Test array latlon conversion for mix type with multi-dim array"""
-        with pytest.raises(ValueError):
-            aacgmv2.convert_latlon_arr(np.full(shape=(3, 2), fill_value=50.0),
-                                       0, 300, self.dtime)
+    def test_convert_latlon_arr_arr_mult_and_single_element(self):
+        """Test latlon conversion for arrays with multiple and single vals"""
+        self.out = aacgmv2.convert_latlon_arr(np.array(self.lat_in),
+                                              np.array([self.lon_in[0]]),
+                                              np.array(self.alt_in),
+                                              self.dtime, self.method)
+
+        assert len(self.out) == len(self.ref)
+        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
+                for i, oo in enumerate(self.out)]
+
+        for i, oo in enumerate(self.out):
+            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
 
     @pytest.mark.parametrize('method_code,alt,ref',
                              [("BADIDEA", 3000.0, [64.3580, 83.2895, 1.4694]),
@@ -221,18 +234,6 @@ class TestConvertLatLonArr:
             assert len(self.out) == len(self.ref)
             assert np.any(~np.isfinite(np.array(self.out)))
 
-    def test_convert_latlon_arr_mult_arr_unequal_failure(self):
-        """Test array latlon conversion for unequal sized arrays"""
-        with pytest.raises(ValueError):
-            aacgmv2.convert_latlon_arr(np.array([[60, 61, 62], [63, 64, 65]]),
-                                       np.array([0, 1]), 300, self.dtime)
-
-    def test_convert_latlon_arr_time_failure(self):
-        """Test array latlon conversion with a bad time"""
-        with pytest.raises(ValueError):
-            aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in, self.alt_in,
-                                       None, self.method)
-
     def test_convert_latlon_arr_datetime_date(self):
         """Test array latlon conversion with date and datetime input"""
         self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in,
@@ -246,6 +247,15 @@ class TestConvertLatLonArr:
         for i, oo in enumerate(self.out):
             np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
 
+    def test_convert_latlon_arr_clip(self):
+        """Test array latlon conversion with latitude clipping"""
+        self.lat_in = [90.01, -90.01]
+        self.ref = [[83.92716, -75.09343], [170.14714,  17.81937],
+                    [1.044819, 1.052667]]
+        self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in,
+                                              self.alt_in, self.ddate,
+                                              self.method)
+
     def test_convert_latlon_arr_maxalt_failure(self):
         """test convert_latlon_arr failure for altitudes too high for coeffs"""
         self.method = ""
@@ -253,10 +263,20 @@ class TestConvertLatLonArr:
                                               [2001], self.dtime, self.method)
         assert np.all(np.isnan(np.array(self.out)))
 
-    def test_convert_latlon_arr_lat_failure(self):
-        """Test error return for co-latitudes above 90 for an array"""
-        with pytest.raises(ValueError):
-            aacgmv2.convert_latlon_arr([91, 60, -91], 0, 300, self.dtime)
+    @pytest.mark.parametrize('in_rep,in_irep,msg',
+                             [(None, 3, "must be a datetime object"),
+                              ([np.full(shape=(3, 2), fill_value=50.0), 0],
+                               [0, 1], "unable to process multi-dimensional"),
+                              ([50, 60, 70], 0, "arrays are mismatched"),
+                              ([[91, 60, -91], 0, 300], [0, 1, 2],
+                               "unrealistic latitude"),
+                              (None, 4, "unknown method code")])
+    def test_convert_latlon_arr_failure(self, in_rep, in_irep, msg):
+        in_args = np.array([self.lat_in, self.lon_in, self.alt_in, self.dtime,
+                            "G2A"], dtype=object)
+        in_args[in_irep] = in_rep
+        with pytest.raises(ValueError, match=msg):
+            aacgmv2.convert_latlon_arr(*in_args)
 
 
 class TestGetAACGMCoord:
@@ -676,69 +696,42 @@ class TestCoeffPath:
         """Runs before every method to create a clean testing setup"""
         os.environ['IGRF_COEFFS'] = "default_igrf"
         os.environ['AACGM_v2_DAT_PREFIX'] = "default_coeff"
-        self.default_igrf = os.environ['IGRF_COEFFS']
-        self.default_coeff = os.environ['AACGM_v2_DAT_PREFIX']
+        self.ref = {"igrf_file": os.environ['IGRF_COEFFS'],
+                    "coeff_prefix": os.environ['AACGM_v2_DAT_PREFIX']}
 
     def teardown(self):
         """Runs after every method to clean up previous testing"""
-        del self.default_igrf, self.default_coeff
+        del self.ref
 
-    def test_set_coeff_path_default(self):
+    @pytest.mark.parametrize("in_coeff",
+                             [({}),
+                              ({"igrf_file": "hi", "coeff_prefix": "bye"}),
+                              ({"igrf_file": True, "coeff_prefix": True}),
+                              ({"coeff_prefix": "hi"}),
+                              ({"igrf_file": "hi"}),
+                              ({"igrf_file": None, "coeff_prefix": None})])
+    def test_set_coeff_path(self, in_coeff):
         """Test the coefficient path setting using default values"""
-        aacgmv2.wrapper.set_coeff_path()
+        # Update the reference key, if needed
+        for ref_key in in_coeff.keys():
+            if in_coeff[ref_key] is True or in_coeff[ref_key] is None:
+                if ref_key == "igrf_file":
+                    self.ref[ref_key] = aacgmv2.IGRF_COEFFS
+                elif ref_key == "coeff_prefix":
+                    self.ref[ref_key] = aacgmv2.AACGM_v2_DAT_PREFIX
+            else:
+                self.ref[ref_key] = in_coeff[ref_key]
 
-        if os.environ['IGRF_COEFFS'] != self.default_igrf:
-            raise AssertionError()
-        if os.environ['AACGM_v2_DAT_PREFIX'] != self.default_coeff:
-            raise AssertionError()
+        # Run the routine
+        aacgmv2.wrapper.set_coeff_path(**in_coeff)
 
-    @classmethod
-    def test_set_coeff_path_string(self):
-        """Test the coefficient path setting using two user specified values"""
-        aacgmv2.wrapper.set_coeff_path("hi", "bye")
-
-        if os.environ['IGRF_COEFFS'] != "hi":
-            raise AssertionError()
-        if os.environ['AACGM_v2_DAT_PREFIX'] != "bye":
-            raise AssertionError()
-
-    @classmethod
-    def test_set_coeff_path_true(self):
-        """Test the coefficient path setting using the module values"""
-        aacgmv2.wrapper.set_coeff_path(True, True)
-
-        if os.environ['IGRF_COEFFS'] != aacgmv2.IGRF_COEFFS:
-            raise AssertionError()
-        if os.environ['AACGM_v2_DAT_PREFIX'] != aacgmv2.AACGM_v2_DAT_PREFIX:
-            raise AssertionError()
-
-    def test_set_only_aacgm_coeff_path(self):
-        """Test the coefficient path setting using a mix of input"""
-        aacgmv2.wrapper.set_coeff_path(coeff_prefix="hi")
-
-        if os.environ['IGRF_COEFFS'] != self.default_igrf:
-            raise AssertionError()
-        if os.environ['AACGM_v2_DAT_PREFIX'] != "hi":
-            raise AssertionError()
-
-    def test_set_only_igrf_coeff_path(self):
-        """Test the coefficient path setting using a mix of input"""
-        aacgmv2.wrapper.set_coeff_path(igrf_file="hi")
-
-        if os.environ['IGRF_COEFFS'] != "hi":
-            raise AssertionError()
-        if os.environ['AACGM_v2_DAT_PREFIX'] != self.default_coeff:
-            raise AssertionError()
-
-    @classmethod
-    def test_set_both_mixed(self):
-        """Test the coefficient path setting using a mix of input"""
-        aacgmv2.wrapper.set_coeff_path(igrf_file=True, coeff_prefix="hi")
-
-        if os.environ['IGRF_COEFFS'] != aacgmv2.IGRF_COEFFS:
-            raise AssertionError()
-        if os.environ['AACGM_v2_DAT_PREFIX'] != "hi":
-            raise AssertionError()
+        # Ensure the environment variables were set correctly
+        if os.environ['IGRF_COEFFS'] != self.ref['igrf_file']:
+            raise AssertionError("{:} != {:}".format(os.environ['IGRF_COEFFS'],
+                                                     self.ref['igrf_file']))
+        if os.environ['AACGM_v2_DAT_PREFIX'] != self.ref['coeff_prefix']:
+            raise AssertionError("{:} != {:}".format(
+                os.environ['AACGM_v2_DAT_PREFIX'], self.ref['coeff_prefix']))
 
 
 class TestHeightReturns:
