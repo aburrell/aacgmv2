@@ -6,8 +6,7 @@ import sys
 import pytest
 
 
-@pytest.mark.skipif(sys.version_info.major == 2,
-                    reason="only works on first import for Python 2")
+@pytest.mark.xfail
 class TestPyEnviron:
     def setup(self):
         self.igrf_path = os.path.join("aacgmv2", "aacgmv2",
