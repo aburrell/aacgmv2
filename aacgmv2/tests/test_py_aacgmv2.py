@@ -449,33 +449,43 @@ class TestGetAACGMCoordArr(TestConvertArray):
 class TestConvertCode:
     def setup(self):
         self.c_method_code = None
+        self.ref_code = None
+        self.out = None
 
     def teardown(self):
-        del self.c_method_code
+        del self.c_method_code, self.ref_code, self.out
+
+    def set_c_code(self):
+        """ Utility test to get desired C method code"""
+        if self.ref_code is not None:
+            self.ref_code = self.ref_code.upper()
+            self.c_method_code = getattr(aacgmv2._aacgmv2, self.ref_code)
+
+    def set_bad_c_code(self):
+        """ Test failure to get bad code name"""
+        self.ref_code = "not_a_valid_code"
+        with pytest.raises(AttributeError):
+            self.set_c_code()
 
     @pytest.mark.parametrize('method_code',
                              [('G2A'), ('A2G'), ('TRACE'), ('ALLOWTRACE'),
                               ('BADIDEA'), ('GEOCENTRIC'), ('g2a')])
-    def test_convert_str_to_bit(self, method_code):
-        """Test conversion from string code to bit"""
-        if hasattr(aacgmv2._aacgmv2, method_code.upper()):
-            self.c_method_code = getattr(aacgmv2._aacgmv2, method_code.upper())
-        else:
-            raise ValueError('cannot find method in C code: {:}'.format(
-                method_code))
+    def test_standard_convert_str_to_bit(self, method_code):
+        """Test conversion from string code to bit for standard cases"""
+        self.ref_code = method_code
+        self.set_c_code()
+        self.out = aacgmv2.convert_str_to_bit(method_code)
 
-        assert aacgmv2.convert_str_to_bit(method_code) == self.c_method_code
+        np.testing.assert_equal(self.out, self.c_method_code)
 
-    def test_convert_str_to_bit_spaces(self):
-        """Test conversion from string code to bit for a code with spaces"""
-        if(aacgmv2.convert_str_to_bit("G2A | trace")
-           != aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE):
-            raise AssertionError()
-
-    def test_convert_str_to_bit_invalid(self):
-        """Test conversion from string code to bit for an invalid code"""
-        if aacgmv2.convert_str_to_bit("ggoogg|") != aacgmv2._aacgmv2.G2A:
-            raise AssertionError()
+    @pytest.mark.parametrize('str_code,bit_ref',
+                             [("G2A | trace",
+                               aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE),
+                              ("ggoogg|", aacgmv2._aacgmv2.G2A)])
+    def test_non_standard_convert_str_to_bit(self, str_code, bit_ref):
+        """Test conversion from string code to bit for non-standard cases"""
+        self.out = aacgmv2.convert_str_to_bit(str_code)
+        np.testing.assert_equal(self.out, bit_ref)
 
     @pytest.mark.parametrize('bool_dict,method_code',
                              [({}, 'G2A'), ({'a2g': True}, 'A2G'),
@@ -485,13 +495,11 @@ class TestConvertCode:
                               ({'geocentric': True}, 'GEOCENTRIC')])
     def test_convert_bool_to_bit(self, bool_dict, method_code):
         """Test conversion from Boolean code to bit"""
-        if hasattr(aacgmv2._aacgmv2, method_code.upper()):
-            self.c_method_code = getattr(aacgmv2._aacgmv2, method_code.upper())
-        else:
-            raise ValueError('cannot find method in C code: {:}'.format(
-                method_code))
+        self.ref_code = method_code
+        self.set_c_code()
+        self.out = aacgmv2.convert_bool_to_bit(**bool_dict)
 
-        assert aacgmv2.convert_bool_to_bit(**bool_dict) == self.c_method_code
+        np.testing.assert_equal(self.out, self.c_method_code)
 
 
 class TestMLTConvert:
