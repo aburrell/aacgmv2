@@ -12,6 +12,8 @@ Changelog
 * Moved all configuration information to setup.cfg
 * Fixed coveralls implementation
 * Fixed broken links in the documentation
+* Removed unused code analysis tools
+* Improved unit test coverage
 * Make PEP8 changes
 
 
