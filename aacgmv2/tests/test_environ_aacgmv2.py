@@ -2,10 +2,12 @@
 from __future__ import division, absolute_import, unicode_literals
 
 import os
+import sys
 import pytest
 
 
-@pytest.mark.skip(reason='only works for first import')
+@pytest.mark.skipif(sys.version_info.major == 2,
+                    reason="only works on first import for Python 2")
 class TestPyEnviron:
     def setup(self):
         self.igrf_path = os.path.join("aacgmv2", "aacgmv2",
@@ -52,45 +54,25 @@ class TestPyEnviron:
         self.test_good_coeff(aacgmv2.AACGM_v2_DAT_PREFIX, aacgmv2.IGRF_COEFFS)
 
         assert not aacgmv2.__reset_warn__
+        del sys.modules["aacgmv2"]
         del aacgmv2
 
-    def test_top_parameters_reset_aacgm(self):
-        """Test module reset of AACGM coefficient path"""
+    @pytest.mark.parametrize("evars", [(["AACGM_v2_DAT_PREFIX"]),
+                                       (["AACGM_v2_DAT_PREFIX", "IGRF_COEFFS"]),
+                                       (["IGRF_COEFFS"])])
+    def test_top_parameters_reset_evar_to_specified(self, evars):
+        """Test module reset of AACGM environment variables"""
 
-        self.reset_evar(evar=['AACGM_v2_DAT_PREFIX'])
-        os.environ['AACGM_v2_DAT_PREFIX'] = 'test_prefix'
+        self.reset_evar(evar=evars)
+        for i, evar in enumerate(evars):
+            os.environ[evar] = 'test_prefix{:d}'.format(i)
 
         import aacgmv2
 
         self.test_good_coeff(aacgmv2.AACGM_v2_DAT_PREFIX, aacgmv2.IGRF_COEFFS)
 
         assert aacgmv2.__reset_warn__
-        del aacgmv2
-
-    def test_top_parameters_reset_igrf(self):
-        """Test module reset of IGRF coefficient path"""
-
-        self.reset_evar(evar=['IGRF_COEFFS'])
-        os.environ['IGRF_COEFFS'] = 'test_prefix'
-
-        import aacgmv2
-
-        self.test_good_coeff(aacgmv2.AACGM_v2_DAT_PREFIX, aacgmv2.IGRF_COEFFS)
-
-        assert aacgmv2.__reset_warn__
-        del aacgmv2
-
-    def test_top_parameters_reset_both(self):
-        """Test module reset of both coefficient paths"""
-
-        os.environ['AACGM_v2_DAT_PREFIX'] = 'test_prefix1'
-        os.environ['IGRF_COEFFS'] = 'test_prefix2'
-
-        import aacgmv2
-
-        self.test_good_coeff(aacgmv2.AACGM_v2_DAT_PREFIX, aacgmv2.IGRF_COEFFS)
-
-        assert aacgmv2.__reset_warn__
+        del sys.modules["aacgmv2"]
         del aacgmv2
 
     def test_top_parameters_set_same(self):
@@ -108,4 +90,5 @@ class TestPyEnviron:
         self.test_good_coeff(aacgmv2.AACGM_v2_DAT_PREFIX, aacgmv2.IGRF_COEFFS)
 
         assert not aacgmv2.__reset_warn__
+        del sys.modules["aacgmv2"]
         del aacgmv2
