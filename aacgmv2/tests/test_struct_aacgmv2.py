@@ -190,7 +190,8 @@ class TestTopStructure(TestModuleStructure):
 
     @pytest.mark.parametrize("env_var,tst_var",
                              [(aacgmv2.AACGM_v2_DAT_PREFIX,
-                               "aacgm_coeffs/aacgm_coeffs-13-"),
+                               os.path.join("aacgm_coeffs",
+                                            "aacgm_coeffs-13-")),
                               (aacgmv2.IGRF_COEFFS, "magmodel_1590-2020.txt")])
     def test_top_parameters(self, env_var, tst_var):
         """Test module constants"""
