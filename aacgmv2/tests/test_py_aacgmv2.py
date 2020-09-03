@@ -13,6 +13,27 @@ import warnings
 import aacgmv2
 
 
+class TestConvertArray:
+    def setup(self):
+        self.out = None
+        self.ref = None
+        self.rtol = 1.0e-4
+
+    def teardown(self):
+        del self.out, self.ref, self.rtol
+
+    def evaluate_output(self):
+        """ Function used to evaluate convert_latlon_arr output"""
+        if self.out is not None:
+            np.testing.assert_equal(len(self.out), len(self.ref))
+            for i, oo in enumerate(self.out):
+                if not isinstance(oo, np.ndarray):
+                    raise TypeError("output value is not a numpy array")
+    
+                np.testing.assert_equal(len(oo), len(self.ref[i]))
+                np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
+
+
 class TestConvertLatLon:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
@@ -80,7 +101,7 @@ class TestConvertLatLon:
             aacgmv2.convert_latlon(*self.in_args)
 
 
-class TestConvertLatLonArr:
+class TestConvertLatLonArr(TestConvertArray):
     def setup(self):
         """Runs before every method to create a clean testing setup"""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
@@ -103,38 +124,8 @@ class TestConvertLatLonArr:
         self.out = aacgmv2.convert_latlon_arr(self.lat_in[0], self.lon_in[0],
                                               self.alt_in[0], self.dtime,
                                               self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
-
-    def test_convert_latlon_arr_list_single(self):
-        """Test array latlon conversion for list input of single values"""
-        self.out = aacgmv2.convert_latlon_arr([self.lat_in[0]],
-                                              [self.lon_in[0]],
-                                              [self.alt_in[0]], self.dtime,
-                                              self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
-
-    def test_convert_latlon_arr_list(self):
-        """Test array latlon conversion for list input"""
-        self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in,
-                                              self.alt_in, self.dtime,
-                                              self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
-                for i, oo in enumerate(self.out)]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
+        self.ref = [[rr[0]] for rr in self.ref]
+        self.evaluate_output()
 
     def test_convert_latlon_arr_arr_single(self):
         """Test array latlon conversion for array input of shape (1,)"""
@@ -142,12 +133,24 @@ class TestConvertLatLonArr:
                                               np.array([self.lon_in[0]]),
                                               np.array([self.alt_in[0]]),
                                               self.dtime, self.method)
+        self.ref = [[rr[0]] for rr in self.ref]
+        self.evaluate_output()
 
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
+    def test_convert_latlon_arr_list_single(self):
+        """Test array latlon conversion for list input of single values"""
+        self.out = aacgmv2.convert_latlon_arr([self.lat_in[0]],
+                                              [self.lon_in[0]],
+                                              [self.alt_in[0]], self.dtime,
+                                              self.method)
+        self.ref = [[rr[0]] for rr in self.ref]
+        self.evaluate_output()
 
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
+    def test_convert_latlon_arr_list(self):
+        """Test array latlon conversion for list input"""
+        self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in,
+                                              self.alt_in, self.dtime,
+                                              self.method)
+        self.evaluate_output()
 
     def test_convert_latlon_arr_arr(self):
         """Test array latlon conversion for array input"""
@@ -155,39 +158,21 @@ class TestConvertLatLonArr:
                                               np.array(self.lon_in),
                                               np.array(self.alt_in),
                                               self.dtime, self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
-                for i, oo in enumerate(self.out)]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
+        self.evaluate_output()
 
     def test_convert_latlon_arr_list_mix(self):
         """Test array latlon conversion for mixed types with list"""
         self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in[0],
                                               self.alt_in[0], self.dtime,
                                               self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
-                for i, oo in enumerate(self.out)]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
+        self.evaluate_output()
 
     def test_convert_latlon_arr_arr_mix(self):
         """Test array latlon conversion for mixed type with an array"""
         self.out = aacgmv2.convert_latlon_arr(np.array(self.lat_in),
                                               self.lon_in[0], self.alt_in[0],
                                               self.dtime, self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
-                for i, oo in enumerate(self.out)]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
+        self.evaluate_output()
 
     def test_convert_latlon_arr_arr_mult_and_single_element(self):
         """Test latlon conversion for arrays with multiple and single vals"""
@@ -195,28 +180,19 @@ class TestConvertLatLonArr:
                                               np.array([self.lon_in[0]]),
                                               np.array(self.alt_in),
                                               self.dtime, self.method)
+        self.evaluate_output()
 
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
-                for i, oo in enumerate(self.out)]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
-
-    @pytest.mark.parametrize('method_code,alt,ref',
-                             [("BADIDEA", 3000.0, [64.3580, 83.2895, 1.4694]),
+    @pytest.mark.parametrize('method_code,alt,local_ref',
+                             [("BADIDEA", 3000.0,
+                               [[64.3580], [83.2895], [1.4694]]),
                               ("BADIDEA|TRACE", 7000.0,
-                               [69.3187, 85.0845, 2.0973])])
-    def test_convert_latlon_arr_badidea(self, method_code, alt, ref):
+                               [[69.3187], [85.0845], [2.0973]])])
+    def test_convert_latlon_arr_badidea(self, method_code, alt, local_ref):
         """Test array latlon conversion for BADIDEA"""
         self.out = aacgmv2.convert_latlon_arr(self.lat_in[0], self.lon_in[0],
                                               [alt], self.dtime, method_code)
-
-        assert len(self.out) == len(ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, [ref[i]], rtol=self.rtol)
+        self.ref = local_ref
+        self.evaluate_output()
 
     @pytest.mark.skipif(version_info.major == 2,
                         reason='Not raised in Python 2')
@@ -231,7 +207,7 @@ class TestConvertLatLonArr:
             self.out = aacgmv2.convert_latlon_arr([0], [0], [0], self.dtime, "")
 
             # Test the output
-            assert len(self.out) == len(self.ref)
+            np.testing.assert_equal(len(self.out), len(self.ref))
             assert np.any(~np.isfinite(np.array(self.out)))
 
     def test_convert_latlon_arr_datetime_date(self):
@@ -239,22 +215,17 @@ class TestConvertLatLonArr:
         self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in,
                                               self.alt_in, self.ddate,
                                               self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.ref[i])
-                for i, oo in enumerate(self.out)]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
+        self.evaluate_output()
 
     def test_convert_latlon_arr_clip(self):
         """Test array latlon conversion with latitude clipping"""
         self.lat_in = [90.01, -90.01]
-        self.ref = [[83.92716, -75.09343], [170.14714, 17.81937],
-                    [1.044819, 1.052667]]
+        self.ref = [[83.92352053, -74.98110552], [170.1381271, 17.98164313],
+                    [1.04481924, 1.04481924]]
         self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in,
                                               self.alt_in, self.ddate,
                                               self.method)
+        self.evaluate_output()
 
     def test_convert_latlon_arr_maxalt_failure(self):
         """test convert_latlon_arr failure for altitudes too high for coeffs"""
@@ -337,7 +308,7 @@ class TestGetAACGMCoord:
             self.out = aacgmv2.get_aacgm_coord(*self.in_args)
 
 
-class TestGetAACGMCoordArr:
+class TestGetAACGMCoordArr(TestConvertArray):
     def setup(self):
         """Runs before every method to create a clean testing setup"""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
@@ -361,12 +332,8 @@ class TestGetAACGMCoordArr:
         self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in[0], self.lon_in[0],
                                                self.alt_in[0], self.dtime,
                                                self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
+        self.ref = [[rr[0]] for rr in self.ref]
+        self.evaluate_output()
 
     def test_get_aacgm_coord_arr_list_single(self):
         """Test array AACGMV2 calculation for list input of single values"""
@@ -374,25 +341,8 @@ class TestGetAACGMCoordArr:
                                                [self.lon_in[0]],
                                                [self.alt_in[0]], self.dtime,
                                                self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
-
-    def test_get_aacgm_coord_arr_list(self):
-        """Test array AACGMV2 calculation for list input"""
-        self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in, self.lon_in,
-                                               self.alt_in, self.dtime,
-                                               self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
-                for oo in self.out]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
+        self.ref = [[rr[0]] for rr in self.ref]
+        self.evaluate_output()
 
     def test_get_aacgm_coord_arr_arr_single(self):
         """Test array AACGMV2 calculation for array with a single value"""
@@ -400,12 +350,15 @@ class TestGetAACGMCoordArr:
                                                np.array([self.lon_in[0]]),
                                                np.array([self.alt_in[0]]),
                                                self.dtime, self.method)
+        self.ref = [[rr[0]] for rr in self.ref]
+        self.evaluate_output()
 
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, [self.ref[i][0]], rtol=self.rtol)
+    def test_get_aacgm_coord_arr_list(self):
+        """Test array AACGMV2 calculation for list input"""
+        self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in, self.lon_in,
+                                               self.alt_in, self.dtime,
+                                               self.method)
+        self.evaluate_output()
 
     def test_get_aacgm_coord_arr_arr(self):
         """Test array AACGMV2 calculation for an array"""
@@ -413,47 +366,21 @@ class TestGetAACGMCoordArr:
                                                np.array(self.lon_in),
                                                np.array(self.alt_in),
                                                self.dtime, self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
-                for oo in self.out]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
+        self.evaluate_output()
 
     def test_get_aacgm_coord_arr_list_mix(self):
         """Test array AACGMV2 calculation for a list and floats"""
         self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in, self.lon_in[0],
                                                self.alt_in[0], self.dtime,
                                                self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
-                for oo in self.out]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
+        self.evaluate_output()
 
     def test_get_aacgm_coord_arr_arr_mix(self):
         """Test array AACGMV2 calculation for an array and floats"""
         self.out = aacgmv2.get_aacgm_coord_arr(np.array(self.lat_in),
                                                self.lon_in[0], self.alt_in[0],
                                                self.dtime, self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
-                for oo in self.out]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
-
-    def test_get_aacgm_coord_arr_mult_failure(self):
-        """Test aacgm_coord_arr failure with multi-dim array input"""
-
-        with pytest.raises(ValueError):
-            (self.mlat_out, self.mlon_out,
-             self.mlt_out) = aacgmv2.get_aacgm_coord_arr(
-                 np.array([[60, 61, 62], [63, 64, 65]]), 0, 300, self.dtime)
+        self.evaluate_output()
 
     def test_get_aacgm_coord_arr_badidea(self):
         """Test array AACGMV2 calculation for BADIDEA"""
@@ -461,13 +388,8 @@ class TestGetAACGMCoordArr:
         self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in[0], self.lon_in[0],
                                                [3000.0], self.dtime,
                                                self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
-
-        self.ref = [64.3481, 83.2885, 0.3306]
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
+        self.ref = [[64.3481], [83.2885], [0.3306]]
+        self.evaluate_output()
 
     @pytest.mark.skipif(version_info.major == 2,
                         reason='Not raised in Python 2')
@@ -476,9 +398,17 @@ class TestGetAACGMCoordArr:
         self.out = aacgmv2.get_aacgm_coord_arr([0], [0], [0], self.dtime,
                                                self.method)
 
-        assert len(self.out) == len(self.ref)
+        np.testing.assert_equal(len(self.out), len(self.ref))
         assert [isinstance(oo, np.ndarray) and len(oo) == 1 for oo in self.out]
         assert np.any([np.isnan(oo) for oo in self.out])
+
+    def test_get_aacgm_coord_arr_mult_failure(self):
+        """Test aacgm_coord_arr failure with multi-dim array input"""
+
+        with pytest.raises(ValueError):
+            (self.mlat_out, self.mlon_out,
+             self.mlt_out) = aacgmv2.get_aacgm_coord_arr(
+                 np.array([[60, 61, 62], [63, 64, 65]]), 0, 300, self.dtime)
 
     def test_get_aacgm_coord_arr_time_failure(self):
         """Test array AACGMV2 calculation with a bad time"""
@@ -503,13 +433,7 @@ class TestGetAACGMCoordArr:
         self.ref = aacgmv2.get_aacgm_coord_arr(self.lat_in, self.lon_in,
                                                self.alt_in, self.dtime,
                                                self.method)
-
-        assert len(self.out) == len(self.ref)
-        assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
-                for oo in self.out]
-
-        for i, oo in enumerate(self.out):
-            np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
+        self.evaluate_output()
 
     def test_get_aacgm_coord_arr_maxalt_failure(self):
         """test aacgm_coord_arr failure for an altitude too high for coeff"""
@@ -519,7 +443,7 @@ class TestGetAACGMCoordArr:
                                                self.alt_in, self.dtime,
                                                self.method)
 
-        assert len(self.out) == len(self.ref)
+        np.testing.assert_equal(len(self.out), len(self.ref))
         assert [isinstance(oo, np.ndarray) and len(oo) == len(self.lat_in)
                 for oo in self.out]
         assert np.all(np.isnan(np.array(self.out)))

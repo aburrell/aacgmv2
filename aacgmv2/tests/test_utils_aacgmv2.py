@@ -29,7 +29,7 @@ class TestUtilsAACGMV2:
     def test_subsol_raises_time_range(self, year):
         """Test the routine failure for out-of-range dates"""
         with pytest.raises(ValueError, match="subsol valid between 1601-2100"):
-            utils.subsol(year, 1, 0.0)
+            self.out = utils.subsol(year, 1, 0.0)
 
     @pytest.mark.parametrize('year,ref',
                              [(1500, [0.141408, -0.48357, 0.86381]),

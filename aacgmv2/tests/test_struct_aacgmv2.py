@@ -2,6 +2,7 @@
 from __future__ import division, absolute_import, unicode_literals
 
 import logging
+import numpy as np
 import os
 import pkgutil
 import pytest
@@ -188,31 +189,40 @@ class TestTopStructure(TestModuleStructure):
                                "deprecated", "__main__"]
         self.test_modules()
 
-    @pytest.mark.parametrize("env_var,tst_var",
-                             [(aacgmv2.AACGM_v2_DAT_PREFIX,
-                               os.path.join("aacgm_coeffs",
-                                            "aacgm_coeffs-13-")),
-                              (aacgmv2.IGRF_COEFFS, "magmodel_1590-2020.txt")])
-    def test_top_parameters(self, env_var, tst_var):
+
+class TestTopVariables:
+    def setup(self):
+        self.alt_limits = {"coeff": 2000.0, "trace": 6378.0}
+        self.coeff_file = {"coeff": os.path.join("aacgmv2", "aacgmv2",
+                                                 "aacgm_coeffs",
+                                                 "aacgm_coeffs-13-"),
+                           "igrf": os.path.join("aacgmv2", "aacgmv2",
+                                                "magmodel_1590-2020.txt")}
+
+    def teardown(self):
+        del self.alt_limits, self.coeff_file
+
+    @pytest.mark.parametrize("env_var,fkey",
+                             [(aacgmv2.AACGM_v2_DAT_PREFIX, "coeff"),
+                              (aacgmv2.IGRF_COEFFS, "igrf")])
+    def test_top_parameters(self, env_var, fkey):
         """Test module constants"""
 
-        tst_var = os.path.join("aacgmv2", "aacgmv2", tst_var)
-        if env_var.find(tst_var) < 0:
-            raise AssertionError(
-                "Bad env variable: {:} not {:}".format(tst_var, env_var))
+        if env_var.find(self.coeff_file[fkey]) < 0:
+            raise AssertionError("Bad env variable: {:} not {:}".format(
+                self.coeff_file[fkey], env_var))
 
     @pytest.mark.parametrize("alt_var,alt_ref",
-                             [(aacgmv2.high_alt_coeff, 2000.0),
-                              (aacgmv2.high_alt_trace, 6378.0)])
+                             [(aacgmv2.high_alt_coeff, "coeff"),
+                              (aacgmv2.high_alt_trace, "trace")])
     def test_high_alt_variables(self, alt_var, alt_ref):
         """ Test that module altitude limits exist and are appropriate"""
 
-        if not isinstance(alt_var, float):
+        if not isinstance(alt_var, type(self.alt_limits[alt_ref])):
             raise TypeError("Altitude limit variable isn't a float")
 
-        if alt_var != alt_ref:
-            raise ValueError("Altitude limit variable {:f} != {:f}".format(
-                alt_var, alt_ref))
+        np.testing.assert_almost_equal(alt_var, self.alt_limits[alt_ref],
+                                       decimal=4)
 
     def test_module_logger(self):
         """ Test the module logger instance"""
