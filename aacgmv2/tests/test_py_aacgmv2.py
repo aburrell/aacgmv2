@@ -22,14 +22,17 @@ class TestConvertArray:
     def teardown(self):
         del self.out, self.ref, self.rtol
 
-    def evaluate_output(self):
+    def evaluate_output(self, ind=None):
         """ Function used to evaluate convert_latlon_arr output"""
         if self.out is not None:
+            if ind is not None:
+                self.ref = [[rr[ind]] for rr in self.ref]
+
             np.testing.assert_equal(len(self.out), len(self.ref))
             for i, oo in enumerate(self.out):
                 if not isinstance(oo, np.ndarray):
                     raise TypeError("output value is not a numpy array")
-    
+
                 np.testing.assert_equal(len(oo), len(self.ref[i]))
                 np.testing.assert_allclose(oo, self.ref[i], rtol=self.rtol)
 
@@ -124,8 +127,7 @@ class TestConvertLatLonArr(TestConvertArray):
         self.out = aacgmv2.convert_latlon_arr(self.lat_in[0], self.lon_in[0],
                                               self.alt_in[0], self.dtime,
                                               self.method)
-        self.ref = [[rr[0]] for rr in self.ref]
-        self.evaluate_output()
+        self.evaluate_output(ind=0)
 
     def test_convert_latlon_arr_arr_single(self):
         """Test array latlon conversion for array input of shape (1,)"""
@@ -133,8 +135,7 @@ class TestConvertLatLonArr(TestConvertArray):
                                               np.array([self.lon_in[0]]),
                                               np.array([self.alt_in[0]]),
                                               self.dtime, self.method)
-        self.ref = [[rr[0]] for rr in self.ref]
-        self.evaluate_output()
+        self.evaluate_output(ind=0)
 
     def test_convert_latlon_arr_list_single(self):
         """Test array latlon conversion for list input of single values"""
@@ -142,8 +143,7 @@ class TestConvertLatLonArr(TestConvertArray):
                                               [self.lon_in[0]],
                                               [self.alt_in[0]], self.dtime,
                                               self.method)
-        self.ref = [[rr[0]] for rr in self.ref]
-        self.evaluate_output()
+        self.evaluate_output(ind=0)
 
     def test_convert_latlon_arr_list(self):
         """Test array latlon conversion for list input"""
@@ -332,8 +332,7 @@ class TestGetAACGMCoordArr(TestConvertArray):
         self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in[0], self.lon_in[0],
                                                self.alt_in[0], self.dtime,
                                                self.method)
-        self.ref = [[rr[0]] for rr in self.ref]
-        self.evaluate_output()
+        self.evaluate_output(ind=0)
 
     def test_get_aacgm_coord_arr_list_single(self):
         """Test array AACGMV2 calculation for list input of single values"""
@@ -341,8 +340,7 @@ class TestGetAACGMCoordArr(TestConvertArray):
                                                [self.lon_in[0]],
                                                [self.alt_in[0]], self.dtime,
                                                self.method)
-        self.ref = [[rr[0]] for rr in self.ref]
-        self.evaluate_output()
+        self.evaluate_output(ind=0)
 
     def test_get_aacgm_coord_arr_arr_single(self):
         """Test array AACGMV2 calculation for array with a single value"""
@@ -350,8 +348,7 @@ class TestGetAACGMCoordArr(TestConvertArray):
                                                np.array([self.lon_in[0]]),
                                                np.array([self.alt_in[0]]),
                                                self.dtime, self.method)
-        self.ref = [[rr[0]] for rr in self.ref]
-        self.evaluate_output()
+        self.evaluate_output(ind=0)
 
     def test_get_aacgm_coord_arr_list(self):
         """Test array AACGMV2 calculation for list input"""
