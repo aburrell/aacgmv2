@@ -60,6 +60,10 @@ def subsol(year, doy, utime):
     sbsllat : (float)
         Subsolar latitude in degrees N for the given date/time
 
+    Raises
+    ------
+    ValueError if year is out of range
+
     Notes
     -----
     Based on formulas in Astronomical Almanac for the year 1996, p. C24.
@@ -81,15 +85,13 @@ def subsol(year, doy, utime):
     # Convert from 4 digit year to 2 digit year
     yr2 = year - 2000
 
-    if year >= 2101:
-        aacgmv2.logger.error('subsol invalid after 2100. Input year is:', year)
+    if year >= 2101 or year <= 1600:
+        raise ValueError('subsol valid between 1601-2100. Input year is:', year)
 
     # Determine if this year is a leap year
     nleap = np.floor((year - 1601) / 4)
     nleap = nleap - 99
     if year <= 1900:
-        if year <= 1600:
-            print('subsol.py: subsol invalid before 1601. Input year is:', year)
         ncent = np.floor((year - 1601) / 100)
         ncent = 3 - ncent
         nleap = nleap + ncent
@@ -164,7 +166,7 @@ def igrf_dipole_axis(date):
     # get time in years, as float:
     year = date.year
     doy = date.timetuple().tm_yday
-    year_days = int(dt.date(date.year, 12, 31).strftime("%j"))
+    year_days = dt.date(date.year, 12, 31).timetuple().tm_yday
     year = year + doy / year_days
 
     # read the IGRF coefficients
@@ -189,7 +191,7 @@ def igrf_dipole_axis(date):
     h11 = np.array(h11[:-1], dtype=float)
 
     # get the gauss coefficient at given time:
-    if year <= years[-1]:
+    if year <= years[-1] and year >= years[0]:
         # regular interpolation
         g10 = np.interp(year, years, g10)
         g11 = np.interp(year, years, g11)

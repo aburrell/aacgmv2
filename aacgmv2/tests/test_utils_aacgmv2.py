@@ -11,27 +11,35 @@ from aacgmv2 import utils
 class TestUtilsAACGMV2:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
-        self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
+        self.rtol = 1.0e-4
         self.out = None
 
     def teardown(self):
         """Runs after every method to clean up previous testing"""
-        del self.dtime, self.out
+        del self.rtol, self.out
 
-    def test_subsol(self):
+    @pytest.mark.parametrize('year,ref', [(1880, [-179.1494, -23.0801]),
+                                          (2015, [-179.2004, -23.0431])])
+    def test_subsol(self, year, ref):
         """Test the subsolar calculation"""
-        self.out = utils.subsol(self.dtime.year, int(self.dtime.strftime("%j")),
-                                self.dtime.hour * 3600.0
-                                + self.dtime.minute * 60.0 + self.dtime.second)
+        self.out = utils.subsol(year, 1, 0.0)
+        np.testing.assert_allclose(self.out, ref, rtol=self.rtol)
 
-        np.testing.assert_allclose(self.out, [-179.2004, -23.0431], rtol=1.0e-4)
+    @pytest.mark.parametrize('year', [(1500), (2110)])
+    def test_subsol_raises_time_range(self, year):
+        """Test the routine failure for out-of-range dates"""
+        with pytest.raises(ValueError, match="subsol valid between 1601-2100"):
+            utils.subsol(year, 1, 0.0)
 
-    def test_igrf_dipole_axis(self):
+    @pytest.mark.parametrize('year,ref',
+                             [(1500, [0.141408, -0.48357, 0.86381]),
+                              (2015, [0.050281, -0.16057, 0.98574]),
+                              (2110, [0.027069, -0.08006, 0.99642])])
+    def test_igrf_dipole_axis(self, year, ref):
         """Test the IGRF dipole axis calculation"""
-        self.out = utils.igrf_dipole_axis(self.dtime)
+        self.out = utils.igrf_dipole_axis(dt.datetime(year, 1, 1))
 
-        np.testing.assert_allclose(self.out, [0.050281, -0.16057, 0.98574],
-                                   rtol=1.0e-4)
+        np.testing.assert_allclose(self.out, ref, rtol=self.rtol)
 
     @pytest.mark.parametrize('gc_lat,gd_lat,mult',
                              [(45.0, 45.1924, False),
@@ -43,6 +51,6 @@ class TestUtilsAACGMV2:
         self.out = utils.gc2gd_lat(gc_lat)
 
         if mult:
-            np.testing.assert_allclose(self.out, gd_lat, rtol=1.0e-4)
+            np.testing.assert_allclose(self.out, gd_lat, rtol=self.rtol)
         else:
             np.testing.assert_almost_equal(self.out, gd_lat, decimal=4)
