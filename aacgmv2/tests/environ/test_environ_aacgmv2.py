@@ -43,6 +43,12 @@ class TestPyEnviron:
         if igrf_test.find(self.igrf_path) < 0:
             raise AssertionError('BAD IGRF PATH')
 
+    @pytest.mark.parametrize("coeff", [("aacgm_test"), ("igrf_test")])
+    def test_bad_coeff(self, coeff):
+        """ Test the failure of the class routine 'test_good_coeff'"""
+        with pytest.raises(AssertionError, match="BAD"):
+            self.test_good_coeff(**{coeff: "bad path"})
+
     def test_top_parameters_default(self):
         """Test default module coefficients"""
 
