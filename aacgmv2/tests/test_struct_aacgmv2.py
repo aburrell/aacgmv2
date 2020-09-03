@@ -4,6 +4,7 @@ from __future__ import division, absolute_import, unicode_literals
 import logging
 import os
 import pkgutil
+import pytest
 
 import aacgmv2
 
@@ -187,38 +188,31 @@ class TestTopStructure(TestModuleStructure):
                                "deprecated", "__main__"]
         self.test_modules()
 
-    @classmethod
-    def test_top_parameters(self):
+    @pytest.mark.parametrize("env_var,tst_var",
+                             [(aacgmv2.AACGM_v2_DAT_PREFIX,
+                               "aacgm_coeffs/aacgm_coeffs-13-"),
+                              (aacgmv2.IGRF_COEFFS, "magmodel_1590-2020.txt")])
+    def test_top_parameters(self, env_var, tst_var):
         """Test module constants"""
 
-        path1 = os.path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
-                             "aacgm_coeffs-12-")
-        if aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) < 0:
-            raise AssertionError()
+        tst_var = os.path.join("aacgmv2", "aacgmv2", tst_var)
+        if env_var.find(tst_var) < 0:
+            raise AssertionError(
+                "Bad env variable: {:} not {:}".format(tst_var, env_var))
 
-        path2 = os.path.join("aacgmv2", "aacgmv2", "magmodel_1590-2015.txt")
-        if aacgmv2.IGRF_COEFFS.find(path2) < 0:
-            raise AssertionError()
-
-        del path1, path2
-
-    @classmethod
-    def test_high_alt_variables(self):
+    @pytest.mark.parametrize("alt_var,alt_ref",
+                             [(aacgmv2.high_alt_coeff, 2000.0),
+                              (aacgmv2.high_alt_trace, 6378.0)])
+    def test_high_alt_variables(self, alt_var, alt_ref):
         """ Test that module altitude limits exist and are appropriate"""
 
-        if not isinstance(aacgmv2.high_alt_coeff, float):
-            raise TypeError("Coefficient upper limit not float")
+        if not isinstance(alt_var, float):
+            raise TypeError("Altitude limit variable isn't a float")
 
-        if not isinstance(aacgmv2.high_alt_trace, float):
-            raise TypeError("Trace upper limit not float")
+        if alt_var != alt_ref:
+            raise ValueError("Altitude limit variable {:f} != {:f}".format(
+                alt_var, alt_ref))
 
-        if aacgmv2.high_alt_coeff != 2000.0:
-            raise ValueError("unexpected coefficient upper limit")
-
-        if aacgmv2.high_alt_trace <= aacgmv2.high_alt_trace:
-            raise ValueError("Trace limit lower than coefficient limit")
-
-    @classmethod
     def test_module_logger(self):
         """ Test the module logger instance"""
 
