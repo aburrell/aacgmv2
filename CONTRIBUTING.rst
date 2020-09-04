@@ -58,7 +58,7 @@ To set up `aacgmv2` for local development:
    in ``tests/test_py_aacgmv2.py`` (for the wrapper), ``test_c_aacgmv2.py``
    (for the C extension), or ``tests/test_cmd_aacgmv2.py`` (for the
    command-line interface). ``tests/test_dep_aacgmv2.py`` includes tests for
-   deprecated functions.  The tests are run with ``py.test`` and can be
+   deprecated functions.  The tests are run with ``pytest`` and can be
    written as normal functions (starting with ``test_``) containing a standard
    ``assert`` statement for testing output, or use the numpy testing suite.
 
@@ -99,7 +99,7 @@ Tips
 
 To run a subset of tests::
 
-    tox -e envname -- py.test -k test_myfeature
+    tox -e envname -- pytest -k test_myfeature
 
 To run all the test environments in parallel (you need to ``pip install detox``)::
 
