@@ -34,7 +34,7 @@ from aacgmv2 import (deprecated)
 from aacgmv2 import (_aacgmv2)
 
 # Define global variables
-__version__ = "2.6.0"
+__version__ = "2.6.1"
 
 # Define a logger object to allow easier log handling
 logger = logging.getLogger('aacgmv2_logger')
