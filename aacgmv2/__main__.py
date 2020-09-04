@@ -13,15 +13,6 @@ import sys
 
 import aacgmv2
 
-if sys.version_info.major >= 3:
-    # Python 3
-    STDIN = sys.stdin.buffer
-    STDOUT = sys.stdout.buffer
-else:
-    # Python 2
-    STDIN = sys.stdin
-    STDOUT = sys.stdout
-
 
 def main():
     """Entry point for the script"""
@@ -45,9 +36,10 @@ def main():
     desc = 'input file (stdin if none specified)'
     for pp in [parser_convert, parser_convert_mlt]:
         pp.add_argument('-i', '--input', dest='file_in', metavar='FILE_IN',
-                        type=argparse.FileType('r'), default=STDIN, help=desc)
+                        type=argparse.FileType('r'), default=sys.stdin.buffer,
+                        help=desc)
         pp.add_argument('-o', '--output', dest='file_out', metavar='FILE_OUT',
-                        type=argparse.FileType('wb'), default=STDOUT,
+                        type=argparse.FileType('wb'), default=sys.stdout.buffer,
                         help='output file (stdout if none specified)')
 
     desc = 'date for magnetic field model (1900-2020, default: today)'

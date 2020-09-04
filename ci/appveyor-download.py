@@ -99,6 +99,7 @@ def unpack_zipfile(filename):
             ensure_dirs(name)
             z.extract(name)
 
+
 desc = 'Download artifacts from AppVeyor.'
 parser = argparse.ArgumentParser(description=desc)
 desc = 'Project ID in AppVeyor. Example: ionelmc/python-nameless'

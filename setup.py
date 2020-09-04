@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import io
 import os
 import re
 from os import path
@@ -8,9 +7,11 @@ from os import path
 from setuptools import setup, find_packages
 from distutils.core import Extension
 
+
 def read(fname, **kwargs):
     return open(path.join(path.dirname(__file__), fname),
                 encoding=kwargs.get('encoding', 'utf8')).read()
+
 
 # enable code coverage for C code
 # We can't use CFLAGS=-coverage in tox.ini, since that may mess with
@@ -71,7 +72,7 @@ setup(
         'numpy',
     ],
     extras_require={'test': ['pytest'],
-    },
+                    },
     ext_modules=[
         Extension('aacgmv2._aacgmv2',
                   sources=['aacgmv2/aacgmv2module.c',

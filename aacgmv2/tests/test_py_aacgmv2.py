@@ -3,7 +3,6 @@ from io import StringIO
 import logging
 import numpy as np
 import os
-from sys import version_info
 import pytest
 import warnings
 
@@ -76,8 +75,6 @@ class TestConvertLatLon:
         np.testing.assert_allclose(self.out, [58.2268, 81.1613, 1.0457],
                                    rtol=self.rtol)
 
-    @pytest.mark.skipif(version_info.major == 2,
-                        reason='Not raised in Python 2')
     def test_convert_latlon_location_failure(self):
         """Test single value latlon conversion with a bad location"""
         self.out = aacgmv2.convert_latlon(0, 0, 0, self.dtime, self.in_args[-1])
@@ -191,8 +188,6 @@ class TestConvertLatLonArr(TestConvertArray):
         self.ref = local_ref
         self.evaluate_output()
 
-    @pytest.mark.skipif(version_info.major == 2,
-                        reason='Not raised in Python 2')
     def test_convert_latlon_arr_location_failure(self):
         """Test array latlon conversion with a bad location"""
 
@@ -279,8 +274,6 @@ class TestGetAACGMCoord:
         np.testing.assert_allclose(self.out, [58.2268, 81.1613, 0.1888],
                                    rtol=self.rtol)
 
-    @pytest.mark.skipif(version_info.major == 2,
-                        reason='Not raised in Python 2')
     def test_get_aacgm_coord_location_failure(self):
         """Test single value AACGMV2 calculation with a bad location"""
         self.in_args.extend([0.0, self.dtime, 'TRACE'])
@@ -385,8 +378,6 @@ class TestGetAACGMCoordArr(TestConvertArray):
         self.ref = [[64.3481], [83.2885], [0.3306]]
         self.evaluate_output()
 
-    @pytest.mark.skipif(version_info.major == 2,
-                        reason='Not raised in Python 2')
     def test_get_aacgm_coord_arr_location_failure(self):
         """Test array AACGMV2 calculation with a bad location"""
         self.out = aacgmv2.get_aacgm_coord_arr([0], [0], [0], self.dtime,
