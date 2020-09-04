@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import os
 
 extensions = [
@@ -16,11 +13,11 @@ extensions = [
 
 source_suffix = '.rst'
 master_doc = 'index'
-project = u'AACGM-v2 Python library'
-year = u'2019'
-author = u'Angeline G. Burrell, Christer van der Meeren, Karl M. Laundal'
-copyright = '{0}, {1}'.format(year, author)
-version = release = u'2.6.0'
+project = 'AACGM-v2 Python library'
+year = '2019'
+author = 'Angeline G. Burrell, Christer van der Meeren, Karl M. Laundal'
+copyright = f'{year}, {author}'
+version = release = '2.6.0'
 # on_rtd is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
@@ -38,4 +35,4 @@ html_split_index = True
 html_sidebars = {
    '**': ['searchbox.html', 'globaltoc.html', 'sourcelink.html'],
 }
-html_short_title = '%s-%s' % (project, version)
+html_short_title = f'{project}-{version}'

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import division, absolute_import, unicode_literals
-
 import os
 import sys
 import pytest
@@ -70,7 +67,7 @@ class TestPyEnviron:
 
         self.reset_evar(evar=evars)
         for i, evar in enumerate(evars):
-            os.environ[evar] = 'test_prefix{:d}'.format(i)
+            os.environ[evar] = f'test_prefix{i:d}'
 
         import aacgmv2
 

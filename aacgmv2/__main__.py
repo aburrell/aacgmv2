@@ -6,8 +6,6 @@
 # -*- coding: utf-8 -*-
 """Executed when aacgmv2 is invoked with python -m aacgmv2"""
 
-from __future__ import division, print_function, absolute_import
-
 import argparse
 import datetime as dt
 import numpy as np
