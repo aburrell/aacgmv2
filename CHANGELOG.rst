@@ -2,7 +2,7 @@
 Changelog
 =========
 
-2.6.1 (2020-09-XX)
+2.6.1 (2020-09-11)
 ------------------
 
 * Moved formerly deprecated utilities from `deprecated.py` to `utils.py`
