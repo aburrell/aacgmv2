@@ -16,7 +16,8 @@ When you have NumPy, install this package at the command line using
 The package has been tested with the following setups (others might work, too):
 
 * Mac (64 bit), Windows (32/64 bit), and Linux (64 bit)
-* Python 2.7 (except Windows), 3.6, 3.7 (except Windows 64 bit), and 3.8
+* Python 2.7 (except Windows), 3.6, 3.7 (except Windows 64 bit),
+  and 3.8 (except Windows 64 bit)
 
 .. [1] pip is included with Python 2 from v2.7.16 and Python 3 from v3.6. If you
        don't have pip,

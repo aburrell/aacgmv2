@@ -2,8 +2,10 @@
 from __future__ import division, absolute_import, unicode_literals
 
 import logging
+import numpy as np
 import os
 import pkgutil
+import pytest
 
 import aacgmv2
 
@@ -78,7 +80,7 @@ class TestModuleStructure:
 class TestDepStructure(TestModuleStructure):
     def setup(self):
         self.module_name = None
-        self.reference_list = ["subsol", "igrf_dipole_axis"]
+        self.reference_list = ["subsol", "igrf_dipole_axis", "gc2gd_lat"]
 
     def teardown(self):
         del self.module_name, self.reference_list
@@ -97,7 +99,7 @@ class TestDepStructure(TestModuleStructure):
 class TestUtilsStructure(TestModuleStructure):
     def setup(self):
         self.module_name = None
-        self.reference_list = ["subsol", "igrf_dipole_axis"]
+        self.reference_list = ["subsol", "igrf_dipole_axis", "gc2gd_lat"]
 
     def teardown(self):
         del self.module_name, self.reference_list
@@ -187,38 +189,41 @@ class TestTopStructure(TestModuleStructure):
                                "deprecated", "__main__"]
         self.test_modules()
 
-    @classmethod
-    def test_top_parameters(self):
+
+class TestTopVariables:
+    def setup(self):
+        self.alt_limits = {"coeff": 2000.0, "trace": 6378.0}
+        self.coeff_file = {"coeff": os.path.join("aacgmv2", "aacgmv2",
+                                                 "aacgm_coeffs",
+                                                 "aacgm_coeffs-13-"),
+                           "igrf": os.path.join("aacgmv2", "aacgmv2",
+                                                "magmodel_1590-2020.txt")}
+
+    def teardown(self):
+        del self.alt_limits, self.coeff_file
+
+    @pytest.mark.parametrize("env_var,fkey",
+                             [(aacgmv2.AACGM_v2_DAT_PREFIX, "coeff"),
+                              (aacgmv2.IGRF_COEFFS, "igrf")])
+    def test_top_parameters(self, env_var, fkey):
         """Test module constants"""
 
-        path1 = os.path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
-                             "aacgm_coeffs-12-")
-        if aacgmv2.AACGM_v2_DAT_PREFIX.find(path1) < 0:
-            raise AssertionError()
+        if env_var.find(self.coeff_file[fkey]) < 0:
+            raise AssertionError("Bad env variable: {:} not {:}".format(
+                self.coeff_file[fkey], env_var))
 
-        path2 = os.path.join("aacgmv2", "aacgmv2", "magmodel_1590-2015.txt")
-        if aacgmv2.IGRF_COEFFS.find(path2) < 0:
-            raise AssertionError()
-
-        del path1, path2
-
-    @classmethod
-    def test_high_alt_variables(self):
+    @pytest.mark.parametrize("alt_var,alt_ref",
+                             [(aacgmv2.high_alt_coeff, "coeff"),
+                              (aacgmv2.high_alt_trace, "trace")])
+    def test_high_alt_variables(self, alt_var, alt_ref):
         """ Test that module altitude limits exist and are appropriate"""
 
-        if not isinstance(aacgmv2.high_alt_coeff, float):
-            raise TypeError("Coefficient upper limit not float")
+        if not isinstance(alt_var, type(self.alt_limits[alt_ref])):
+            raise TypeError("Altitude limit variable isn't a float")
 
-        if not isinstance(aacgmv2.high_alt_trace, float):
-            raise TypeError("Trace upper limit not float")
+        np.testing.assert_almost_equal(alt_var, self.alt_limits[alt_ref],
+                                       decimal=4)
 
-        if aacgmv2.high_alt_coeff != 2000.0:
-            raise ValueError("unexpected coefficient upper limit")
-
-        if aacgmv2.high_alt_trace <= aacgmv2.high_alt_trace:
-            raise ValueError("Trace limit lower than coefficient limit")
-
-    @classmethod
     def test_module_logger(self):
         """ Test the module logger instance"""
 

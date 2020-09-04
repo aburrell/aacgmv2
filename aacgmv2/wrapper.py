@@ -155,7 +155,7 @@ def set_coeff_path(igrf_file=False, coeff_prefix=False):
     return
 
 
-def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A", **kwargs):
+def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
     """Converts between geomagnetic coordinates and AACGM coordinates
 
     Parameters
@@ -191,20 +191,9 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A", **kwargs):
     Raises
     ------
     ValueError if input is incorrect
-    TypeError or RuntimeError if unable to set AACGMV2 datetime
+    RuntimeError if unable to set AACGMV2 datetime
 
     """
-    # Handle deprecated keyword arguments
-    for kw in kwargs.keys():
-        if kw not in ['code']:
-            raise TypeError('unexpected keyword argument [{:s}]'.format(kw))
-        else:
-            method_code = kwargs[kw]
-            warnings.warn("".join(["Deprecated keyword argument 'code' will be",
-                                   " removed in version 2.6.1, please update ",
-                                   "your routine to use 'method_code'"]),
-                          category=FutureWarning)
-
     # Test time
     dtime = test_time(dtime)
 
@@ -241,11 +230,8 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A", **kwargs):
     try:
         c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
                                dtime.minute, dtime.second)
-    except TypeError as terr:
-        raise TypeError("unable to set time for {:}: {:}".format(dtime, terr))
-    except RuntimeError as rerr:
-        raise RuntimeError("unable to set time for {:}: {:}".format(dtime,
-                                                                    rerr))
+    except (TypeError, RuntimeError) as err:
+        raise RuntimeError("cannot set time for {:}: {:}".format(dtime, err))
 
     # convert location
     try:
@@ -262,8 +248,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A", **kwargs):
     return lat_out, lon_out, r_out
 
 
-def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A",
-                       **kwargs):
+def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
     """Converts between geomagnetic coordinates and AACGM coordinates.
 
     Parameters
@@ -299,7 +284,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A",
     Raises
     ------
     ValueError if input is incorrect
-    TypeError or RuntimeError if unable to set AACGMV2 datetime
+    RuntimeError if unable to set AACGMV2 datetime
 
     Notes
     -----
@@ -312,29 +297,19 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A",
     Multi-dimensional arrays are not allowed.
 
     """
-    # Handle deprecated keyword arguments
-    for kw in kwargs.keys():
-        if kw not in ['code']:
-            raise TypeError('unexpected keyword argument [{:s}]'.format(kw))
-        else:
-            method_code = kwargs[kw]
-            warnings.warn("".join(["Deprecated keyword argument 'code' will be",
-                                   " removed in version 2.6.1, please update ",
-                                   "your routine to use 'method_code'"]),
-                          category=FutureWarning)
-
     # Recast the data as numpy arrays
     in_lat = np.array(in_lat)
     in_lon = np.array(in_lon)
     height = np.array(height)
 
-    # If one or two of these elements is a float or int, create an array
+    # If one or two of these elements is a float, int, or single element array,
+    # create an array equal to the length of the longest input
     test_array = np.array([len(in_lat.shape), len(in_lon.shape),
                            len(height.shape)])
+
     if test_array.max() > 1:
         raise ValueError("unable to process multi-dimensional arrays")
-
-    if test_array.min() == 0:
+    else:
         if test_array.max() == 0:
             aacgmv2.logger.info("".join(["for a single location, consider ",
                                          "using convert_latlon or ",
@@ -343,30 +318,21 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A",
             in_lon = np.array([in_lon])
             height = np.array([height])
         else:
-            imax = test_array.argmax()
-            max_shape = in_lat.shape if imax == 0 else (in_lon.shape
-                                                        if imax == 1
-                                                        else height.shape)
-            if not test_array[0]:
-                in_lat = np.full(shape=max_shape, fill_value=in_lat)
-            if not test_array[1]:
-                in_lon = np.full(shape=max_shape, fill_value=in_lon)
-            if not test_array[2]:
-                height = np.full(shape=max_shape, fill_value=height)
+            max_len = max([len(arr) for i, arr in enumerate([in_lat, in_lon,
+                                                             height])
+                           if test_array[i] > 0])
+
+            if not test_array[0] or (len(in_lat) == 1 and max_len > 1):
+                in_lat = np.full(shape=(max_len,), fill_value=in_lat)
+            if not test_array[1] or (len(in_lon) == 1 and max_len > 1):
+                in_lon = np.full(shape=(max_len,), fill_value=in_lon)
+            if not test_array[2] or (len(height) == 1 and max_len > 1):
+                height = np.full(shape=(max_len,), fill_value=height)
 
     # Ensure that lat, lon, and height are the same length or if the lengths
     # differ that the different ones contain only a single value
     if not (in_lat.shape == in_lon.shape and in_lat.shape == height.shape):
-        shape_dict = {'lat': in_lat.shape, 'lon': in_lon.shape,
-                      'height': height.shape}
-        array_key = [kk for i, kk in enumerate(shape_dict.keys())
-                     if shape_dict[kk] != (1,)]
-        if len(array_key) == 3:
-            raise ValueError('lat, lon, and height arrays are mismatched')
-        elif len(array_key) == 2:
-            if shape_dict[array_key[0]] == shape_dict[array_key[1]]:
-                raise ValueError('{:s} and {:s} arrays are mismatched'.format(
-                    *array_key))
+        raise ValueError('lat, lon, and height arrays are mismatched')
 
     # Test time
     dtime = test_time(dtime)
@@ -402,11 +368,8 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A",
     try:
         c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
                                dtime.minute, dtime.second)
-    except TypeError as terr:
-        raise TypeError("unable to set time for {:}: {:}".format(dtime, terr))
-    except RuntimeError as rerr:
-        raise RuntimeError("unable to set time for {:}: {:}".format(dtime,
-                                                                    rerr))
+    except (TypeError, RuntimeError) as err:
+        raise RuntimeError("cannot set time for {:}: {:}".format(dtime, err))
 
     try:
         lat_out, lon_out, r_out, bad_ind = c_aacgmv2.convert_arr(list(in_lat),
@@ -517,8 +480,6 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="ALLOWTRACE"):
     if np.any(np.isfinite(mlon)):
         # Get magnetic local time
         mlt = convert_mlt(mlon, dtime, m2a=False)
-        if not isinstance(mlt, type(mlat)):
-            mlt = np.array([mlt])
     else:
         mlt = np.full(shape=len(mlat), fill_value=np.nan)
 
