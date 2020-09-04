@@ -8,7 +8,8 @@ Changelog
 * Moved formerly deprecated utilities from `deprecated.py` to `utils.py`
 * Removed allowance for deprecated kwarg `code` from `convert_latlon` and
   `convert_latlon_arr`, as scheduled
-* Updated CI to include python 3.8 everywhere
+* Drop support for EOL Python 2.7
+* Updated CI to include Python 3.8 everywhere
 * Moved all configuration information to setup.cfg
 * Fixed coveralls implementation
 * Fixed broken links in the documentation
