@@ -94,7 +94,7 @@ Badges
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/b64ee44194f148f5bdb0f00c7cf16ab8
     :alt: Codacy Code Quality Status
-    :target: https://app.codacy.com/manual/aburrell/aacgmv2/dashboard
+    :target: https://www.codacy.com/manual/aburrell/aacgmv2?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aburrell/aacgmv2&amp;utm_campaign=Badge_Grade
 
 .. |codeclimate| image:: https://api.codeclimate.com/v1/badges/91f5a91bf3d9ba90cb57/maintainability.svg
    :target: https://codeclimate.com/github/aburrell/aacgmv2
