@@ -9,7 +9,6 @@ moved to the default wrapper in version 2.6.1
 
 """
 
-from __future__ import absolute_import, unicode_literals
 import warnings
 import aacgmv2
 

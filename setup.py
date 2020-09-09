@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-#-*- encoding: utf-8 -*-
-from __future__ import absolute_import
 
-import io
 import os
 import re
 from os import path
@@ -10,9 +7,11 @@ from os import path
 from setuptools import setup, find_packages
 from distutils.core import Extension
 
+
 def read(fname, **kwargs):
-    return io.open(path.join(path.dirname(__file__), fname),
+    return open(path.join(path.dirname(__file__), fname),
                    encoding=kwargs.get('encoding', 'utf8')).read()
+
 
 # enable code coverage for C code
 # We can't use CFLAGS=-coverage in tox.ini, since that may mess with
@@ -48,11 +47,11 @@ setup(
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Scientific/Engineering :: Physics',
         'Topic :: Utilities',
@@ -68,11 +67,12 @@ setup(
         'conversion',
         'converting',
     ],
+    python_requires='>=3.6',
     install_requires=[
         'numpy',
     ],
     extras_require={'test': ['pytest'],
-    },
+                    },
     ext_modules=[
         Extension('aacgmv2._aacgmv2',
                   sources=['aacgmv2/aacgmv2module.c',
