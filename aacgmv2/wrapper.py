@@ -8,7 +8,6 @@
 
 """
 
-from __future__ import division, absolute_import, unicode_literals
 import datetime as dt
 import numpy as np
 import os

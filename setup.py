@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-#-*- encoding: utf-8 -*-
-from __future__ import absolute_import
 
 import os
 import re
@@ -11,7 +9,7 @@ from distutils.core import Extension
 
 
 def read(fname, **kwargs):
-    return io.open(path.join(path.dirname(__file__), fname),
+    return open(path.join(path.dirname(__file__), fname),
                    encoding=kwargs.get('encoding', 'utf8')).read()
 
 
