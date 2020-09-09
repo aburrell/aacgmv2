@@ -1,9 +1,8 @@
 language: python
 python:
 {% for env, config in tox_environments|dictsort %}{% if not config.cover %}
-  - {{ config.python[-3:] }}
+  - "{{ config.python[-3:] }}"
 {% endif %}{% endfor %}
-sudo: false
 env:
   global:
     - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
