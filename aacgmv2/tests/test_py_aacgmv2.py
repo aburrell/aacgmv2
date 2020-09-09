@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import division, absolute_import, unicode_literals
+
 import datetime as dt
 from io import StringIO
 import logging
@@ -704,8 +707,8 @@ class TestPyLogging:
     def setup(self):
         """Runs before every method to create a clean testing setup"""
 
-        self.lwarn = ""
-        self.lout = ""
+        self.lwarn = u""
+        self.lout = u""
         self.log_capture = StringIO()
         aacgmv2.logger.addHandler(logging.StreamHandler(self.log_capture))
         aacgmv2.logger.setLevel(logging.INFO)
@@ -717,7 +720,7 @@ class TestPyLogging:
 
     def test_warning_below_ground(self):
         """ Test that a warning is issued if height < 0 for height test """
-        self.lwarn = "conversion not intended for altitudes < 0 km"
+        self.lwarn = u"conversion not intended for altitudes < 0 km"
 
         aacgmv2.wrapper.test_height(-1, 0)
         self.lout = self.log_capture.getvalue()
@@ -726,7 +729,7 @@ class TestPyLogging:
 
     def test_warning_magnetosphere(self):
         """ Test that a warning is issued if altitude is very high"""
-        self.lwarn = "coordinates are not intended for the magnetosphere"
+        self.lwarn = u"coordinates are not intended for the magnetosphere"
 
         aacgmv2.wrapper.test_height(70000, aacgmv2._aacgmv2.TRACE)
         self.lout = self.log_capture.getvalue()
@@ -735,7 +738,7 @@ class TestPyLogging:
 
     def test_warning_high_coeff(self):
         """ Test that a warning is issued if altitude is very high"""
-        self.lwarn = "must either use field-line tracing (trace=True"
+        self.lwarn = u"must either use field-line tracing (trace=True"
 
         aacgmv2.wrapper.test_height(3000, 0)
         self.lout = self.log_capture.getvalue()
@@ -744,7 +747,7 @@ class TestPyLogging:
 
     def test_warning_single_loc_in_arr(self):
         """ Test that user is warned they should be using simpler routine"""
-        self.lwarn = "for a single location, consider using"
+        self.lwarn = u"for a single location, consider using"
 
         aacgmv2.convert_latlon_arr(60, 0, 300, dt.datetime(2015, 1, 1, 0, 0, 0))
         self.lout = self.log_capture.getvalue()

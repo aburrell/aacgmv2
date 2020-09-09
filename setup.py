@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#-*- encoding: utf-8 -*-
+from __future__ import absolute_import
 
 import os
 import re
@@ -9,8 +11,8 @@ from distutils.core import Extension
 
 
 def read(fname, **kwargs):
-    return open(path.join(path.dirname(__file__), fname),
-                encoding=kwargs.get('encoding', 'utf8')).read()
+    return io.open(path.join(path.dirname(__file__), fname),
+                   encoding=kwargs.get('encoding', 'utf8')).read()
 
 
 # enable code coverage for C code
@@ -26,9 +28,9 @@ setup(
     version='2.6.0',
     license='MIT',
     description='A Python wrapper for AACGM-v2 magnetic coordinates',
-    long_description='{}\n{}'.format(read('README.rst'),
-                                     re.sub(':[a-z]+:`~?(.*?)`', r'``\1``',
-                                            read('CHANGELOG.rst'))),
+    long_description='%s\n%s' % (read('README.rst'),
+                                 re.sub(':[a-z]+:`~?(.*?)`', r'``\1``',
+                                        read('CHANGELOG.rst'))),
     long_description_content_type='text/plain',
     author='Angeline G. Burrell, Christer van der Meeren',
     author_email='angeline.burrell@nrl.navy.mil',

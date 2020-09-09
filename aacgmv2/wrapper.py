@@ -8,6 +8,7 @@
 
 """
 
+from __future__ import division, absolute_import, unicode_literals
 import datetime as dt
 import numpy as np
 import os
@@ -88,7 +89,7 @@ def test_height(height, bit_code):
     if(height > aacgmv2.high_alt_coeff
        and not (bit_code & (TRACE | ALLOWTRACE | BADIDEA))):
         estr = ''.join(['coefficients are not valid for altitudes above ',
-                        f'{aacgmv2.high_alt_coeff:.0f} km. You ',
+                        '{:.0f} km. You '.format(aacgmv2.high_alt_coeff),
                         'must either use field-line tracing (trace=True or',
                         ' allowtrace=True) or indicate you know this is a',
                         ' bad idea'])
@@ -204,7 +205,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
         bit_code = method_code
 
     if not isinstance(bit_code, int):
-        raise ValueError(f"unknown method code {method_code}")
+        raise ValueError("unknown method code {:}".format(method_code))
 
     # Test height that may or may not cause failure
     if not test_height(height, bit_code):
@@ -226,7 +227,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
         c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
                                dtime.minute, dtime.second)
     except (TypeError, RuntimeError) as err:
-        raise RuntimeError(f"cannot set time for {dtime}: {err}")
+        raise RuntimeError("cannot set time for {:}: {:}".format(dtime, err))
 
     # convert location
     try:
@@ -234,9 +235,9 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
                                                     bit_code)
     except Exception:
         err = sys.exc_info()[0]
-        estr = f"unable to perform conversion at {in_lat:.1f},"
-        estr = f"{estr:s}{in_lon:.1f} {height:.1f} km, {dtime} "
-        estr = f"{estr:s}using method {bit_code}: {err}"
+        estr = "unable to perform conversion at {:.1f},".format(in_lat)
+        estr = "{:s}{:.1f} {:.1f} km, {:} ".format(estr, in_lon, height, dtime)
+        estr = "{:s}using method {:}: {:}".format(estr, bit_code, err)
         aacgmv2.logger.warning(estr)
         pass
 
@@ -344,7 +345,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
         bit_code = method_code
 
     if not isinstance(bit_code, int):
-        raise ValueError(f"unknown method code {method_code}")
+        raise ValueError("unknown method code {:}".format(method_code))
 
     # Test height
     if not test_height(np.nanmax(height), bit_code):
@@ -364,7 +365,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
         c_aacgmv2.set_datetime(dtime.year, dtime.month, dtime.day, dtime.hour,
                                dtime.minute, dtime.second)
     except (TypeError, RuntimeError) as err:
-        raise RuntimeError(f"cannot set time for {dtime}: {err}")
+        raise RuntimeError("cannot set time for {:}: {:}".format(dtime, err))
 
     try:
         lat_out, lon_out, r_out, bad_ind = c_aacgmv2.convert_arr(list(in_lat),
@@ -384,7 +385,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
             lon_out[bad_ind] = np.nan
             r_out[bad_ind] = np.nan
     except SystemError as serr:
-        aacgmv2.logger.warning(f'C Error encountered: {serr}')
+        aacgmv2.logger.warning('C Error encountered: {:}'.format(serr))
 
     return lat_out, lon_out, r_out
 
@@ -421,7 +422,7 @@ def get_aacgm_coord(glat, glon, height, dtime, method="ALLOWTRACE"):
 
     """
     # Initialize method code
-    method_code = f"G2A|{method:s}"
+    method_code = "G2A|{:s}".format(method)
 
     # Get magnetic lat and lon.
     mlat, mlon, _ = convert_latlon(glat, glon, height, dtime,
@@ -466,7 +467,7 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="ALLOWTRACE"):
 
     """
     # Initialize method code
-    method_code = f"G2A|{method:s}"
+    method_code = "G2A|{:s}".format(method)
 
     # Get magnetic lat and lon.
     mlat, mlon, _ = convert_latlon_arr(glat, glon, height, dtime,
