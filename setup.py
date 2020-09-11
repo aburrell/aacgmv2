@@ -24,12 +24,13 @@ if 'PY_CCOV' in os.environ.keys():
 
 setup(
     name='aacgmv2',
-    version='2.6.0',
+    version='2.6.1',
     license='MIT',
     description='A Python wrapper for AACGM-v2 magnetic coordinates',
     long_description='%s\n%s' % (read('README.rst'),
-                                 re.sub(':[a-z]+:`~?(.*?)`',
-                                        r'``\1``', read('CHANGELOG.rst'))),
+                                 re.sub(':[a-z]+:`~?(.*?)`', r'``\1``',
+                                        read('CHANGELOG.rst'))),
+    long_description_content_type='text/plain',
     author='Angeline G. Burrell, Christer van der Meeren',
     author_email='angeline.burrell@nrl.navy.mil',
     url='https://github.com/aburrell/aacgmv2',
@@ -51,6 +52,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Scientific/Engineering :: Physics',
         'Topic :: Utilities',
@@ -69,7 +71,7 @@ setup(
     install_requires=[
         'numpy',
     ],
-    extras_require={'test':['pytest'],
+    extras_require={'test': ['pytest'],
     },
     ext_modules=[
         Extension('aacgmv2._aacgmv2',
