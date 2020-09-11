@@ -24,7 +24,7 @@ environment:
       PYTHON_HOME: C:\Python37
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '32'
-{% for env, config in tox_environments|dictsort %}{% if config.python in ('python2.7', 'python3.6', 'python3.7', 'python3.8',) and not config.cover %}
+{% for env, config in tox_environments|dictsort %}{% if config.python in ('python3.6', 'python3.7', 'python3.8',) and not config.cover %}
     - TOXENV: '{{ env }}'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}\python.exe
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}
@@ -66,7 +66,6 @@ artifacts:
   - path: dist\*
 matrix:
   allow_failures:
-    - TOXENV: '2.7-nocover'
     - TOXENV: '3.7-nocover'
       PYTHON_ARCH: '64'
     - TOXENV: '3.8-nocover'

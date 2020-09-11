@@ -523,39 +523,23 @@ mlon : (float)\n\
 
 /* Different versions of python require different constant declarations */
 
-#if PY_MAJOR_VERSION >= 3
-  static struct PyModuleDef aacgmv2module = {
-    PyModuleDef_HEAD_INIT,
-    "_aacgmv2",   /* name of module */
-    "Interface to the AACGM-v2 C library.", /* module documentation */
-    -1, /* size of per-interpreter state of the module,
-	   or -1 if the module keeps state in global variables. */
-    aacgm_v2_methods
-  };
+static struct PyModuleDef aacgmv2module = {
+  PyModuleDef_HEAD_INIT,
+  "_aacgmv2",   /* name of module */
+  "Interface to the AACGM-v2 C library.", /* module documentation */
+  -1, /* size of per-interpreter state of the module,
+   or -1 if the module keeps state in global variables. */
+  aacgm_v2_methods
+};
 
-  PyMODINIT_FUNC PyInit__aacgmv2(void)
-  {
-    module = PyModule_Create(&aacgmv2module);
-    PyModule_AddIntConstant(module, "G2A", G2A);
-    PyModule_AddIntConstant(module, "A2G", A2G);
-    PyModule_AddIntConstant(module, "TRACE", TRACE);
-    PyModule_AddIntConstant(module, "ALLOWTRACE", ALLOWTRACE);
-    PyModule_AddIntConstant(module, "BADIDEA", BADIDEA);
-    PyModule_AddIntConstant(module, "GEOCENTRIC", GEOCENTRIC);
-    return module;
-  }
-
-#else
-
-  PyMODINIT_FUNC init_aacgmv2(void)
-  {
-    module = Py_InitModule("_aacgmv2", aacgm_v2_methods);
-    PyModule_AddIntConstant(module, "G2A", G2A);
-    PyModule_AddIntConstant(module, "A2G", A2G);
-    PyModule_AddIntConstant(module, "TRACE", TRACE);
-    PyModule_AddIntConstant(module, "ALLOWTRACE", ALLOWTRACE);
-    PyModule_AddIntConstant(module, "BADIDEA", BADIDEA);
-    PyModule_AddIntConstant(module, "GEOCENTRIC", GEOCENTRIC);
-  }
-
-#endif
+PyMODINIT_FUNC PyInit__aacgmv2(void)
+{
+  module = PyModule_Create(&aacgmv2module);
+  PyModule_AddIntConstant(module, "G2A", G2A);
+  PyModule_AddIntConstant(module, "A2G", A2G);
+  PyModule_AddIntConstant(module, "TRACE", TRACE);
+  PyModule_AddIntConstant(module, "ALLOWTRACE", ALLOWTRACE);
+  PyModule_AddIntConstant(module, "BADIDEA", BADIDEA);
+  PyModule_AddIntConstant(module, "GEOCENTRIC", GEOCENTRIC);
+  return module;
+}
