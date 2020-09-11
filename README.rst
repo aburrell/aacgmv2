@@ -72,8 +72,8 @@ Badges
       - | |version| |supported-versions|
         | |wheel| |supported-implementations|
 
-.. |docs| image:: https://readthedocs.org/projects/aacgmv2/badge/?version=stable&style=flat
-    :target: https://readthedocs.org/projects/aacgmv2
+.. |docs| image:: https://readthedocs.org/projects/aacgmv2/badge/?version=latest
+    :target: https://aacgmv2.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 .. |travis| image:: https://api.travis-ci.org/aburrell/aacgmv2.svg?branch=master
@@ -94,7 +94,7 @@ Badges
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/b64ee44194f148f5bdb0f00c7cf16ab8
     :alt: Codacy Code Quality Status
-    :target: https://app.codacy.com/manual/aburrell/aacgmv2/dashboard
+    :target: https://www.codacy.com/manual/aburrell/aacgmv2?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aburrell/aacgmv2&amp;utm_campaign=Badge_Grade
 
 .. |codeclimate| image:: https://api.codeclimate.com/v1/badges/91f5a91bf3d9ba90cb57/maintainability.svg
    :target: https://codeclimate.com/github/aburrell/aacgmv2

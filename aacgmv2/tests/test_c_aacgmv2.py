@@ -34,29 +34,27 @@ class TestCAACGMV2:
         del self.lat_in, self.lon_in, self.alt_in, self.lat_comp, self.lon_comp
         del self.r_comp, self.code
 
-    def test_constants(self):
+    @pytest.mark.parametrize('mattr,val', [(aacgmv2._aacgmv2.G2A, 0),
+                                           (aacgmv2._aacgmv2.A2G, 1),
+                                           (aacgmv2._aacgmv2.TRACE, 2),
+                                           (aacgmv2._aacgmv2.ALLOWTRACE, 4),
+                                           (aacgmv2._aacgmv2.BADIDEA, 8),
+                                           (aacgmv2._aacgmv2.GEOCENTRIC, 16)])
+    def test_constants(self, mattr, val):
         """Test module constants"""
-        ans1 = aacgmv2._aacgmv2.G2A == 0
-        ans2 = aacgmv2._aacgmv2.A2G == 1
-        ans3 = aacgmv2._aacgmv2.TRACE == 2
-        ans4 = aacgmv2._aacgmv2.ALLOWTRACE == 4
-        ans5 = aacgmv2._aacgmv2.BADIDEA == 8
-        ans6 = aacgmv2._aacgmv2.GEOCENTRIC == 16
-
-        assert ans1 & ans2 & ans3 & ans4 & ans5 & ans6
-        del ans1, ans2, ans3, ans4, ans5, ans6
+        np.testing.assert_equal(mattr, val)
 
     @pytest.mark.parametrize('idate', [0, 1])
     def test_set_datetime(self, idate):
         """Test set_datetime"""
-        self.mlt = aacgmv2._aacgmv2.set_datetime(*self.date_args[idate]) is None
-        assert self.mlt
+        self.mlt = aacgmv2._aacgmv2.set_datetime(*self.date_args[idate])
+        assert self.mlt is None
 
-    @classmethod
     def test_fail_set_datetime(self):
         """Test unsuccessful set_datetime"""
+        self.long_date[0] = 1013
         with pytest.raises(RuntimeError):
-            aacgmv2._aacgmv2.set_datetime(1013, 1, 1, 0, 0, 0)
+            aacgmv2._aacgmv2.set_datetime(*self.long_date)
 
     @pytest.mark.parametrize('idate,ckey', [(0, 'G2A'), (1, 'G2A'),
                                             (0, 'A2G'), (1, 'A2G'),
@@ -86,14 +84,21 @@ class TestCAACGMV2:
                                                  self.alt_in,
                                                  self.code[ckey])
 
-        assert len(self.mlat) == len(self.lat_in)
+        np.testing.assert_equal(len(self.mlat), len(self.lat_in))
         np.testing.assert_almost_equal(self.mlat[0], self.lat_comp[ckey][0],
                                        decimal=4)
         np.testing.assert_almost_equal(self.mlon[0], self.lon_comp[ckey][0],
                                        decimal=4)
         np.testing.assert_almost_equal(self.rshell[0], self.r_comp[ckey][0],
                                        decimal=4)
-        assert bad_ind[0] == -1
+        np.testing.assert_equal(bad_ind[0], -1)
+
+    def test_forbidden(self):
+        """Test convert failure"""
+        self.lat_in[0] = 7
+        with pytest.raises(RuntimeError):
+            aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0], 0,
+                                     aacgmv2._aacgmv2.G2A)
 
     def test_convert_high_denied(self):
         """Test for failure when converting to high altitude geodetic to
@@ -147,23 +152,15 @@ class TestCAACGMV2:
         np.testing.assert_almost_equal(self.mlon, lon_comp, decimal=4)
         np.testing.assert_almost_equal(self.rshell, r_comp, decimal=4)
 
-    @classmethod
-    def test_forbidden(self):
-        """Test convert failure"""
-        with pytest.raises(RuntimeError):
-            aacgmv2._aacgmv2.convert(7, 0, 0, aacgmv2._aacgmv2.G2A)
-
     @pytest.mark.parametrize('marg,mlt_comp',
                              [(12.0, -153.6033), (25.0, 41.3967),
                               (-1.0, 11.3967)])
     def test_inv_mlt_convert(self, marg, mlt_comp):
         """Test MLT inversion"""
-        mlt_args = list(self.long_date)
-        mlt_args.append(marg)
-        self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*mlt_args)
+        self.long_date = list(self.long_date)
+        self.long_date.append(marg)
+        self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*self.long_date)
         np.testing.assert_almost_equal(self.mlon, mlt_comp, decimal=4)
-
-        del mlt_args
 
     @pytest.mark.parametrize('marg,mlt_comp',
                              [(12.0, -153.6033), (25.0, 41.3967),

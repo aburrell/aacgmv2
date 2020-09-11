@@ -14,10 +14,10 @@ extensions = [
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'AACGM-v2 Python library'
-year = '2019'
+year = '2020'
 author = 'Angeline G. Burrell, Christer van der Meeren, Karl M. Laundal'
 copyright = '{0}, {1}'.format(year, author)
-version = release = '2.6.0'
+version = release = '2.6.1'
 # on_rtd is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
