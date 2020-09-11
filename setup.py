@@ -30,7 +30,7 @@ setup(
     long_description='%s\n%s' % (read('README.rst'),
                                  re.sub(':[a-z]+:`~?(.*?)`', r'``\1``',
                                         read('CHANGELOG.rst'))),
-    long_description_content_type='text/plain',
+    long_description_content_type='text/x-rst',
     author='Angeline G. Burrell, Christer van der Meeren',
     author_email='angeline.burrell@nrl.navy.mil',
     url='https://github.com/aburrell/aacgmv2',
