@@ -64,12 +64,12 @@ on_failure:
   - ps: get-content .tox\*\log\*
 artifacts:
   - path: dist\*
-matrix:
-  allow_failures:
-    - TOXENV: '3.7-nocover'
-      PYTHON_ARCH: '64'
-    - TOXENV: '3.8-nocover'
-      PYTHON_ARCH: '64'
+# matrix:
+#   allow_failures:
+#     - TOXENV: '3.7-nocover'
+#       PYTHON_ARCH: '64'
+#     - TOXENV: '3.8-nocover'
+#       PYTHON_ARCH: '64'
 ### To enable remote debugging uncomment this:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
