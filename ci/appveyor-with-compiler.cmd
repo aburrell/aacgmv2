@@ -17,6 +17,8 @@
 ::
 :: Author: Olivier Grisel
 :: License: CC0 1.0 Universal: http://creativecommons.org/publicdomain/zero/1.0/
+::
+:: Adapted for Visual Studio 2019 (AGB)
 SET COMMAND_TO_RUN=%*
 SET WIN_SDK_ROOT=C:\Program Files\Microsoft SDKs\Windows
 SET WIN_WDK="c:\Program Files (x86)\Windows Kits\10\Include\wdf"
@@ -39,6 +41,7 @@ SET DISTUTILS_USE_SDK=1
 SET MSSdk=1
 "%WIN_SDK_ROOT%\%WINDOWS_SDK_VERSION%\Setup\WindowsSdkVer.exe" -q -version:%WINDOWS_SDK_VERSION%
 CALL "%WIN_SDK_ROOT%\%WINDOWS_SDK_VERSION%\Bin\SetEnv.cmd" /x64 /release
+CALL  "%WIN_SDK_ROOT% (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
 
 :main
 
