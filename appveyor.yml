@@ -1,7 +1,7 @@
 version: '{branch}-{build}'
 build: off
 image:
-- Visual Studio 2015
+- Visual Studio 2019
 environment:
   global:
     WITH_COMPILER: 'cmd /E:ON /V:ON /C .\ci\appveyor-with-compiler.cmd'
@@ -41,6 +41,18 @@ environment:
       WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python38-x64
       PYTHON_VERSION: '3.8'
+      PYTHON_ARCH: '64'
+    - TOXENV: '3.9-buildonly-nocover'
+      TOXPYTHON: C:\python39\python.exe
+      WINDOWS_SDK_VERSION: v7.1
+      PYTHON_HOME: C:\python39
+      PYTHON_VERSION: '3.9'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.9-buildonly-nocover'
+      TOXPYTHON: C:\python39-x64\python.exe
+      WINDOWS_SDK_VERSION: v7.1
+      PYTHON_HOME: C:\python39-x64
+      PYTHON_VERSION: '3.9'
       PYTHON_ARCH: '64'
     - TOXENV: check
       PYTHON_HOME: C:\Python37
