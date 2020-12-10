@@ -20,5 +20,6 @@ include CODE_OF_CONDUCT.md
 include tox.ini
 include *.yml
 include .*.yml
+include .zenodo.json
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib *.dSYM .pytest_cache
