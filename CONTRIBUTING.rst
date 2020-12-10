@@ -87,7 +87,7 @@ For merging, you should:
 1. Include passing tests (run ``tox``) [1]_
 2. Update/add documentation if relevant
 3. Add a note to ``CHANGELOG.rst`` about the changes
-4. Add yourself to ``AUTHORS.rst``
+4. Add yourself to the end of ``AUTHORS.rst`` and the ``.zenodo.json`` files
 
 .. [1] If you don't have all the necessary Python versions available locally or
        have trouble building all the testing environments, you can rely on
