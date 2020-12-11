@@ -9,13 +9,13 @@ environment:
 {% for env, config in tox_environments|dictsort %}{% if not config.cover %}
     - TOXENV: '{{ config.python[-3:] }}-buildonly-nocover'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '32'
     - TOXENV: '{{ config.python[-3:] }}-buildonly-nocover'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}-x64
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '64'
@@ -32,7 +32,7 @@ environment:
       PYTHON_ARCH: '32'
     - TOXENV: '{{ env }}'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}-x64
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '64'
@@ -72,4 +72,3 @@ artifacts:
 #       PYTHON_ARCH: '64'
 ### To enable remote debugging uncomment this:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-

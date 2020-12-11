@@ -8,49 +8,49 @@ environment:
   matrix:
     - TOXENV: '3.6-buildonly-nocover'
       TOXPYTHON: C:\python36\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python36
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '32'
     - TOXENV: '3.6-buildonly-nocover'
       TOXPYTHON: C:\python36-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python36-x64
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '64'
     - TOXENV: '3.7-buildonly-nocover'
       TOXPYTHON: C:\python37\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python37
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '32'
     - TOXENV: '3.7-buildonly-nocover'
       TOXPYTHON: C:\python37-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python37-x64
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '64'
     - TOXENV: '3.8-buildonly-nocover'
       TOXPYTHON: C:\python38\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python38
       PYTHON_VERSION: '3.8'
       PYTHON_ARCH: '32'
     - TOXENV: '3.8-buildonly-nocover'
       TOXPYTHON: C:\python38-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python38-x64
       PYTHON_VERSION: '3.8'
       PYTHON_ARCH: '64'
     - TOXENV: '3.9-buildonly-nocover'
       TOXPYTHON: C:\python39\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python39
       PYTHON_VERSION: '3.9'
       PYTHON_ARCH: '32'
     - TOXENV: '3.9-buildonly-nocover'
       TOXPYTHON: C:\python39-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python39-x64
       PYTHON_VERSION: '3.9'
       PYTHON_ARCH: '64'
@@ -65,7 +65,7 @@ environment:
       PYTHON_ARCH: '32'
     - TOXENV: '3.6-nocover'
       TOXPYTHON: C:\python36-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python36-x64
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '64'
@@ -76,7 +76,7 @@ environment:
       PYTHON_ARCH: '32'
     - TOXENV: '3.7-nocover'
       TOXPYTHON: C:\python37-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python37-x64
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '64'
@@ -87,7 +87,7 @@ environment:
       PYTHON_ARCH: '32'
     - TOXENV: '3.8-nocover'
       TOXPYTHON: C:\python38-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python38-x64
       PYTHON_VERSION: '3.8'
       PYTHON_ARCH: '64'
@@ -98,7 +98,7 @@ environment:
       PYTHON_ARCH: '32'
     - TOXENV: '3.9-nocover'
       TOXPYTHON: C:\python39-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
+      WINDOWS_SDK_VERSION: v10
       PYTHON_HOME: C:\python39-x64
       PYTHON_VERSION: '3.9'
       PYTHON_ARCH: '64'
@@ -137,4 +137,3 @@ artifacts:
 #       PYTHON_ARCH: '64'
 ### To enable remote debugging uncomment this:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-
