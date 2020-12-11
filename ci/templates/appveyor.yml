@@ -9,13 +9,13 @@ environment:
 {% for env, config in tox_environments|dictsort %}{% if not config.cover %}
     - TOXENV: '{{ config.python[-3:] }}-buildonly-nocover'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}\python.exe
-      WINDOWS_SDK_VERSION: v10
+      WINDOWS_SDK_VERSION: 10
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '32'
     - TOXENV: '{{ config.python[-3:] }}-buildonly-nocover'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}-x64\python.exe
-      WINDOWS_SDK_VERSION: v10
+      WINDOWS_SDK_VERSION: 10
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}-x64
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '64'
@@ -32,7 +32,7 @@ environment:
       PYTHON_ARCH: '32'
     - TOXENV: '{{ env }}'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}-x64\python.exe
-      WINDOWS_SDK_VERSION: v10
+      WINDOWS_SDK_VERSION: 10
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}-x64
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '64'
