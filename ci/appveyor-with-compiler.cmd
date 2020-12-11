@@ -39,7 +39,11 @@ IF "%PYTHON_ARCH%"=="32" (
 
 SET DISTUTILS_USE_SDK=1
 SET MSSdk=1
-"%WIN_SDK_ROOT%\Windows Kits\%WINDOWS_SDK_VERSION%\Setup\WindowsSdkVer.exe" -q -version:%WINDOWS_SDK_VERSION%
+FOR /f "delims=" %%d IN ("dir /s /b %VSINSTALLDIR%\WindowsSdkVer.exe") DO @set mySDKEXE=%%d
+IF NOT DEFINED myVCVARSALL EXIT 1
+:: "%WIN_SDK_ROOT%\Windows Kits\%WINDOWS_SDK_VERSION%\Setup\WindowsSdkVer.exe" -q -version:%WINDOWS_SDK_VERSION%
+%mySDKEXE% -q -version:%WINDOWS_SDK_VERSION%
+
 CALL "%WIN_SDK_ROOT%\Windows Kits\%WINDOWS_SDK_VERSION%\Bin\SetEnv.cmd" /x64 /release
 FOR /f "delims=" %%d IN ("dir /s /b %VSINSTALLDIR%\vcvarsall.bat") DO @set myVCVARSALL=%%d
 IF NOT DEFINED myVCVARSALL EXIT 1
