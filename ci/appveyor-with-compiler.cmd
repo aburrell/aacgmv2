@@ -19,10 +19,10 @@
 :: License: CC0 1.0 Universal: http://creativecommons.org/publicdomain/zero/1.0/
 ::
 :: Adapted for Visual Studio 2017 (AGB)
+:: See: https://www.appveyor.com/docs/lang/cpp/#visual-studio-2017
 SET COMMAND_TO_RUN=%*
-SET WIN_SDK_ROOT=C:\Program Files\Microsoft SDKs\Windows
 SET WIN_WDK="c:\Program Files (x86)\Windows Kits\10\Include\wdf"
-ECHO SDK: %WINDOWS_SDK_VERSION% ARCH: %PYTHON_ARCH%
+ECHO ARCH: %PYTHON_ARCH%
 
 
 IF "%PYTHON_VERSION%"=="3.6" (
@@ -32,16 +32,6 @@ IF "%PYTHON_VERSION%"=="3.6" (
     )
     GOTO main
 )
-
-:: IF "%PYTHON_ARCH%"=="32" (
-::     GOTO main
-:: )
-
-:: SET DISTUTILS_USE_SDK=1
-:: SET MSSdk=1
-:: "%WIN_SDK_ROOT%\%WINDOWS_SDK_VERSION%\Setup\WindowsSdkVer.exe" -q -version:%WINDOWS_SDK_VERSION%
-:: CALL "%WIN_SDK_ROOT%\%WINDOWS_SDK_VERSION%\Bin\SetEnv.cmd" /x64 /release
-:: CALL  "%WIN_SDK_ROOT% (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
 
 CALL "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars%PYTHON_ARCH%.bat"
 
