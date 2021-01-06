@@ -9,13 +9,11 @@ environment:
 {% for env, config in tox_environments|dictsort %}{% if not config.cover %}
     - TOXENV: '{{ config.python[-3:] }}-buildonly-nocover'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}\python.exe
-      WINDOWS_SDK_VERSION: v8.1
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '32'
     - TOXENV: '{{ config.python[-3:] }}-buildonly-nocover'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}-x64
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '64'
@@ -32,7 +30,6 @@ environment:
       PYTHON_ARCH: '32'
     - TOXENV: '{{ env }}'
       TOXPYTHON: C:\{{ config.python.replace('.', '') }}-x64\python.exe
-      WINDOWS_SDK_VERSION: v8.1
       PYTHON_HOME: C:\{{ config.python.replace('.', '') }}-x64
       PYTHON_VERSION: '{{ config.python[-3:] }}'
       PYTHON_ARCH: '64'
@@ -64,12 +61,6 @@ on_failure:
   - ps: get-content .tox\*\log\*
 artifacts:
   - path: dist\*
-# matrix:
-#   allow_failures:
-#     - TOXENV: '3.7-nocover'
-#       PYTHON_ARCH: '64'
-#     - TOXENV: '3.8-nocover'
-#       PYTHON_ARCH: '64'
 ### To enable remote debugging uncomment this:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
