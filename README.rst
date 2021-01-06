@@ -76,17 +76,17 @@ Badges
     :target: https://aacgmv2.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. |travis| image:: https://api.travis-ci.org/aburrell/aacgmv2.svg?branch=master
+.. |travis| image:: https://api.travis-ci.org/aburrell/aacgmv2.svg?branch=main
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/github/aburrell/aacgmv2
 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/aburrell/aacgmv2?branch=master&svg=true
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/aburrell/aacgmv2?branch=main&svg=true
     :alt: AppVeyor Build Status
     :target: https://ci.appveyor.com/project/aburrell/aacgmv2
 
-.. |requires| image:: https://requires.io/github/aburrell/aacgmv2/requirements.svg?branch=master
+.. |requires| image:: https://requires.io/github/aburrell/aacgmv2/requirements.svg?branch=main
     :alt: Requirements Status
-    :target: https://requires.io/github/aburrell/aacgmv2/requirements/?branch=master
+    :target: https://requires.io/github/aburrell/aacgmv2/requirements/?branch=main
 
 .. |coveralls| image:: https://coveralls.io/repos/github/aburrell/aacgmv2/badge.svg
     :alt: Coverage Status (Coveralls)
@@ -120,7 +120,7 @@ Badges
     :alt: Supported implementations
     :target: https://pypi.org/project/aacgmv2/
 
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/aburrell/aacgmv2/master.svg?style=flat
+.. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/aburrell/aacgmv2/main.svg?style=flat
     :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/aburrell/aacgmv2/
 

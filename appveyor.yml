@@ -137,5 +137,5 @@ matrix:
     - TOXENV: '3.8-nocover'
       PYTHON_ARCH: '64'
 ### To enable remote debugging uncomment this:
-#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/main/scripts/enable-rdp.ps1'))
 
