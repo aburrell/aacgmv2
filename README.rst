@@ -81,7 +81,6 @@ Badges
     :target: https://travis-ci.org/github/aburrell/aacgmv2
 
 .. |appveyor| image:: https://ci.appveyor.com/api/projects/status/qo01t2obf7bscveu?svg=true
-
     :alt: AppVeyor Build Status
     :target: https://ci.appveyor.com/project/aburrell/aacgmv2
 
