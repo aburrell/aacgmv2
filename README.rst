@@ -76,25 +76,26 @@ Badges
     :target: https://aacgmv2.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. |travis| image:: https://api.travis-ci.org/aburrell/aacgmv2.svg?branch=master
+.. |travis| image:: https://api.travis-ci.org/aburrell/aacgmv2.svg?branch=main
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/github/aburrell/aacgmv2
 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/aburrell/aacgmv2?branch=master&svg=true
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/qo01t2obf7bscveu?svg=true
+
     :alt: AppVeyor Build Status
     :target: https://ci.appveyor.com/project/aburrell/aacgmv2
 
-.. |requires| image:: https://requires.io/github/aburrell/aacgmv2/requirements.svg?branch=master
+.. |requires| image:: https://requires.io/github/aburrell/aacgmv2/requirements.svg?branch=main
     :alt: Requirements Status
-    :target: https://requires.io/github/aburrell/aacgmv2/requirements/?branch=master
+    :target: https://requires.io/github/aburrell/aacgmv2/requirements/?branch=main
 
 .. |coveralls| image:: https://coveralls.io/repos/github/aburrell/aacgmv2/badge.svg
     :alt: Coverage Status (Coveralls)
     :target: https://coveralls.io/github/aburrell/aacgmv2
 
-.. |codacy| image:: https://api.codacy.com/project/badge/Grade/b64ee44194f148f5bdb0f00c7cf16ab8
+.. |codacy| image:: https://api.codacy.com/project/badge/Grade/510602761f7f4a5a97a9d754e65f6f28
     :alt: Codacy Code Quality Status
-    :target: https://www.codacy.com/manual/aburrell/aacgmv2?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aburrell/aacgmv2&amp;utm_campaign=Badge_Grade
+    :target: https://app.codacy.com/gh/aburrell/aacgmv2?utm_source=github.com&utm_medium=referral&utm_content=aburrell/aacgmv2&utm_campaign=Badge_Grade
 
 .. |codeclimate| image:: https://api.codeclimate.com/v1/badges/91f5a91bf3d9ba90cb57/maintainability.svg
    :target: https://codeclimate.com/github/aburrell/aacgmv2
@@ -120,7 +121,7 @@ Badges
     :alt: Supported implementations
     :target: https://pypi.org/project/aacgmv2/
 
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/aburrell/aacgmv2/master.svg?style=flat
+.. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/aburrell/aacgmv2/main.svg?style=flat
     :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/aburrell/aacgmv2/
 
