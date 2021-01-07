@@ -127,3 +127,8 @@ Badges
 .. |doi| image:: https://zenodo.org/badge/doi/10.5281/zenodo.3598705.svg
    :alt: DOI
    :target: https://zenodo.org/record/3598705
+
+
+.. image:: https://api.codacy.com/project/badge/Grade/510602761f7f4a5a97a9d754e65f6f28
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/gh/aburrell/aacgmv2?utm_source=github.com&utm_medium=referral&utm_content=aburrell/aacgmv2&utm_campaign=Badge_Grade
