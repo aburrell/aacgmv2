@@ -23,7 +23,7 @@ if 'PY_CCOV' in os.environ.keys():
 
 setup(
     name='aacgmv2',
-    version='2.6.1',
+    version='2.6.2',
     license='MIT',
     description='A Python wrapper for AACGM-v2 magnetic coordinates',
     long_description='%s\n%s' % (read('README.rst'),
@@ -51,6 +51,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Scientific/Engineering :: Physics',

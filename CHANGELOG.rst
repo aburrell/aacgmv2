@@ -2,10 +2,10 @@
 Changelog
 =========
 
-2.6.2 (2020-XX-XX)
+2.6.2 (2020-01-13)
 ------------------
 
-* Drop support for EOL Python 2.7
+* Drop support for EOL Python 2.7 and added testing for Python 3.9
 * Added a .zenodo.json file
 * Fixed AppVeyor environment
 
