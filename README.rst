@@ -80,7 +80,7 @@ Badges
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/github/aburrell/aacgmv2
 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/aburrell/aacgmv2?branch=main&svg=true
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/qo01t2obf7bscveu?svg=true
     :alt: AppVeyor Build Status
     :target: https://ci.appveyor.com/project/aburrell/aacgmv2
 
@@ -92,9 +92,9 @@ Badges
     :alt: Coverage Status (Coveralls)
     :target: https://coveralls.io/github/aburrell/aacgmv2
 
-.. |codacy| image:: https://api.codacy.com/project/badge/Grade/b64ee44194f148f5bdb0f00c7cf16ab8
+.. |codacy| image:: https://api.codacy.com/project/badge/Grade/510602761f7f4a5a97a9d754e65f6f28
     :alt: Codacy Code Quality Status
-    :target: https://www.codacy.com/manual/aburrell/aacgmv2?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aburrell/aacgmv2&amp;utm_campaign=Badge_Grade
+    :target: https://app.codacy.com/gh/aburrell/aacgmv2?utm_source=github.com&utm_medium=referral&utm_content=aburrell/aacgmv2&utm_campaign=Badge_Grade
 
 .. |codeclimate| image:: https://api.codeclimate.com/v1/badges/91f5a91bf3d9ba90cb57/maintainability.svg
    :target: https://codeclimate.com/github/aburrell/aacgmv2

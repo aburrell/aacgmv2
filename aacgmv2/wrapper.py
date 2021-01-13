@@ -8,19 +8,14 @@
 
 """
 
-from __future__ import division, absolute_import, unicode_literals
 import datetime as dt
 import numpy as np
 import os
 import sys
-import warnings
 
 import aacgmv2
 import aacgmv2._aacgmv2 as c_aacgmv2
 from aacgmv2._aacgmv2 import TRACE, ALLOWTRACE, BADIDEA
-
-if sys.version_info.major == 2:
-    warnings.filterwarnings('error')
 
 
 def test_time(dtime):

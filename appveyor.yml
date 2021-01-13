@@ -1,74 +1,55 @@
 version: '{branch}-{build}'
 build: off
 image:
-- Visual Studio 2015
+- Visual Studio 2019
 environment:
   global:
     WITH_COMPILER: 'cmd /E:ON /V:ON /C .\ci\appveyor-with-compiler.cmd'
   matrix:
-    - TOXENV: '2.7-buildonly-nocover'
-      TOXPYTHON: C:\python27\python.exe
-      WINDOWS_SDK_VERSION: v7.0
-      PYTHON_HOME: C:\python27
-      PYTHON_VERSION: '2.7'
-      PYTHON_ARCH: '32'
-    - TOXENV: '2.7-buildonly-nocover'
-      TOXPYTHON: C:\python27-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.0
-      PYTHON_HOME: C:\python27-x64
-      PYTHON_VERSION: '2.7'
-      PYTHON_ARCH: '64'
     - TOXENV: '3.6-buildonly-nocover'
       TOXPYTHON: C:\python36\python.exe
-      WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python36
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '32'
     - TOXENV: '3.6-buildonly-nocover'
       TOXPYTHON: C:\python36-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python36-x64
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '64'
     - TOXENV: '3.7-buildonly-nocover'
       TOXPYTHON: C:\python37\python.exe
-      WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python37
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '32'
     - TOXENV: '3.7-buildonly-nocover'
       TOXPYTHON: C:\python37-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python37-x64
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '64'
     - TOXENV: '3.8-buildonly-nocover'
       TOXPYTHON: C:\python38\python.exe
-      WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python38
       PYTHON_VERSION: '3.8'
       PYTHON_ARCH: '32'
     - TOXENV: '3.8-buildonly-nocover'
       TOXPYTHON: C:\python38-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python38-x64
       PYTHON_VERSION: '3.8'
+      PYTHON_ARCH: '64'
+    - TOXENV: '3.9-buildonly-nocover'
+      TOXPYTHON: C:\python39\python.exe
+      PYTHON_HOME: C:\python39
+      PYTHON_VERSION: '3.9'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.9-buildonly-nocover'
+      TOXPYTHON: C:\python39-x64\python.exe
+      PYTHON_HOME: C:\python39-x64
+      PYTHON_VERSION: '3.9'
       PYTHON_ARCH: '64'
     - TOXENV: check
       PYTHON_HOME: C:\Python37
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '32'
-    - TOXENV: '2.7-nocover'
-      TOXPYTHON: C:\python27\python.exe
-      PYTHON_HOME: C:\python27
-      PYTHON_VERSION: '2.7'
-      PYTHON_ARCH: '32'
-    - TOXENV: '2.7-nocover'
-      TOXPYTHON: C:\python27-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.0
-      PYTHON_HOME: C:\python27-x64
-      PYTHON_VERSION: '2.7'
-      PYTHON_ARCH: '64'
     - TOXENV: '3.6-nocover'
       TOXPYTHON: C:\python36\python.exe
       PYTHON_HOME: C:\python36
@@ -76,7 +57,6 @@ environment:
       PYTHON_ARCH: '32'
     - TOXENV: '3.6-nocover'
       TOXPYTHON: C:\python36-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python36-x64
       PYTHON_VERSION: '3.6'
       PYTHON_ARCH: '64'
@@ -87,7 +67,6 @@ environment:
       PYTHON_ARCH: '32'
     - TOXENV: '3.7-nocover'
       TOXPYTHON: C:\python37-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python37-x64
       PYTHON_VERSION: '3.7'
       PYTHON_ARCH: '64'
@@ -98,9 +77,18 @@ environment:
       PYTHON_ARCH: '32'
     - TOXENV: '3.8-nocover'
       TOXPYTHON: C:\python38-x64\python.exe
-      WINDOWS_SDK_VERSION: v7.1
       PYTHON_HOME: C:\python38-x64
       PYTHON_VERSION: '3.8'
+      PYTHON_ARCH: '64'
+    - TOXENV: '3.9-nocover'
+      TOXPYTHON: C:\python39\python.exe
+      PYTHON_HOME: C:\python39
+      PYTHON_VERSION: '3.9'
+      PYTHON_ARCH: '32'
+    - TOXENV: '3.9-nocover'
+      TOXPYTHON: C:\python39-x64\python.exe
+      PYTHON_HOME: C:\python39-x64
+      PYTHON_VERSION: '3.9'
       PYTHON_ARCH: '64'
 init:
   - ps: echo $env:TOXENV
@@ -129,13 +117,6 @@ on_failure:
   - ps: get-content .tox\*\log\*
 artifacts:
   - path: dist\*
-matrix:
-  allow_failures:
-    - TOXENV: '2.7-nocover'
-    - TOXENV: '3.7-nocover'
-      PYTHON_ARCH: '64'
-    - TOXENV: '3.8-nocover'
-      PYTHON_ARCH: '64'
 ### To enable remote debugging uncomment this:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/main/scripts/enable-rdp.ps1'))
 

@@ -2,13 +2,20 @@
 Changelog
 =========
 
+2.6.2 (2020-01-13)
+------------------
+
+* Drop support for EOL Python 2.7 and added testing for Python 3.9
+* Added a .zenodo.json file
+* Fixed AppVeyor environment
+
 2.6.1 (2020-09-11)
 ------------------
 
 * Moved formerly deprecated utilities from `deprecated.py` to `utils.py`
 * Removed allowance for deprecated kwarg `code` from `convert_latlon` and
   `convert_latlon_arr`, as scheduled
-* Updated CI to include python 3.8 everywhere
+* Updated CI to include Python 3.8 everywhere
 * Moved all configuration information to setup.cfg
 * Fixed coveralls implementation
 * Fixed broken links in the documentation

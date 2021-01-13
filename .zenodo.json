@@ -1,0 +1,43 @@
+{
+    "license": {
+      "id": "MIT"
+    }, 
+    "notes": "When referencing this package, please cite both the package DOI and the AACGM-v2 journal article: Shepherd, S. G. (2014), Altitude\u2010adjusted corrected geomagnetic coordinates: Definition and functional approximations, Journal of Geophysical Research: Space Physics, 119, 7501\u20137521, doi:10.1002/2014JA020264.",
+    "references": [
+      "Shepherd, S. G. (2014), Altitude\u2010adjusted corrected geomagnetic coordinates: Definition and functional approximations, Journal of Geophysical Research: Space Physics, 119, 7501\u20137521, doi:10.1002/2014JA020264."
+    ], 
+    "keywords": [
+      "AACGM", 
+      "AACGMV2", 
+      "AACGM-v2", 
+      "Altitude Adjusted Corrected Geomagnetic Coordinates", 
+      "MLT", 
+      "Magnetic Local Time", 
+      "Conversion", 
+      "Coordinate Conversion", 
+      "Converting", 
+      "Ionosphere", 
+      "Magnetic Field", 
+      "Space Physics", 
+      "Heliophysics"
+    ], 
+    "creators": [
+      {
+        "orcid": "0000-0001-8875-9326", 
+        "affiliation": "Naval Research Laboratory", 
+        "name": "Angeline G. Burrell"
+      }, 
+      {
+        "orcid": "0000-0002-8043-0953", 
+        "name": "Christer van der Meeren"
+      }, 
+      {
+        "orcid": "0000-0001-5028-4943", 
+        "name": "Karl M. Laundal"
+      },
+      {
+         "orcid": "0000-0001-5715-8632",
+	 "name": "Hugo van Kemenade"
+      }
+    ]
+}

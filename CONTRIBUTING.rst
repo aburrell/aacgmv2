@@ -58,7 +58,7 @@ To set up `aacgmv2` for local development:
    in ``tests/test_py_aacgmv2.py`` (for the wrapper), ``test_c_aacgmv2.py``
    (for the C extension), or ``tests/test_cmd_aacgmv2.py`` (for the
    command-line interface). ``tests/test_dep_aacgmv2.py`` includes tests for
-   deprecated functions.  The tests are run with ``py.test`` and can be
+   deprecated functions.  The tests are run with ``pytest`` and can be
    written as normal functions (starting with ``test_``) containing a standard
    ``assert`` statement for testing output, or use the numpy testing suite.
 
@@ -87,7 +87,7 @@ For merging, you should:
 1. Include passing tests (run ``tox``) [1]_
 2. Update/add documentation if relevant
 3. Add a note to ``CHANGELOG.rst`` about the changes
-4. Add yourself to ``AUTHORS.rst``
+4. Add yourself to the end of ``AUTHORS.rst`` and the ``.zenodo.json`` files
 
 .. [1] If you don't have all the necessary Python versions available locally or
        have trouble building all the testing environments, you can rely on
@@ -99,7 +99,7 @@ Tips
 
 To run a subset of tests::
 
-    tox -e envname -- py.test -k test_myfeature
+    tox -e envname -- pytest -k test_myfeature
 
 To run all the test environments in parallel (you need to ``pip install detox``)::
 
