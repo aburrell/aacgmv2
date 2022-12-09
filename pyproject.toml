@@ -8,7 +8,7 @@ requires = [
 [project]
 name = "aacgmv2"
 license = {file = "LICENSE"}
-description = "A Python wrapper for Apex coordinates"
+description = "A Python wrapper for AACGM-v2 magnetic coordinates"
 maintainers = [
     {name = "Angeline G. Burrell", email = "angeline.burrell@nrl.navy.mil"},
 ]
@@ -50,7 +50,7 @@ classifiers = [
 dynamic = ['version']
 
 [tool.project.scripts]
-apexpy = {reference = 'apexpy.__main__:main', type = 'console'}
+aacgmv2 = {reference = 'aacgmv2.__main__:main', type = 'console'}
 
 [project.optional-dependencies]
 test = [
