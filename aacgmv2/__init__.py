@@ -27,7 +27,7 @@ import os as _os
 from sys import stderr
 
 from aacgmv2.wrapper import convert_bool_to_bit  # noqa F401
-from aacgmv2.wrapper convert_latlon  # noqa F401
+from aacgmv2.wrapper import convert_latlon  # noqa F401
 from aacgmv2.wrapper import convert_latlon_arr  # noqa F401
 from aacgmv2.wrapper import convert_mlt  # noqa F401
 from aacgmv2.wrapper import convert_str_to_bit  # noqa F401
