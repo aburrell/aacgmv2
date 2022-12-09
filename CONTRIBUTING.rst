@@ -14,7 +14,8 @@ time you have given to improve this project.
 Short version
 =============
 
-* Submit bug reports and feature requests at `GitHub <https://github.com/aburrell/aacgmv2/issues>`_
+* Submit bug reports and feature requests at
+  `GitHub <https://github.com/aburrell/aacgmv2/issues>`_
 * Make pull requests to the ``develop`` branch
 
 Bug reports
@@ -50,7 +51,11 @@ To set up `aacgmv2` for local development:
 
     git clone git@github.com:your_name_here/aacgmv2.git
 
-3. Create a branch for local development::
+3. Build the local code to allow for local Python development::
+
+    pip install -e .
+
+4. Create a branch for local development::
 
     git checkout -b name-of-your-bugfix-or-feature
 
@@ -62,17 +67,17 @@ To set up `aacgmv2` for local development:
    written as normal functions (starting with ``test_``) containing a standard
    ``assert`` statement for testing output, or use the numpy testing suite.
 
-4. When you're done making changes, run the local unit tests using pytest::
+5. When you're done making changes, run the local unit tests using pytest::
 
     python -m pytest
 
-5. Commit your changes and push your branch to GitHub::
+6. Commit your changes and push your branch to GitHub::
 
     git add .
     git commit -m "Brief description of your changes"
     git push origin name-of-your-bugfix-or-feature
 
-6. Submit a pull request through the GitHub website. Pull requests should be
+7. Submit a pull request through the GitHub website. Pull requests should be
    made to the ``develop`` branch.
 
 Pull Request Guidelines
@@ -92,14 +97,3 @@ For merging, you should:
        have trouble building all the testing environments, you can rely on
        Travis and AppVeyor - they will run the tests for each change you add in
        the pull request.
-
-Tips
-----
-
-To run a subset of tests::
-
-    tox -e envname -- pytest -k test_myfeature
-
-To run all the test environments in parallel (you need to ``pip install detox``)::
-
-    detox
