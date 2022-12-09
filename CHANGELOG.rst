@@ -2,6 +2,13 @@
 Changelog
 =========
 
+2.7.0 (2023-XX-XX)
+------------------
+
+* Moved CI support to GitHub actions
+* Added a pyproject.toml for PyPi support
+* Updated unit tests to current pytest standards
+
 2.6.2 (2020-01-13)
 ------------------
 
