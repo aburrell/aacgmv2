@@ -62,10 +62,9 @@ To set up `aacgmv2` for local development:
    written as normal functions (starting with ``test_``) containing a standard
    ``assert`` statement for testing output, or use the numpy testing suite.
 
-4. When you're done making changes, run all the checks, doc builder and spell
-   checker with `tox <https://tox.readthedocs.io/en/latest/install.html>`_ [1]_::
+4. When you're done making changes, run the local unit tests using pytest::
 
-    tox
+    python -m pytest
 
 5. Commit your changes and push your branch to GitHub::
 

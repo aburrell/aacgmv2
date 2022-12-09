@@ -64,31 +64,27 @@ Badges
     :stub-columns: 1
 
     * - docs
-      - |docs|
+      - |docs| |links|
     * - tests
-      - | |travis| |appveyor| |requires|
-        | |codeclimate| |scrutinizer| |codacy| |coveralls|
+      - | |ga| |coveralls|
+        | |codeclimate| |scrutinizer| |codacy|
     * - package
       - | |version| |supported-versions|
         | |wheel| |supported-implementations|
 
 .. |docs| image:: https://readthedocs.org/projects/aacgmv2/badge/?version=latest
     :target: https://aacgmv2.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
+    :alt: RTD Documentation Status
 
-.. |travis| image:: https://api.travis-ci.org/aburrell/aacgmv2.svg?branch=main
-    :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/github/aburrell/aacgmv2
+.. |links| image:: https://github.com/aburrell/aacgmv2/actions/workflows/docs.yml/badge.svg
+    :target: https://github.com/aburrell/aacgmv2/actions/workflows/docs.yml
+    :alt: GitHub Actions Documentation Status
 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/qo01t2obf7bscveu?svg=true
-    :alt: AppVeyor Build Status
-    :target: https://ci.appveyor.com/project/aburrell/aacgmv2
+.. |ga| image:: https://github.com/aburrell/aacgmv2/actions/workflows/main.yml/badge.svg
+    :alt: GitHub Actions-CI Build Status
+    :target: https://github.com/aburrell/aacgmv2/actions/workflows/main.yml
 
-.. |requires| image:: https://requires.io/github/aburrell/aacgmv2/requirements.svg?branch=main
-    :alt: Requirements Status
-    :target: https://requires.io/github/aburrell/aacgmv2/requirements/?branch=main
-
-.. |coveralls| image:: https://coveralls.io/repos/github/aburrell/aacgmv2/badge.svg
+.. |coveralls| image:: https://s3.amazonaws.com/assets.coveralls.io/badges/coveralls_97.svg
     :alt: Coverage Status (Coveralls)
     :target: https://coveralls.io/github/aburrell/aacgmv2
 
