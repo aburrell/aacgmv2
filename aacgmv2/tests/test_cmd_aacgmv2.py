@@ -6,7 +6,6 @@ import pytest
 import aacgmv2
 
 
-@pytest.mark.xfail
 class TestCmdAACGMV2(object):
     """Unit tests for the command line interface."""
     def setup_method(self):
@@ -60,29 +59,30 @@ class TestCmdAACGMV2(object):
                       self.convert, '-d', '20150224', '-o',
                       self.output]
         p_commands.extend(pin)
-        p = subprocess.Popen(p_commands)
-        p.communicate()
-        p.wait()
+        pin = subprocess.Popen(p_commands)
+        pin.communicate()
+        pin.wait()
         assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, ref, rtol=self.rtol)
 
     def test_convert_today(self):
         """Test the shape of the output for today's date."""
-        p = subprocess.Popen(['python', '-m', 'aacgmv2', 'convert', '-i',
-                              self.convert, '-o', self.output])
-        p.communicate()
-        p.wait()
+        pin = subprocess.Popen(['python', '-m', 'aacgmv2', 'convert', '-i',
+                                self.convert, '-o', self.output])
+        pin.communicate()
+        pin.wait()
         assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
         assert data.shape == (3, 3)
 
     def test_convert_single_line(self):
         """Test the command line with a single line as input."""
-        p = subprocess.Popen(['python', '-m', 'aacgmv2', 'convert', '-i',
-                              self.single, '-d', '20150224', '-o', self.output])
-        p.communicate()
-        p.wait()
+        pin = subprocess.Popen(['python', '-m', 'aacgmv2', 'convert', '-i',
+                                self.single, '-d', '20150224', '-o',
+                                self.output])
+        pin.communicate()
+        pin.wait()
         assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, [57.4810, 93.5290, 1.04566],
@@ -90,20 +90,21 @@ class TestCmdAACGMV2(object):
 
     def test_main_help(self):
         """Test the help output."""
-        p = subprocess.Popen('python -m aacgmv2 -h', shell=True,
-                             stdout=subprocess.PIPE)
-        stdout, _ = p.communicate()
-        p.wait()
+        pin = subprocess.Popen('python -m aacgmv2 -h', shell=True,
+                               stdout=subprocess.PIPE)
+        stdout, _ = pin.communicate()
+        pin.wait()
         assert b'usage' in stdout
 
     def test_convert_stdin_stdout(self):
         """Test the ability to pipe in inputs and pipe out the outputs."""
-        p = subprocess.Popen(
+        pin = subprocess.Popen(
             'echo 60 15 300 | python -m aacgmv2 convert -d 20150224',
             shell=True, stdout=subprocess.PIPE)
-        stdout, _ = p.communicate()
-        p.wait()
+        stdout, _ = pin.communicate()
+        pin.wait()
         assert b'57.48099198 93.52895314' in stdout
+        pin.close()
 
     @pytest.mark.parametrize('pin,ref',
                              [([], [9.0912, 9.8246, 10.5579]),
@@ -122,20 +123,20 @@ class TestCmdAACGMV2(object):
         p_command = ['python', '-m', 'aacgmv2', 'convert_mlt', '-i',
                      self.mlt, '20150224140015', '-o', self.output]
         p_command.extend(pin)
-        p = subprocess.Popen(p_command)
-        p.communicate()
-        p.wait()
+        pin = subprocess.Popen(p_command)
+        pin.communicate()
+        pin.wait()
         assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, ref, rtol=self.rtol)
 
     def test_convert_mlt_single_line(self):
         """Test the CLI for converting MLT."""
-        p = subprocess.Popen(['python', '-m', 'aacgmv2', 'convert_mlt', '-i',
-                              self.mlt_single, '20150224140015', '-o',
-                              self.output])
-        p.communicate()
-        p.wait()
+        pin = subprocess.Popen(['python', '-m', 'aacgmv2', 'convert_mlt', '-i',
+                                self.mlt_single, '20150224140015', '-o',
+                                self.output])
+        pin.communicate()
+        pin.wait()
         assert os.path.isfile(self.output)
         data = np.loadtxt(self.output)
         np.testing.assert_allclose(data, 9.0912, rtol=self.rtol)
@@ -152,7 +153,7 @@ class TestCmdAACGMV2(object):
             Command to run starting with an echo pipe
 
         """
-        p = subprocess.Popen(echo_command, shell=True, stdout=subprocess.PIPE)
-        stdout, _ = p.communicate()
-        p.wait()
+        pin = subprocess.Popen(echo_command, shell=True, stdout=subprocess.PIPE)
+        stdout, _ = pin.communicate()
+        pin.wait()
         assert b'44.63126817' in stdout
