@@ -1,27 +1,26 @@
 import os
 
-extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.ifconfig',
-    'sphinx.ext.viewcode',
-    'sphinxcontrib.napoleon',
-    'numpydoc'
-]
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.autosummary',
+              'sphinx.ext.todo',
+              'sphinx.ext.coverage',
+              'sphinx.ext.ifconfig',
+              'sphinx.ext.viewcode',
+              'sphinxcontrib.napoleon',
+              'numpydoc']
 
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'AACGM-v2 Python library'
 year = '2020'
-author = 'Angeline G. Burrell, Christer van der Meeren, Karl M. Laundal'
+author = 'Angeline G. Burrell, et al.'
 copyright = '{0}, {1}'.format(year, author)
 version = release = '2.6.2'
-# on_rtd is whether we are on readthedocs.org
+
+# `on_rtd` is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-# only import and set the theme if we're building docs locally
+# Only import and set the theme if we're building docs locally
 if not on_rtd:
     import sphinx_rtd_theme
     html_theme = 'sphinx_rtd_theme'
@@ -32,7 +31,5 @@ templates_path = ['.']
 html_use_smartypants = True
 html_last_updated_fmt = '%b %d, %Y'
 html_split_index = True
-html_sidebars = {
-   '**': ['searchbox.html', 'globaltoc.html', 'sourcelink.html'],
-}
+html_sidebars = {'**': ['searchbox.html', 'globaltoc.html', 'sourcelink.html']}
 html_short_title = '%s-%s' % (project, version)
