@@ -165,6 +165,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
     method_code : str or int
         Bit code or string denoting which type(s) of conversion to perform
         (default="G2A")
+
         G2A
             Geographic (geodetic) to AACGM-v2
         A2G
@@ -266,6 +267,7 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
     method_code : int or str
         Bit code or string denoting which type(s) of conversion to perform
         (default="G2A")
+
         G2A
             Geographic (geodetic) to AACGM-v2
         A2G
@@ -419,6 +421,7 @@ def get_aacgm_coord(glat, glon, height, dtime, method="ALLOWTRACE"):
         Date and time to calculate magnetic location
     method : str
         The type(s) of conversion to perform (default="ALLOWTRACE")
+
         TRACE
             Use field-line tracing, not coefficients
         ALLOWTRACE
@@ -466,6 +469,7 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="ALLOWTRACE"):
         Date and time to calculate magnetic location
     method : str
         The type(s) of conversion to perform (default="ALLOWTRACE")
+
         TRACE
             Use field-line tracing, not coefficients
         ALLOWTRACE
@@ -508,6 +512,7 @@ def convert_str_to_bit(method_code):
     ----------
     method_code : str
         Bitwise code for passing options into converter:
+
         G2A
             Geographic (geodetic) to AACGM-v2
         A2G
