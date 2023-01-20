@@ -21,17 +21,18 @@ def test_time(dtime):
 
     Parameters
     ----------
-    dtime : (any)
+    dtime : any
         Time input in an untested format
 
     Returns
     -------
-    dtime : (dt.datetime)
+    dtime : dt.datetime
         Time as a datetime object
 
     Raises
     ------
-    ValueError if time is not a dt.date or dt.datetime object
+    ValueError
+        If time is not a dt.date or dt.datetime object
 
     """
     if isinstance(dtime, dt.date):
@@ -51,22 +52,22 @@ def test_height(height, bit_code):
 
     Parameters
     ----------
-    height : (float)
+    height : float
         Height to test in km
-    bit_code : (int)
+    bit_code : int
         Code string denoting method to use
 
     Returns
     -------
-    good_height : (bool)
+    good_height : bool
         True if height and method are appropriate, False if not
 
     Notes
     -----
     Appropriate altitude ranges for the different methods are explored in
     Shepherd (2014).  Summarized, they are:
-    | Coefficients: 0-2000 km
-    | Tracing: 0-1 Earth Radius
+    1. Coefficients: 0-2000 km
+    2. Tracing: 0-1 Earth Radius
 
     Altitudes below zero will work, but will not provide a good representation
     of the magnetic field because it goes beyond the intended scope of these
@@ -110,10 +111,10 @@ def set_coeff_path(igrf_file=False, coeff_prefix=False):
 
     Parameters
     ----------
-    igrf_file : (str or bool)
+    igrf_file : str or bool
         Full filename of IGRF coefficient file, True to use
         aacgmv2.IGRF_COEFFS, or False to leave as is. (default=False)
-    coeff_prefix : (str or bool)
+    coeff_prefix : str or bool
         Location and file prefix for aacgm coefficient files, True to use
         aacgmv2.AACGM_V2_DAT_PREFIX, or False to leave as is. (default=False)
 
@@ -153,38 +154,46 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
 
     Parameters
     ----------
-    in_lat : (float)
+    in_lat : float
         Input latitude in degrees N (code specifies type of latitude)
-    in_lon : (float)
+    in_lon : float
         Input longitude in degrees E (code specifies type of longitude)
-    height : (float)
+    height : float
         Altitude above the surface of the earth in km
-    dtime : (datetime)
+    dtime : dt.datetime
         Datetime for magnetic field
-    method_code : (str or int)
-        Bit code or string denoting which type(s) of conversion to perform:
-        | G2A        - geographic (geodetic) to AACGM-v2
-        | A2G        - AACGM-v2 to geographic (geodetic)
-        | TRACE      - use field-line tracing, not coefficients
-        | ALLOWTRACE - use trace only above 2000 km
-        | BADIDEA    - use coefficients above 2000 km
-        | GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
-        | (default="G2A")
+    method_code : str or int
+        Bit code or string denoting which type(s) of conversion to perform
+        (default="G2A")
+        G2A
+            Geographic (geodetic) to AACGM-v2
+        A2G
+            AACGM-v2 to geographic (geodetic)
+        TRACE
+            Use field-line tracing, not coefficients
+        ALLOWTRACE
+            Use trace only above 2000 km
+        BADIDEA
+            Use coefficients above 2000 km
+        GEOCENTRIC
+            Assume inputs are geocentric w/ RE=6371.2
 
     Returns
     -------
-    out_lat : (float)
+    out_lat : float
         Output latitude in degrees N
-    out_lon : (float)
+    out_lon : float
         Output longitude in degrees E
-    out_r : (float)
+    out_r : float
         Geocentric radial distance (R_Earth) or altitude above the surface of
         the Earth (km)
 
     Raises
     ------
-    ValueError if input is incorrect.
-    RuntimeError if unable to set AACGMV2 datetime.
+    ValueError
+        If input is incorrect.
+    RuntimeError
+        If unable to set AACGMV2 datetime.
 
     """
     # Test time
@@ -246,38 +255,46 @@ def convert_latlon_arr(in_lat, in_lon, height, dtime, method_code="G2A"):
 
     Parameters
     ----------
-    in_lat : (np.ndarray or list or float)
+    in_lat : np.ndarray, list, or float
         Input latitude in degrees N (method_code specifies type of latitude)
-    in_lon : (np.ndarray or list or float)
+    in_lon : np.ndarray or list or float
         Input longitude in degrees E (method_code specifies type of longitude)
-    height : (np.ndarray or list or float)
+    height : np.ndarray or list or float
         Altitude above the surface of the earth in km
-    dtime : (datetime)
+    dtime : dt.datetime
         Single datetime object for magnetic field
-    method_code : (int or str)
-        Bit code or string denoting which type(s) of conversion to perform:
-        | G2A        - geographic (geodetic) to AACGM-v2
-        | A2G        - AACGM-v2 to geographic (geodetic)
-        | TRACE      - use field-line tracing, not coefficients
-        | ALLOWTRACE - use trace only above 2000 km
-        | BADIDEA    - use coefficients above 2000 km
-        | GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
-        | (default="G2A")
+    method_code : int or str
+        Bit code or string denoting which type(s) of conversion to perform
+        (default="G2A")
+        G2A
+            Geographic (geodetic) to AACGM-v2
+        A2G
+            AACGM-v2 to geographic (geodetic)
+        TRACE
+            Use field-line tracing, not coefficients
+        ALLOWTRACE
+            Use trace only above 2000 km
+        BADIDEA
+            Use coefficients above 2000 km
+        GEOCENTRIC
+            Assume inputs are geocentric w/ RE=6371.2
 
     Returns
     -------
-    out_lat : (np.ndarray)
+    out_lat : np.ndarray
         Output latitudes in degrees N
-    out_lon : (np.ndarray)
+    out_lon : np.ndarray
         Output longitudes in degrees E
-    out_r : (np.ndarray)
+    out_r : np.ndarray
         Geocentric radial distance (R_Earth) or altitude above the surface of
         the Earth (km)
 
     Raises
     ------
-    ValueError if input is incorrect.
-    RuntimeError if unable to set AACGMV2 datetime.
+    ValueError
+        If input is incorrect.
+    RuntimeError
+        If unable to set AACGMV2 datetime.
 
     Notes
     -----
@@ -392,29 +409,32 @@ def get_aacgm_coord(glat, glon, height, dtime, method="ALLOWTRACE"):
 
     Parameters
     ----------
-    glat : (float)
+    glat : float
         Geodetic latitude in degrees N
-    glon : (float)
+    glon : float
         Geodetic longitude in degrees E
-    height : (float)
+    height : float
         Altitude above the surface of the earth in km
-    dtime : (datetime)
+    dtime : dt.datetime
         Date and time to calculate magnetic location
-    method : (str)
-        String denoting which type(s) of conversion to perform:
-        | TRACE      - use field-line tracing, not coefficients
-        | ALLOWTRACE - use trace only above 2000 km
-        | BADIDEA    - use coefficients above 2000 km
-        | GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
-        | (default="ALLOWTRACE")
+    method : str
+        The type(s) of conversion to perform (default="ALLOWTRACE")
+        TRACE
+            Use field-line tracing, not coefficients
+        ALLOWTRACE
+            Use trace only above 2000 km
+        BADIDEA
+            Use coefficients above 2000 km
+        GEOCENTRIC
+            Assume inputs are geocentric w/ RE=6371.2
 
     Returns
     -------
-    mlat : (float)
+    mlat : float
         Magnetic latitude in degrees N
-    mlon : (float)
+    mlon : float
         Magnetic longitude in degrees E
-    mlt : (float)
+    mlt : float
         Magnetic local time in hours
 
     """
@@ -436,29 +456,32 @@ def get_aacgm_coord_arr(glat, glon, height, dtime, method="ALLOWTRACE"):
 
     Parameters
     ----------
-    glat : (np.array or list)
+    glat : np.array or list
         Geodetic latitude in degrees N
-    glon : (np.array or list)
+    glon : np.array or list
         Geodetic longitude in degrees E
-    height : (np.array or list)
+    height : np.array or list
         Altitude above the surface of the earth in km
-    dtime : (datetime)
+    dtime : dt.datetime
         Date and time to calculate magnetic location
-    method : (str)
-        String denoting which type(s) of conversion to perform:
-        | TRACE      - use field-line tracing, not coefficients
-        | ALLOWTRACE - use trace only above 2000 km
-        | BADIDEA    - use coefficients above 2000 km
-        | GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
-        | (default = "ALLOWTRACE")
+    method : str
+        The type(s) of conversion to perform (default="ALLOWTRACE")
+        TRACE
+            Use field-line tracing, not coefficients
+        ALLOWTRACE
+            Use trace only above 2000 km
+        BADIDEA
+            Use coefficients above 2000 km
+        GEOCENTRIC
+            Assume inputs are geocentric w/ RE=6371.2
 
     Returns
     -------
-    mlat : (float)
+    mlat : float
         Magnetic latitude in degrees N
-    mlon : (float)
+    mlon : float
         Magnetic longitude in degrees E
-    mlt : (float)
+    mlt : float
         Magnetic local time in hours
 
     """
@@ -483,18 +506,24 @@ def convert_str_to_bit(method_code):
 
     Parameters
     ----------
-    method_code : (str)
+    method_code : str
         Bitwise code for passing options into converter:
-        | G2A        - geographic (geodetic) to AACGM-v2
-        | A2G        - AACGM-v2 to geographic (geodetic)
-        | TRACE      - use field-line tracing, not coefficients
-        | ALLOWTRACE - use trace only above 2000 km
-        | BADIDEA    - use coefficients above 2000 km
-        | GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2
+        G2A
+            Geographic (geodetic) to AACGM-v2
+        A2G
+            AACGM-v2 to geographic (geodetic)
+        TRACE
+            Use field-line tracing, not coefficients
+        ALLOWTRACE
+            Use trace only above 2000 km
+        BADIDEA
+            Use coefficients above 2000 km
+        GEOCENTRIC
+            Assume inputs are geocentric w/ RE=6371.2
 
     Returns
     -------
-    bit_code : (int)
+    bit_code : int
         Method code specification in bits
 
     Notes
@@ -525,21 +554,21 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
 
     Parameters
     ----------
-    a2g : (bool)
+    a2g : bool
         True for AACGM-v2 to geographic (geodetic), False otherwise
         (default=False)
-    trace : (bool)
+    trace : bool
         If True, use field-line tracing, not coefficients (default=False)
-    allowtrace : (bool)
+    allowtrace : bool
         If True, use trace only above 2000 km (default=False)
-    badidea : (bool)
+    badidea : bool
         If True, use coefficients above 2000 km (default=False)
-    geocentric : (bool)
+    geocentric : bool
         True for geodetic, False for geocentric w/RE=6371.2 (default=False)
 
     Returns
     -------
-    bit_code : (int)
+    bit_code : int
         code specification in bits
 
     """
@@ -563,17 +592,17 @@ def convert_mlt(arr, dtime, m2a=False):
 
     Parameters
     ----------
-    arr : (array-like or float)
+    arr : array-like or float
         Magnetic longitudes (degrees E) or MLTs (hours) to convert
-    dtime : (array-like or datetime.datetime)
+    dtime : array-like or dt.datetime
         Date and time for MLT conversion in Universal Time (UT).
-    m2a : (bool)
+    m2a : bool
         Convert MLT to AACGM-v2 longitude (True) or magnetic longitude to MLT
         (False).  (default=False)
 
     Returns
     -------
-    out : (np.ndarray)
+    out : np.ndarray
         Converted coordinates/MLT in degrees E or hours (as appropriate)
 
     Notes

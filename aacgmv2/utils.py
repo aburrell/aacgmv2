@@ -24,13 +24,13 @@ def gc2gd_lat(gc_lat):
 
     Parameters
     -----------
-    gc_lat : (array_like or float)
+    gc_lat : array-like or float
         Geocentric latitude in degrees N
 
     Returns
     ---------
-    gd_lat : (same as input)
-        Geodetic latitude in degrees N
+    gd_lat : array-like or float
+        Geodetic latitude in degrees N, same type as input `gc_lat`
 
     """
 
@@ -45,23 +45,24 @@ def subsol(year, doy, utime):
 
     Parameters
     ----------
-    year : (int)
+    year : int
         Calendar year between 1601 and 2100
-    doy : (int)
+    doy : int
         Day of year between 1-365/366
-    utime : (float)
+    utime : float
         Seconds since midnight on the specified day
 
     Returns
     -------
-    sbsllon : (float)
+    sbsllon : float
         Subsolar longitude in degrees E for the given date/time
-    sbsllat : (float)
+    sbsllat : float
         Subsolar latitude in degrees N for the given date/time
 
     Raises
     ------
-    ValueError if year is out of range
+    ValueError
+        If year is out of range
 
     Notes
     -----
@@ -144,12 +145,12 @@ def igrf_dipole_axis(date):
 
     Parameters
     ----------
-    date : (dt.datetime)
+    date : dt.datetime
         Date and time
 
     Returns
     -------
-    m_0: (np.ndarray)
+    m_0 : np.ndarray
         Cartesian 3 element unit vector pointing at dipole pole in the north
         (geocentric coords)
 
