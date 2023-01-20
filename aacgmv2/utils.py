@@ -9,7 +9,7 @@
 References
 ----------
 Laundal, K. M. and A. D. Richmond (2016), Magnetic Coordinate Systems, Space
- Sci. Rev., doi:10.1007/s11214-016-0275-y.
+Sci. Rev., doi:10.1007/s11214-016-0275-y.
 
 """
 
