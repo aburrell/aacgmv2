@@ -104,7 +104,6 @@ class TestCmdAACGMV2(object):
         stdout, _ = pin.communicate()
         pin.wait()
         assert b'57.48099198 93.52895314' in stdout
-        pin.close()
 
     @pytest.mark.parametrize('pin,ref',
                              [([], [9.0912, 9.8246, 10.5579]),
