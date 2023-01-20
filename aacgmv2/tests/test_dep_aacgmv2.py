@@ -18,7 +18,7 @@ class TestFutureDepWarning(object):
         del self.test_routine, self.test_args, self.test_kwargs
 
     def test_future_dep_warning(self):
-        """Test the implementation of FutureWarning for dupicate routines"""
+        """Test the implementation of FutureWarning for dupicate routines."""
         if self.test_routine is None:
             assert True
         else:

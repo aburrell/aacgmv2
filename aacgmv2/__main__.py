@@ -4,7 +4,7 @@
 # the root in the LICENSE file
 #
 # -*- coding: utf-8 -*-
-"""Executed when aacgmv2 is invoked with python -m aacgmv2"""
+"""Executed when aacgmv2 is invoked with python -m aacgmv2."""
 
 
 import argparse
@@ -16,7 +16,7 @@ import aacgmv2
 
 
 def main():
-    """Entry point for the script"""
+    """Entry point for the script."""
 
     desc = 'Converts between geographical coordinates, AACGM-v2, and MLT'
     parser = argparse.ArgumentParser(description=desc)

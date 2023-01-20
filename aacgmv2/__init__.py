@@ -4,11 +4,10 @@
 # the root in the LICENSE file
 #
 # -*- coding: utf-8 -*-
-""" Functions to convert between geographic/geodetic and AACGM-V2 magnetic
-coordinates
+"""Conversion functions between geo-graphic/detic and AACGM-V2 magnetic coords.
 
 Attributes
----------------------------------------------------------------------------
+----------
 logger : (logger)
     Logger handle
 high_alt_coeff : (float)
@@ -47,7 +46,7 @@ logger = logging.getLogger('aacgmv2_logger')
 high_alt_coeff = 2000.0  # Tested and published in Shepherd (2014)
 high_alt_trace = 6378.0  # 1 RE, these are ionospheric coordinates
 
-# path and filename prefix for the IGRF coefficients
+# Path and filename prefix for the IGRF coefficients
 AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath(
     _os.path.dirname(__file__)), 'aacgm_coeffs', 'aacgm_coeffs-13-')
 IGRF_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)),

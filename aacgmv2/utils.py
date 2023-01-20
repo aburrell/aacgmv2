@@ -4,12 +4,12 @@
 # the root in the LICENSE file
 #
 # -*- coding: utf-8 -*-
-"""utilities that support the AACGM-V2 C functions.
+"""Utilities that support the AACGM-V2 C functions.
 
 References
 ----------
 Laundal, K. M. and A. D. Richmond (2016), Magnetic Coordinate Systems, Space
- Sci. Rev., doi:10.1007/s11214-016-0275-y.
+Sci. Rev., doi:10.1007/s11214-016-0275-y.
 
 """
 
@@ -24,13 +24,13 @@ def gc2gd_lat(gc_lat):
 
     Parameters
     -----------
-    gc_lat : (array_like or float)
+    gc_lat : array-like or float
         Geocentric latitude in degrees N
 
     Returns
     ---------
-    gd_lat : (same as input)
-        Geodetic latitude in degrees N
+    gd_lat : array-like or float
+        Geodetic latitude in degrees N, same type as input `gc_lat`
 
     """
 
@@ -41,27 +41,28 @@ def gc2gd_lat(gc_lat):
 
 
 def subsol(year, doy, utime):
-    """Finds subsolar geocentric longitude and latitude.
+    """Find subsolar geocentric longitude and latitude.
 
     Parameters
     ----------
-    year : (int)
+    year : int
         Calendar year between 1601 and 2100
-    doy : (int)
+    doy : int
         Day of year between 1-365/366
-    utime : (float)
+    utime : float
         Seconds since midnight on the specified day
 
     Returns
     -------
-    sbsllon : (float)
+    sbsllon : float
         Subsolar longitude in degrees E for the given date/time
-    sbsllat : (float)
+    sbsllat : float
         Subsolar latitude in degrees N for the given date/time
 
     Raises
     ------
-    ValueError if year is out of range
+    ValueError
+        If year is out of range
 
     Notes
     -----
@@ -140,17 +141,16 @@ def subsol(year, doy, utime):
 
 
 def igrf_dipole_axis(date):
-    """Get Cartesian unit vector pointing at dipole pole in the north,
-    according to IGRF
+    """Get Cartesian unit vector pointing at dipole pole in the north (IGRF).
 
     Parameters
     ----------
-    date : (dt.datetime)
+    date : dt.datetime
         Date and time
 
     Returns
     -------
-    m_0: (np.ndarray)
+    m_0 : np.ndarray
         Cartesian 3 element unit vector pointing at dipole pole in the north
         (geocentric coords)
 
@@ -162,13 +162,13 @@ def igrf_dipole_axis(date):
 
     """
 
-    # get time in years, as float:
+    # Get time in years, as float
     year = date.year
     doy = date.timetuple().tm_yday
     year_days = dt.date(date.year, 12, 31).timetuple().tm_yday
     year = year + doy / year_days
 
-    # read the IGRF coefficients
+    # Read the IGRF coefficients
     with open(aacgmv2.IGRF_COEFFS) as f_igrf:
         lines = f_igrf.readlines()
 
@@ -179,30 +179,30 @@ def igrf_dipole_axis(date):
     g11 = lines[5].split()[3:]
     h11 = lines[6].split()[3:]
 
-    # secular variation coefficients (for extrapolation)
+    # Secular variation coefficients (for extrapolation)
     g10sv = np.float32(g10[-1])
     g11sv = np.float32(g11[-1])
     h11sv = np.float32(h11[-1])
 
-    # model coefficients:
+    # Model coefficients:
     g10 = np.array(g10[:-1], dtype=float)
     g11 = np.array(g11[:-1], dtype=float)
     h11 = np.array(h11[:-1], dtype=float)
 
-    # get the gauss coefficient at given time:
+    # Get the gauss coefficient at given time:
     if year <= years[-1] and year >= years[0]:
-        # regular interpolation
+        # Regular interpolation
         g10 = np.interp(year, years, g10)
         g11 = np.interp(year, years, g11)
         h11 = np.interp(year, years, h11)
     else:
-        # extrapolation
+        # Extrapolation
         dyear = year - years[-1]
         g10 = g10[-1] + g10sv * dyear
         g11 = g11[-1] + g11sv * dyear
         h11 = h11[-1] + h11sv * dyear
 
-    # calculate pole position
+    # Calculate pole position
     B_0 = np.sqrt(g10**2 + g11**2 + h11**2)
 
     # Calculate output

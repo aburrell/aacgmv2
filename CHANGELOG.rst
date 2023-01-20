@@ -9,6 +9,7 @@ Changelog
 * Added a pyproject.toml for PyPi support
 * Updated unit tests to current pytest standards
 * Updated links in the documentation
+* Improved the documentation style and added docstring tests
 
 2.6.2 (2020-01-13)
 ------------------
