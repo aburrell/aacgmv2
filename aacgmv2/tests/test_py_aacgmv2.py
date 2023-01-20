@@ -13,13 +13,21 @@ class TestConvertArray(object):
     """Unit tests for array conversion."""
     def setup_method(self):
         """Create a clean test environment."""
+        self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
+        self.ddate = dt.date(2015, 1, 1)
+        self.lat_in = [60.0, 61.0]
+        self.lon_in = [0.0, 0.0]
+        self.alt_in = [300.0, 300.0]
+        self.method = 'TRACE'
         self.out = None
-        self.ref = None
+        self.ref = [[58.22676, 59.31847], [81.16135, 81.60797],
+                    [0.18880, 0.21857]]
         self.rtol = 1.0e-4
 
     def teardown_method(self):
         """Clean up the test envrionment."""
-        del self.out, self.ref, self.rtol
+        del self.out, self.ref, self.lat_in, self.dtime, self.ddate
+        del self.lon_in, self.alt_in, self.method, self.rtol
 
     def evaluate_output(self, ind=None):
         """Function used to evaluate convert_latlon_arr output.
@@ -45,6 +53,7 @@ class TestConvertArray(object):
 
 class TestConvertLatLon(object):
     """Unit tests for single value conversion."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
@@ -143,28 +152,14 @@ class TestConvertLatLon(object):
 
 class TestConvertLatLonArr(TestConvertArray):
     """Unit tests for Lat/Lon array conversion."""
-    def setup_method(self):
-        """Create a clean test environment."""
-        self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
-        self.ddate = dt.date(2015, 1, 1)
-        self.lat_in = [60.0, 61.0]
-        self.lon_in = [0.0, 0.0]
-        self.alt_in = [300.0, 300.0]
-        self.method = 'TRACE'
-        self.out = None
-        self.ref = [[58.2268, 59.3184], [81.1613, 81.6080], [1.0457, 1.0456]]
-        self.rtol = 1.0e-4
-
-    def teardown_method(self):
-        """Clean up the test envrionment."""
-        del self.lat_in, self.lon_in, self.alt_in, self.dtime, self.ddate
-        del self.method, self.out, self.ref, self.rtol
 
     def test_convert_latlon_arr_single_val(self):
         """Test array latlon conversion for a single value."""
         self.out = aacgmv2.convert_latlon_arr(self.lat_in[0], self.lon_in[0],
                                               self.alt_in[0], self.dtime,
                                               self.method)
+
+        self.ref[2][0] = 1.0457
         self.evaluate_output(ind=0)
 
     def test_convert_latlon_arr_arr_single(self):
@@ -173,6 +168,8 @@ class TestConvertLatLonArr(TestConvertArray):
                                               np.array([self.lon_in[0]]),
                                               np.array([self.alt_in[0]]),
                                               self.dtime, self.method)
+
+        self.ref[2][0] = 1.0457
         self.evaluate_output(ind=0)
 
     def test_convert_latlon_arr_list_single(self):
@@ -181,6 +178,8 @@ class TestConvertLatLonArr(TestConvertArray):
                                               [self.lon_in[0]],
                                               [self.alt_in[0]], self.dtime,
                                               self.method)
+
+        self.ref[2][0] = 1.0457
         self.evaluate_output(ind=0)
 
     def test_convert_latlon_arr_list(self):
@@ -188,6 +187,8 @@ class TestConvertLatLonArr(TestConvertArray):
         self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in,
                                               self.alt_in, self.dtime,
                                               self.method)
+
+        self.ref[2] = [1.0457, 1.0456]
         self.evaluate_output()
 
     def test_convert_latlon_arr_arr(self):
@@ -196,6 +197,8 @@ class TestConvertLatLonArr(TestConvertArray):
                                               np.array(self.lon_in),
                                               np.array(self.alt_in),
                                               self.dtime, self.method)
+
+        self.ref[2] = [1.0457, 1.0456]
         self.evaluate_output()
 
     def test_convert_latlon_arr_list_mix(self):
@@ -203,6 +206,8 @@ class TestConvertLatLonArr(TestConvertArray):
         self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in[0],
                                               self.alt_in[0], self.dtime,
                                               self.method)
+
+        self.ref[2] = [1.0457, 1.0456]
         self.evaluate_output()
 
     def test_convert_latlon_arr_arr_mix(self):
@@ -210,6 +215,8 @@ class TestConvertLatLonArr(TestConvertArray):
         self.out = aacgmv2.convert_latlon_arr(np.array(self.lat_in),
                                               self.lon_in[0], self.alt_in[0],
                                               self.dtime, self.method)
+
+        self.ref[2] = [1.0457, 1.0456]
         self.evaluate_output()
 
     def test_convert_latlon_arr_arr_mult_and_single_element(self):
@@ -218,6 +225,8 @@ class TestConvertLatLonArr(TestConvertArray):
                                               np.array([self.lon_in[0]]),
                                               np.array(self.alt_in),
                                               self.dtime, self.method)
+
+        self.ref[2] = [1.0457, 1.0456]
         self.evaluate_output()
 
     @pytest.mark.parametrize('method_code,alt,local_ref',
@@ -262,6 +271,8 @@ class TestConvertLatLonArr(TestConvertArray):
         self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in,
                                               self.alt_in, self.ddate,
                                               self.method)
+
+        self.ref[2] = [1.0457, 1.0456]
         self.evaluate_output()
 
     def test_convert_latlon_arr_clip(self):
@@ -376,23 +387,6 @@ class TestGetAACGMCoord(object):
 
 class TestGetAACGMCoordArr(TestConvertArray):
     """Unit tests for AACGM coordinate array conversion."""
-    def setup_method(self):
-        """Create a clean test environment."""
-        self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
-        self.ddate = dt.date(2015, 1, 1)
-        self.lat_in = [60.0, 61.0]
-        self.lon_in = [0.0, 0.0]
-        self.alt_in = [300.0, 300.0]
-        self.method = 'TRACE'
-        self.out = None
-        self.ref = [[58.22676, 59.31847], [81.16135, 81.60797],
-                    [0.18880, 0.21857]]
-        self.rtol = 1.0e-4
-
-    def teardown_method(self):
-        """Clean up the test envrionment."""
-        del self.out, self.ref, self.lat_in, self.dtime, self.ddate
-        del self.lon_in, self.alt_in, self.method, self.rtol
 
     def test_get_aacgm_coord_arr_single_val(self):
         """Test array AACGMV2 calculation for a single value."""
