@@ -105,8 +105,9 @@ def main():
         np.savetxt(args.file_out, out, fmt='%.8f')
 
     # If not a pipe to STDOUT or STDERR, ensure the file is closed
-    if(args.file_out.name.find('stdout') < 0
-       and args.file_out.name.find('stderr') < 0):
+    not_pipe = ((args.file_out.name.find('stdout') < 0)
+                & (args.file_out.name.find('stderr') < 0))
+    if not_pipe:
         args.file_out.close()
 
 
