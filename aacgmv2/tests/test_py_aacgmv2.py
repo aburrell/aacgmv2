@@ -30,7 +30,7 @@ class TestConvertArray(object):
         del self.lon_in, self.alt_in, self.method, self.rtol
 
     def evaluate_output(self, ind=None):
-        """Function used to evaluate convert_latlon_arr output.
+        """Evaluate convert_latlon_arr output.
 
         Parameters
         ----------
@@ -286,7 +286,7 @@ class TestConvertLatLonArr(TestConvertArray):
         self.evaluate_output()
 
     def test_convert_latlon_arr_maxalt_failure(self):
-        """test convert_latlon_arr failure for altitudes too high for coeffs."""
+        """Test convert_latlon_arr failure for altitudes too high for coeffs."""
         self.method = ""
         self.out = aacgmv2.convert_latlon_arr(self.lat_in[0], self.lon_in[0],
                                               [2001], self.dtime, self.method)
@@ -361,7 +361,7 @@ class TestGetAACGMCoord(object):
         np.all(np.isnan(np.array(self.out)))
 
     def test_get_aacgm_coord_maxalt_failure(self):
-        """test get_aacgm_coord failure for an altitude too high for coeffs."""
+        """Test get_aacgm_coord failure for an altitude too high for coeffs."""
         self.in_args.extend([2001, self.dtime, ""])
         self.out = aacgmv2.get_aacgm_coord(*self.in_args)
         assert np.all(np.isnan(np.array(self.out)))
@@ -492,7 +492,7 @@ class TestGetAACGMCoordArr(TestConvertArray):
         self.evaluate_output()
 
     def test_get_aacgm_coord_arr_maxalt_failure(self):
-        """test aacgm_coord_arr failure for an altitude too high for coeff."""
+        """Test aacgm_coord_arr failure for an altitude too high for coeff."""
         self.method = ""
         self.alt_in = [2001 for ll in self.lat_in]
         self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in, self.lon_in,
@@ -518,13 +518,13 @@ class TestConvertCode(object):
         del self.c_method_code, self.ref_code, self.out
 
     def set_c_code(self):
-        """Utility test to get desired C method code."""
+        """Set desired C method code."""
         if self.ref_code is not None:
             self.ref_code = self.ref_code.upper()
             self.c_method_code = getattr(aacgmv2._aacgmv2, self.ref_code)
 
     def set_bad_c_code(self):
-        """Test failure to get bad code name."""
+        """Raise a failure through a bad code name."""
         self.ref_code = "not_a_valid_code"
         with pytest.raises(AttributeError):
             self.set_c_code()
@@ -591,6 +591,7 @@ class TestConvertCode(object):
 
 class TestMLTConvert(object):
     """Unit tests for MLT conversion."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
@@ -651,7 +652,7 @@ class TestMLTConvert(object):
                                        decimal=6)
 
     def test_mlt_convert_mlon_wrapping(self):
-        """Test mlon wrapping."""
+        """Test magnetic longitude wrapping."""
         self.mlt_out = aacgmv2.convert_mlt(np.array([270, -90, 1, 361]),
                                            self.dtime, m2a=False)
 
@@ -709,6 +710,7 @@ class TestMLTConvert(object):
 
 class TestCoeffPath(object):
     """Unit tests for the coefficient path."""
+
     def setup_method(self):
         """Create a clean test environment."""
         os.environ['IGRF_COEFFS'] = "default_igrf"
@@ -760,6 +762,7 @@ class TestCoeffPath(object):
 
 class TestHeightReturns(object):
     """Unit tests for heights."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.code = aacgmv2._aacgmv2.A2G
@@ -810,9 +813,9 @@ class TestHeightReturns(object):
 
 class TestPyLogging(object):
     """Unit tests for logging output."""
+
     def setup_method(self):
         """Create a clean test environment."""
-
         self.lwarn = ""
         self.lout = ""
         self.log_capture = StringIO()
@@ -863,6 +866,7 @@ class TestPyLogging(object):
 
 class TestTimeReturns(object):
     """Unit tests for time functions."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
@@ -875,17 +879,14 @@ class TestTimeReturns(object):
 
     def test_good_time(self):
         """Test to see that a good datetime is accepted."""
-
         assert self.dtime == aacgmv2.wrapper.test_time(self.dtime)
 
     def test_good_time_with_nonzero_time(self):
         """Test to see that a good datetime with h/m/s is accepted."""
-
         assert self.dtime2 == aacgmv2.wrapper.test_time(self.dtime2)
 
     def test_good_date(self):
         """Test to see that a good date has a good datetime output."""
-
         assert self.dtime == aacgmv2.wrapper.test_time(self.dtime)
 
     def test_bad_time(self):

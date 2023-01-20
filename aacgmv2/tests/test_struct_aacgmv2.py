@@ -7,9 +7,9 @@ import pytest
 import aacgmv2
 
 
-# @pytest.mark.skip(reason="Not meant to be run alone")
 class TestModuleStructure(object):
     """Class for testing the module structure."""
+
     def setup_method(self):
         """Create a clean test environment."""
         # Define the acceptable output
@@ -78,6 +78,7 @@ class TestModuleStructure(object):
 
 class TestDepStructure(TestModuleStructure):
     """Test the deprecated structure."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.module_name = None
@@ -100,6 +101,7 @@ class TestDepStructure(TestModuleStructure):
 
 class TestUtilsStructure(TestModuleStructure):
     """Test the utility structure."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.module_name = None
@@ -122,6 +124,7 @@ class TestUtilsStructure(TestModuleStructure):
 
 class TestCStructure(TestModuleStructure):
     """Test the C structure."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.module_name = None
@@ -147,6 +150,7 @@ class TestCStructure(TestModuleStructure):
 
 class TestPyStructure(TestModuleStructure):
     """Test the Python structure."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.module_name = None
@@ -173,6 +177,7 @@ class TestPyStructure(TestModuleStructure):
 
 class TestTopStructure(TestModuleStructure):
     """Test the top-level structure."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.module_name = None
@@ -206,6 +211,7 @@ class TestTopStructure(TestModuleStructure):
 
 class TestTopVariables(object):
     """Test the top-level variables."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.alt_limits = {"coeff": 2000.0, "trace": 6378.0}

@@ -6,6 +6,7 @@ import pytest
 @pytest.mark.xfail
 class TestPyEnviron(object):
     """Unit tests for the AACGMV2 environment variables."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.igrf_path = os.path.join("aacgmv2", "aacgmv2",

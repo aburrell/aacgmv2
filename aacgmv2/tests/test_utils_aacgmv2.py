@@ -7,8 +7,9 @@ from aacgmv2 import utils
 
 class TestUtilsAACGMV2(object):
     """Unit tests for the utility functions."""
+
     def setup_method(self):
-        """Run before every method to create a clean testing setup."""
+        """Set up every method to create a clean testing setup."""
         self.rtol = 1.0e-4
         self.out = None
 
