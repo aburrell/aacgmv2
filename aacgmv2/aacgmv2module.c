@@ -288,21 +288,21 @@ static PyMethodDef aacgm_v2_methods[] = {
   { "set_datetime", aacgm_v2_setdatetime, METH_VARARGS,
     "set_datetime(year, month, day, hour, minute, second)\n\
 \n\
-Sets the date and time for the IGRF magnetic field.\n\
+Set the date and time for the IGRF magnetic field.\n\
 \n\
 Parameters \n\
 -------------\n\
-year : (int)\n\
-    Four digit year starting from 1900, ending 2020\n\
-month : (int)\n\
+year : int\n\
+    Four digit year starting from 1590, ending 2025\n\
+month : int\n\
     Month of year ranging from 1-12\n\
-day : (int)\n\
+day : int\n\
     Day of month (1-31)\n\
-hour : (int)\n\
+hour : int\n\
     Hour of day (0-23)\n\
-minute : (int)\n\
+minute : int\n\
     Minute of hour (0-59)\n\
-second : (int)\n\
+second : int\n\
     Seconds of minute (0-59)\n\
 \n\
 Returns\n\
@@ -315,28 +315,35 @@ Converts between geographic/dedic and magnetic coordinates.\n\
 \n\
 Parameters\n\
 -------------\n\
-in_lat : (float)\n\
+in_lat : float\n\
     Input latitude in degrees N (code specifies type of latitude)\n\
-in_lon : (float)\n\
+in_lon : float\n\
     Input longitude in degrees E (code specifies type of longitude)\n\
-height : (float)\n\
+height : float\n\
     Altitude above the surface of the earth in km\n\
-code : (int)	\n\
+code : int	\n\
     Bitwise code for passing options into converter (default=0)\n\
-    0  - G2A        - geographic (geodetic) to AACGM-v2	\n\
-    1  - A2G        - AACGM-v2 to geographic (geodetic)	\n\
-    2  - TRACE      - use field-line tracing, not coefficients\n\
-    4  - ALLOWTRACE - use trace only above 2000 km\n\
-    8  - BADIDEA    - use coefficients above 2000 km\n\
-    16 - GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2\n\
+\n\
+    0 - G2A \n\
+        Geographic (geodetic) to AACGM-v2	\n\
+    1 - A2G \n\
+        AACGM-v2 to geographic (geodetic)	\n\
+    2 - TRACE \n\
+        Use field-line tracing, not coefficients\n\
+    4 - ALLOWTRACE \n\
+        Use trace only above 2000 km\n\
+    8 - BADIDEA \n\
+        Use coefficients above 2000 km\n\
+    16 - GEOCENTRIC \n\
+        Assume inputs are geocentric w/ RE=6371.2\n\
 \n\
 Returns	\n\
 -------\n\
-out_lat : (float)\n\
+out_lat : float\n\
     Output latitude in degrees\n\
-out_lon : (float)\n\
+out_lon : float\n\
     Output longitude in degrees\n\
-out_r : (float)\n\
+out_r : float\n\
     Geocentric radial distance in Re\n", },
   { "convert_arr", aacgm_v2_convert_arr, METH_VARARGS,
     "convert_arr(in_lat, in_lon, height, code)\n\
@@ -345,30 +352,37 @@ Converts between geographic/dedic and magnetic coordinates.\n\
 \n\
 Parameters\n\
 -------------\n\
-in_lat : (list)\n\
+in_lat : list\n\
     Input latitudes in degrees N (code specifies type of latitude)\n\
-in_lon : (list)\n\
+in_lon : list\n\
     Input longitudes in degrees E (code specifies type of longitude)\n\
-height : (list)\n\
+height : list\n\
     Altitudes above the surface of the earth in km\n\
-code : (int)	\n\
+code : int	\n\
     Bitwise code for passing options into converter (default=0)\n\
-    0  - G2A        - geographic (geodetic) to AACGM-v2	\n\
-    1  - A2G        - AACGM-v2 to geographic (geodetic)	\n\
-    2  - TRACE      - use field-line tracing, not coefficients\n\
-    4  - ALLOWTRACE - use trace only above 2000 km\n\
-    8  - BADIDEA    - use coefficients above 2000 km\n\
-    16 - GEOCENTRIC - assume inputs are geocentric w/ RE=6371.2\n\
+\n\
+    0 - G2A \n\
+        Geographic (geodetic) to AACGM-v2	\n\
+    1 - A2G \n\
+        AACGM-v2 to geographic (geodetic)	\n\
+    2 - TRACE \n\
+        Use field-line tracing, not coefficients\n\
+    4 - ALLOWTRACE \n\
+        Use trace only above 2000 km\n\
+    8 - BADIDEA \n\
+        Use coefficients above 2000 km\n\
+    16 - GEOCENTRIC \n\
+        Assume inputs are geocentric w/ RE=6371.2\n\
 \n\
 Returns	\n\
 -------\n\
-out_lat : (list)\n\
+out_lat : list\n\
     Output latitudes in degrees\n\
-out_lon : (list)\n\
+out_lon : list\n\
     Output longitudes in degrees\n\
-out_r : (list)\n\
+out_r : list\n\
     Geocentric radial distances in Re\n\
-out_bad : (list)\n\
+out_bad : list\n\
     Indices at or greater than zero indicate filler data in previous outputs\n\
 \n\
 Notes \n\
@@ -382,24 +396,24 @@ Converts from universal time to magnetic local time.\n\
 \n\
 Parameters\n\
 -------------\n\
-yr : (list)\n\
-    4 digit integer year (1900-2020)\n\
-mo : (list)\n\
+yr : list\n\
+    4 digit integer year (1590-2025)\n\
+mo : list\n\
     Month of year (1-12)\n\
-dy : (list)\n\
+dy : list\n\
     Day of month (1-31)\n\
-hr : (list)\n\
+hr : list\n\
     hours of day (0-23)\n\
-mt : (list)\n\
+mt : list\n\
     Minutes of hour (0-59)\n\
-sc : (list)\n\
+sc : list\n\
     Seconds of minute (0-59)\n\
-mlon : (list)\n\
+mlon : list\n\
     Magnetic longitude\n\
 \n\
 Returns	\n\
 -------\n\
-mlt : (list)\n\
+mlt : list\n\
     Magnetic local time (hours)\n" },
   {"mlt_convert", mltconvert_v2, METH_VARARGS,
     "mlt_convert(yr, mo, dy, hr, mt, sc, mlon)\n\
@@ -408,24 +422,24 @@ Converts from universal time to magnetic local time.\n\
 \n\
 Parameters\n\
 -------------\n\
-yr : (int)\n\
-    4 digit integer year (1900-2020)\n\
-mo : (int)\n\
+yr : int\n\
+    4 digit integer year (1590-2025)\n\
+mo : int\n\
     Month of year (1-12)\n\
-dy : (int)\n\
+dy : int\n\
     Day of month (1-31)\n\
-hr : (int)\n\
+hr : int\n\
     hours of day (0-23)\n\
-mt : (int)\n\
+mt : int\n\
     Minutes of hour (0-59)\n\
-sc : (int)\n\
+sc : int\n\
     Seconds of minute (0-59)\n\
-mlon : (float)\n\
+mlon : float\n\
     Magnetic longitude\n\
 \n\
 Returns	\n\
 -------\n\
-mlt : (float)\n\
+mlt : float\n\
     Magnetic local time (hours)\n" },
 
   {"mlt_convert_yrsec", mltconvert_yrsec_v2, METH_VARARGS,
@@ -435,16 +449,16 @@ Converts from universal time to magnetic local time.\n\
 \n\
 Parameters\n\
 -------------\n\
-yr : (int)\n\
-    4 digit integer year (1900-2020)\n\
-yr_sec : (int)\n\
+yr : int\n\
+    4 digit integer year (1590-2025)\n\
+yr_sec : int\n\
     Seconds of year (0-31622400)\n\
-mlon : (float)\n\
+mlon : float\n\
     Magnetic longitude\n\
 \n\
 Returns	\n\
 -------\n\
-mlt : (float)\n\
+mlt : float\n\
     Magnetic local time (hours)\n" },
     {"inv_mlt_convert_arr", inv_mltconvert_v2_arr, METH_VARARGS,
     "inv_mlt_convert_arr(yr, mo, dy, hr, mt, sc, mlt)\n\
@@ -453,24 +467,24 @@ Converts from universal time and magnetic local time to magnetic longitude.\n\
 \n\
 Parameters\n\
 -------------\n\
-yr : (list)\n\
-    4 digit integer year (1900-2020)\n\
-mo : (list)\n\
+yr : list\n\
+    4 digit integer year (1590-2025)\n\
+mo : list\n\
     Month of year (1-12)\n\
-dy : (list)\n\
+dy : list\n\
     Day of month (1-31)\n\
-hr : (list)\n\
+hr : list\n\
     hours of day (0-23)\n\
-mt : (list)\n\
+mt : list\n\
     Minutes of hour (0-59)\n\
-sc : (list)\n\
+sc : list\n\
     Seconds of minute (0-59)\n\
-mlt : (list)\n\
+mlt : list\n\
     Magnetic local time\n\
 \n\
 Returns	\n\
 -------\n\
-mlon : (list)\n\
+mlon : list\n\
     Magnetic longitude (degrees)\n" },
 
   {"inv_mlt_convert", inv_mltconvert_v2, METH_VARARGS,
@@ -480,24 +494,24 @@ Converts from universal time and magnetic local time to magnetic longitude.\n\
 \n\
 Parameters\n\
 -------------\n\
-yr : (int)\n\
-    4 digit integer year (1900-2020)\n\
-mo : (int)\n\
+yr : int\n\
+    4 digit integer year (1590-2025)\n\
+mo : int\n\
     Month of year (1-12)\n\
-dy : (int)\n\
+dy : int\n\
     Day of month (1-31)\n\
-hr : (int)\n\
+hr : int\n\
     hours of day (0-23)\n\
-mt : (int)\n\
+mt : int\n\
     Minutes of hour (0-59)\n\
-sc : (int)\n\
+sc : int\n\
     Seconds of minute (0-59)\n\
-mlt : (float)\n\
+mlt : float\n\
     Magnetic local time\n\
 \n\
 Returns	\n\
 -------\n\
-mlon : (float)\n\
+mlon : float\n\
     Magnetic longitude (degrees)\n" },
 
   {"inv_mlt_convert_yrsec", inv_mltconvert_yrsec_v2, METH_VARARGS,
@@ -507,16 +521,16 @@ Converts from universal time and magnetic local time to magnetic longitude.\n\
 \n\
 Parameters\n\
 -------------\n\
-yr : (int)\n\
-    4 digit integer year (1900-2020)\n\
-yr_sec : (int)\n\
+yr : int\n\
+    4 digit integer year (1590-2025)\n\
+yr_sec : int\n\
     Seconds of year (0-31622400)\n\
-mlt : (float)\n\
+mlt : float\n\
     Magnetic local time\n\
 \n\
 Returns	\n\
 -------\n\
-mlon : (float)\n\
+mlon : float\n\
     Magnetic longitude (degrees)\n" },
   { NULL, NULL, 0, NULL }
 };
