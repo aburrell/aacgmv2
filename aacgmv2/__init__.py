@@ -26,12 +26,16 @@ import logging
 import os as _os
 from sys import stderr
 
-from aacgmv2.wrapper import (convert_latlon, convert_mlt, get_aacgm_coord)
-from aacgmv2.wrapper import (convert_latlon_arr, get_aacgm_coord_arr)
-from aacgmv2.wrapper import (convert_bool_to_bit, convert_str_to_bit)
-from aacgmv2 import (utils)
-from aacgmv2 import (deprecated)
-from aacgmv2 import (_aacgmv2)
+from aacgmv2.wrapper import convert_bool_to_bit  # noqa F401
+from aacgmv2.wrapper import convert_latlon  # noqa F401
+from aacgmv2.wrapper import convert_latlon_arr  # noqa F401
+from aacgmv2.wrapper import convert_mlt  # noqa F401
+from aacgmv2.wrapper import convert_str_to_bit  # noqa F401
+from aacgmv2.wrapper import get_aacgm_coord  # noqa F401
+from aacgmv2.wrapper import get_aacgm_coord_arr  # noqa F401
+from aacgmv2 import _aacgmv2  # noqa F401
+from aacgmv2 import deprecated  # noqa F401
+from aacgmv2 import utils  # noqa F401
 
 # Define global variables
 __version__ = "2.6.2"

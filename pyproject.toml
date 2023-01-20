@@ -1,0 +1,67 @@
+[build-system]
+requires = [
+	 "wheel",
+	 "setuptools",
+	 "oldest-supported-numpy",
+]
+
+[project]
+name = "aacgmv2"
+license = {file = "LICENSE"}
+description = "A Python wrapper for AACGM-v2 magnetic coordinates"
+maintainers = [
+    {name = "Angeline G. Burrell", email = "angeline.burrell@nrl.navy.mil"},
+]
+requires-python = ">=3.7"
+dependencies = [
+    "numpy",
+]
+readme = "README.rst"
+keywords = [
+        'aacgm',
+        'aacgm-v2',
+        'aacgmv2',
+        'magnetic coordinates',
+        'altitude adjusted corrected geomagnetic coordinates',
+        'mlt',
+        'magnetic local time',
+        'conversion',
+        'converting',
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    'Operating System :: Unix',
+    'Operating System :: POSIX',
+    'Operating System :: MacOS :: MacOS X',
+    'Operating System :: Microsoft :: Windows',
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Utilities",
+]
+dynamic = ['version']
+
+[tool.project.scripts]
+aacgmv2 = {reference = 'aacgmv2.__main__:main', type = 'console'}
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+  "pytest-cov",
+  "pytest-xdist",
+  ]
+doc = ["sphinx>=1.3", "sphinx-rtd-theme"]
+
+[project.urls]
+source = "https://github.com/aburrell/aacgmv2"
+documentation = "https://aacgmv2.readthedocs.io/en/latest/"
+tracker = "https://github.com/aburrell/aacgmv2/issues"
+download = "https://github.com/aburrell/aacgmv2/releases"
