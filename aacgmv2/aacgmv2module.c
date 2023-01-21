@@ -60,7 +60,6 @@ static PyObject *aacgm_v2_convert_arr(PyObject *self, PyObject *args)
   double in_lat, in_lon, in_h, out_lat, out_lon, out_r;
 
   PyObject *latIn, *lonIn, *hIn, *latOut, *lonOut, *rOut, *badOut, *allOut;
-  PyObject *badInt, *badFloat;
 
   /* Parse the input as a tuple */
   if(!PyArg_ParseTuple(args, "O!O!O!i", &PyList_Type, &latIn, &PyList_Type,
@@ -73,31 +72,31 @@ static PyObject *aacgm_v2_convert_arr(PyObject *self, PyObject *args)
   lonOut = PyList_New(in_num);
   rOut   = PyList_New(in_num);
   badOut = PyList_New(in_num);
-  badInt = PyLong_FromLong((int long)(-1));
-  badFloat = PyFloat_FromDouble(-666.0);
 
   /* Cycle through all of the inputs */
   for(i=0; i<in_num; i++)
     {
-      /* Read in the input */
+      /* Read in the input and convert to doubles. GetItem are BORROWED */
       in_lat = PyFloat_AsDouble(PyList_GetItem(latIn, i));
       in_lon = PyFloat_AsDouble(PyList_GetItem(lonIn, i));
       in_h   = PyFloat_AsDouble(PyList_GetItem(hIn, i));
-	       
+ 
       /* Call the AACGM routine */
       err = AACGM_v2_Convert(in_lat, in_lon, in_h, &out_lat, &out_lon,
 			     &out_r, code);
+
+      /* Set the output */
       if(err < 0)
 	{
 	  /* Python 3.7+ raises a SystemError when passing on inf */
 	  PyList_SetItem(badOut, i, PyLong_FromLong((int long)i));
-	  PyList_SetItem(latOut, i, badFloat);
-	  PyList_SetItem(lonOut, i, badFloat);
-	  PyList_SetItem(rOut, i, badFloat);
+	  PyList_SetItem(latOut, i, PyFloat_FromDouble(-666.0));
+	  PyList_SetItem(lonOut, i, PyFloat_FromDouble(-666.0));
+	  PyList_SetItem(rOut, i, PyFloat_FromDouble(-666.0));
 	}
       else
 	{
-	  PyList_SetItem(badOut, i, badInt);
+	  PyList_SetItem(badOut, i, PyLong_FromLong((int long)(-1)));
 	  PyList_SetItem(latOut, i, PyFloat_FromDouble(out_lat));
 	  PyList_SetItem(lonOut, i, PyFloat_FromDouble(out_lon));
 	  PyList_SetItem(rOut, i, PyFloat_FromDouble(out_r));
@@ -106,7 +105,16 @@ static PyObject *aacgm_v2_convert_arr(PyObject *self, PyObject *args)
 
   /* Set the output tuple */
   allOut = PyTuple_Pack(4, latOut, lonOut, rOut, badOut);
-  
+
+  /* Free memory */
+  Py_DECREF(latIn);
+  Py_DECREF(lonIn);
+  Py_DECREF(hIn);
+  Py_DECREF(latOut);
+  Py_DECREF(lonOut);
+  Py_DECREF(rOut);
+  Py_DECREF(badOut);
+
   return allOut;
 }
 
