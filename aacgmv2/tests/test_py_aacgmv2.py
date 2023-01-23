@@ -153,6 +153,23 @@ class TestConvertLatLon(object):
 class TestConvertLatLonArr(TestConvertArray):
     """Unit tests for Lat/Lon array conversion."""
 
+    def test_convert_latlon_arr_large(self):
+        """Test array latlon conversion for a large array."""
+        # Update input
+        self.lat_in = np.full(shape=(6000,), fill_value=self.lat_in[0])
+        self.lon_in = np.full(shape=(6000,), fill_value=self.lon_in[0])
+
+        # Update expected output
+        self.ref[0] = np.full(shape=(6000,), fill_value=self.ref[0][0])
+        self.ref[1] = np.full(shape=(6000,), fill_value=self.ref[1][0])
+        self.ref[2] = np.full(shape=(6000,), fill_value=1.0457)
+
+        # Run the conversion and evaluate
+        self.out = aacgmv2.convert_latlon_arr(self.lat_in, self.lon_in,
+                                              self.alt_in[0], self.dtime,
+                                              self.method)
+        self.evaluate_output()
+        
     def test_convert_latlon_arr_single_val(self):
         """Test array latlon conversion for a single value."""
         self.out = aacgmv2.convert_latlon_arr(self.lat_in[0], self.lon_in[0],
@@ -388,6 +405,24 @@ class TestGetAACGMCoord(object):
 class TestGetAACGMCoordArr(TestConvertArray):
     """Unit tests for AACGM coordinate array conversion."""
 
+    def test_get_aacgm_coord_arr_large(self):
+        """Test array conversion for a large array."""
+        # Update input
+        self.lat_in = np.full(shape=(6000,), fill_value=self.lat_in[0])
+        self.lon_in = np.full(shape=(6000,), fill_value=self.lon_in[0])
+        self.alt_in = np.full(shape=(6000,), fill_value=self.alt_in[0])
+
+        # Update expected output
+        self.ref[0] = np.full(shape=(6000,), fill_value=self.ref[0][0])
+        self.ref[1] = np.full(shape=(6000,), fill_value=self.ref[1][0])
+        self.ref[2] = np.full(shape=(6000,), fill_value=self.ref[2][0])
+
+        # Run the conversion and evaluate
+        self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in, self.lon_in,
+                                               self.alt_in, self.dtime,
+                                               self.method)
+        self.evaluate_output()
+    
     def test_get_aacgm_coord_arr_single_val(self):
         """Test array AACGMV2 calculation for a single value."""
         self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in[0], self.lon_in[0],
