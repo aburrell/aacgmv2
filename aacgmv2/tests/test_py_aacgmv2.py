@@ -1,5 +1,4 @@
 import datetime as dt
-from io import StringIO
 import logging
 import numpy as np
 import os
@@ -169,7 +168,7 @@ class TestConvertLatLonArr(TestConvertArray):
                                               self.alt_in[0], self.dtime,
                                               self.method)
         self.evaluate_output()
-        
+
     def test_convert_latlon_arr_single_val(self):
         """Test array latlon conversion for a single value."""
         self.out = aacgmv2.convert_latlon_arr(self.lat_in[0], self.lon_in[0],
@@ -422,7 +421,7 @@ class TestGetAACGMCoordArr(TestConvertArray):
                                                self.alt_in, self.dtime,
                                                self.method)
         self.evaluate_output()
-    
+
     def test_get_aacgm_coord_arr_single_val(self):
         """Test array AACGMV2 calculation for a single value."""
         self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in[0], self.lon_in[0],
@@ -853,50 +852,67 @@ class TestPyLogging(object):
         """Create a clean test environment."""
         self.lwarn = ""
         self.lout = ""
-        self.log_capture = StringIO()
-        aacgmv2.logger.addHandler(logging.StreamHandler(self.log_capture))
-        aacgmv2.logger.setLevel(logging.INFO)
+        self.log_name = "aacgmv2_logger"
 
     def teardown_method(self):
         """Clean up the test envrionment."""
-        self.log_capture.close()
-        del self.lwarn, self.lout, self.log_capture
+        del self.lwarn, self.lout, self.log_name
 
-    def test_warning_below_ground(self):
+    def eval_logger_message(self):
+        """Evaluate the logger message."""
+        assert self.lout.find(self.lwarn) >= 0, "unknown logger message"
+
+    def test_warning_below_ground(self, caplog):
         """Test that a warning is issued if height < 0 for height test."""
         self.lwarn = "conversion not intended for altitudes < 0 km"
 
-        aacgmv2.wrapper.test_height(-1, 0)
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
+        with caplog.at_level(logging.WARNING, logger=self.log_name):
+            aacgmv2.wrapper.test_height(-1, 0)
 
-    def test_warning_magnetosphere(self):
+        self.lout = caplog.text
+        self.eval_logger_message()
+
+    def test_warning_magnetosphere(self, caplog):
         """Test that a warning is issued if altitude is very high."""
         self.lwarn = "coordinates are not intended for the magnetosphere"
 
-        aacgmv2.wrapper.test_height(70000, aacgmv2._aacgmv2.TRACE)
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
+        with caplog.at_level(logging.ERROR, logger=self.log_name):
+            aacgmv2.wrapper.test_height(70000, aacgmv2._aacgmv2.TRACE)
 
-    def test_warning_high_coeff(self):
+        self.lout = caplog.text
+        self.eval_logger_message()
+
+    def test_warning_high_coeff(self, caplog):
         """Test that a warning is issued if altitude is very high."""
         self.lwarn = "must either use field-line tracing (trace=True"
 
-        aacgmv2.wrapper.test_height(3000, 0)
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
+        with caplog.at_level(logging.ERROR, logger=self.log_name):
+            aacgmv2.wrapper.test_height(3000, 0)
 
-    def test_warning_single_loc_in_arr(self):
+        self.lout = caplog.text
+        self.eval_logger_message()
+
+    def test_warning_single_loc_in_arr(self, caplog):
         """Test that user is warned they should be using simpler routine."""
         self.lwarn = "for a single location, consider using"
 
-        aacgmv2.convert_latlon_arr(60, 0, 300, dt.datetime(2015, 1, 1, 0, 0, 0))
-        self.lout = self.log_capture.getvalue()
-        if self.lout.find(self.lwarn) < 0:
-            raise AssertionError()
+        with caplog.at_level(logging.INFO, logger=self.log_name):
+            aacgmv2.convert_latlon_arr(60, 0, 300,
+                                       dt.datetime(2015, 1, 1, 0, 0, 0))
+
+        self.lout = caplog.text
+        self.eval_logger_message()
+
+    def test_warning_equator(self, caplog):
+        """Test that user is warned about undefined coordinates."""
+        self.lwarn = "unable to perform conversion at"
+
+        with caplog.at_level(logging.WARNING, logger=self.log_name):
+            aacgmv2.convert_latlon(10.0, 10.0, 300,
+                                   dt.datetime(2015, 1, 1, 0, 0, 0))
+
+        self.lout = caplog.text
+        self.eval_logger_message()
 
 
 class TestTimeReturns(object):
