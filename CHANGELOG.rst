@@ -10,6 +10,7 @@ Changelog
 * Updated unit tests to current pytest standards
 * Updated links in the documentation
 * Improved the documentation style and added docstring tests
+* Fixed memory leak in the array C wrappers
 
 2.6.2 (2020-01-13)
 ------------------
