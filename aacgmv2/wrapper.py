@@ -9,7 +9,6 @@
 import datetime as dt
 import numpy as np
 import os
-import sys
 
 import aacgmv2
 import aacgmv2._aacgmv2 as c_aacgmv2
