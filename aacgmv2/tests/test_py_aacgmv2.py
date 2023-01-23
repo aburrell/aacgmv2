@@ -860,7 +860,10 @@ class TestPyLogging(object):
 
     def eval_logger_message(self):
         """Evaluate the logger message."""
-        assert self.lout.find(self.lwarn) >= 0, "unknown logger message"
+        if self.lout.find(self.lwarn) < 0:
+            raise AssertionError(
+                "unknown logger message: {:} not in {:}".format(self.lwarn,
+                                                                self.lout))
 
     def test_warning_below_ground(self, caplog):
         """Test that a warning is issued if height < 0 for height test."""

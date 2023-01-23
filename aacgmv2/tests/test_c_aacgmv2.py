@@ -73,8 +73,8 @@ class TestCAACGMV2(object):
         with pytest.raises(RuntimeError) as rerr:
             aacgmv2._aacgmv2.set_datetime(*self.long_date)
 
-        assert str(rerr).find(
-            "AACGM_v2_SetDateTime returned error code -1") >= 0
+        if str(rerr).find("AACGM_v2_SetDateTime returned error code -1") < 0:
+            raise AssertionError('unknown error message: {:}'.format(str(rerr))
 
     @pytest.mark.parametrize('idate,ckey', [(0, 'G2A'), (1, 'G2A'),
                                             (0, 'A2G'), (1, 'A2G'),
@@ -136,7 +136,8 @@ class TestCAACGMV2(object):
             aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0], 0,
                                      aacgmv2._aacgmv2.G2A)
 
-        assert str(rerr).find("AACGM_v2_Convert returned error code -1") >= 0
+        if str(rerr).find("AACGM_v2_Convert returned error code -1") < 0:
+            raise AssertionError('unknown error message: {:}'.format(str(rerr))
 
     def test_convert_high_denied(self):
         """Test for failure when converting to high alt geod to mag coords."""
@@ -145,7 +146,8 @@ class TestCAACGMV2(object):
             aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0], 5500,
                                      aacgmv2._aacgmv2.G2A)
 
-        assert str(rerr).find("AACGM_v2_Convert returned error code -4") >= 0
+        if str(rerr).find("AACGM_v2_Convert returned error code -4") < 0:
+            raise AssertionError('unknown error message: {:}'.format(str(rerr))
 
     @pytest.mark.parametrize('code,lat_comp,lon_comp,r_comp',
                              [(aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE,
