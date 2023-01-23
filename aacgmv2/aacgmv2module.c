@@ -182,6 +182,15 @@ static PyObject *mltconvert_v2_arr(PyObject *self, PyObject *args)
       PyList_SetItem(mltOut, i, PyFloat_FromDouble(out_mlt));
     }
 
+  /* Free memory */
+  Py_DECREF(yrIn);
+  Py_DECREF(moIn);
+  Py_DECREF(dyIn);
+  Py_DECREF(hrIn);
+  Py_DECREF(mtIn);
+  Py_DECREF(scIn);
+  Py_DECREF(lonIn);
+
   return mltOut;
 }
 
@@ -256,6 +265,15 @@ static PyObject *inv_mltconvert_v2_arr(PyObject *self, PyObject *args)
       
       PyList_SetItem(lonOut, i, PyFloat_FromDouble(out_lon));
     }
+
+  /* Free memory */
+  Py_DECREF(yrIn);
+  Py_DECREF(moIn);
+  Py_DECREF(dyIn);
+  Py_DECREF(hrIn);
+  Py_DECREF(mtIn);
+  Py_DECREF(scIn);
+  Py_DECREF(mltIn);
 
   return lonOut;
 }
