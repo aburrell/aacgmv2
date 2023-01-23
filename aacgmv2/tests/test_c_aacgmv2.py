@@ -14,6 +14,7 @@ class TestCAACGMV2(object):
         self.mlat = None
         self.mlon = None
         self.rshell = None
+        self.bad_ind = None
         self.mlt = None
         self.lat_in = [45.5, 60]
         self.lon_in = [-23.5, 0]
@@ -33,7 +34,7 @@ class TestCAACGMV2(object):
         """Run after every method to clean up previous testing."""
         del self.date_args, self.long_date, self.mlat, self.mlon, self.mlt
         del self.lat_in, self.lon_in, self.alt_in, self.lat_comp, self.lon_comp
-        del self.r_comp, self.code
+        del self.r_comp, self.code, self.bad_ind
 
     @pytest.mark.parametrize('mattr,val', [(aacgmv2._aacgmv2.G2A, 0),
                                            (aacgmv2._aacgmv2.A2G, 1),
@@ -74,7 +75,7 @@ class TestCAACGMV2(object):
             aacgmv2._aacgmv2.set_datetime(*self.long_date)
 
         if str(rerr).find("AACGM_v2_SetDateTime returned error code -1") < 0:
-            raise AssertionError('unknown error message: {:}'.format(str(rerr))
+            raise AssertionError('unknown error message: {:}'.format(str(rerr)))
 
     @pytest.mark.parametrize('idate,ckey', [(0, 'G2A'), (1, 'G2A'),
                                             (0, 'A2G'), (1, 'A2G'),
@@ -116,9 +117,9 @@ class TestCAACGMV2(object):
         """
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon, self.rshell,
-         bad_ind) = aacgmv2._aacgmv2.convert_arr(self.lat_in, self.lon_in,
-                                                 self.alt_in,
-                                                 self.code[ckey])
+         self.bad_ind) = aacgmv2._aacgmv2.convert_arr(self.lat_in, self.lon_in,
+                                                      self.alt_in,
+                                                      self.code[ckey])
 
         np.testing.assert_equal(len(self.mlat), len(self.lat_in))
         np.testing.assert_almost_equal(self.mlat[0], self.lat_comp[ckey][0],
@@ -127,7 +128,7 @@ class TestCAACGMV2(object):
                                        decimal=4)
         np.testing.assert_almost_equal(self.rshell[0], self.r_comp[ckey][0],
                                        decimal=4)
-        np.testing.assert_equal(bad_ind[0], -1)
+        np.testing.assert_equal(self.bad_ind[0], -1)
 
     def test_forbidden(self):
         """Test convert failure."""
@@ -137,7 +138,7 @@ class TestCAACGMV2(object):
                                      aacgmv2._aacgmv2.G2A)
 
         if str(rerr).find("AACGM_v2_Convert returned error code -1") < 0:
-            raise AssertionError('unknown error message: {:}'.format(str(rerr))
+            raise AssertionError('unknown error message: {:}'.format(str(rerr)))
 
     def test_convert_high_denied(self):
         """Test for failure when converting to high alt geod to mag coords."""
@@ -147,7 +148,7 @@ class TestCAACGMV2(object):
                                      aacgmv2._aacgmv2.G2A)
 
         if str(rerr).find("AACGM_v2_Convert returned error code -4") < 0:
-            raise AssertionError('unknown error message: {:}'.format(str(rerr))
+            raise AssertionError('unknown error message: {:}'.format(str(rerr)))
 
     @pytest.mark.parametrize('code,lat_comp,lon_comp,r_comp',
                              [(aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE,

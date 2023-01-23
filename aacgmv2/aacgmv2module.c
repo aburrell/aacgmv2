@@ -53,9 +53,9 @@ static PyObject *aacgm_v2_setdatetime(PyObject *self, PyObject *args)
 
 static PyObject *aacgm_v2_convert_arr(PyObject *self, PyObject *args)
 {
-  int i, code, err;
+  int code, err;
 
-  long int in_num;
+  long int i, in_num;
 
   double in_lat, in_lon, in_h, out_lat, out_lon, out_r;
 
@@ -88,7 +88,8 @@ static PyObject *aacgm_v2_convert_arr(PyObject *self, PyObject *args)
       /* Set the output */
       if(err < 0)
 	{
-	  /* Python 3.7+ raises a SystemError when passing on inf */
+	  /* Python 3.7+ raises a SystemError when passing on inf. */
+	  /* SetItem STEALS the references that are added.         */
 	  PyList_SetItem(badOut, i, PyLong_FromLong((int long)i));
 	  PyList_SetItem(latOut, i, PyFloat_FromDouble(-666.0));
 	  PyList_SetItem(lonOut, i, PyFloat_FromDouble(-666.0));
