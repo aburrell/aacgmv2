@@ -14,6 +14,7 @@ class TestCAACGMV2(object):
         self.mlat = None
         self.mlon = None
         self.rshell = None
+        self.bad_ind = None
         self.mlt = None
         self.lat_in = [45.5, 60]
         self.lon_in = [-23.5, 0]
@@ -33,7 +34,7 @@ class TestCAACGMV2(object):
         """Run after every method to clean up previous testing."""
         del self.date_args, self.long_date, self.mlat, self.mlon, self.mlt
         del self.lat_in, self.lon_in, self.alt_in, self.lat_comp, self.lon_comp
-        del self.r_comp, self.code
+        del self.r_comp, self.code, self.bad_ind
 
     @pytest.mark.parametrize('mattr,val', [(aacgmv2._aacgmv2.G2A, 0),
                                            (aacgmv2._aacgmv2.A2G, 1),
@@ -70,8 +71,11 @@ class TestCAACGMV2(object):
     def test_fail_set_datetime(self):
         """Test unsuccessful set_datetime."""
         self.long_date[0] = 1013
-        with pytest.raises(RuntimeError):
+        with pytest.raises(RuntimeError) as rerr:
             aacgmv2._aacgmv2.set_datetime(*self.long_date)
+
+        if str(rerr).find("AACGM_v2_SetDateTime returned error code -1") < 0:
+            raise AssertionError('unknown error message: {:}'.format(str(rerr)))
 
     @pytest.mark.parametrize('idate,ckey', [(0, 'G2A'), (1, 'G2A'),
                                             (0, 'A2G'), (1, 'A2G'),
@@ -113,9 +117,9 @@ class TestCAACGMV2(object):
         """
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
         (self.mlat, self.mlon, self.rshell,
-         bad_ind) = aacgmv2._aacgmv2.convert_arr(self.lat_in, self.lon_in,
-                                                 self.alt_in,
-                                                 self.code[ckey])
+         self.bad_ind) = aacgmv2._aacgmv2.convert_arr(self.lat_in, self.lon_in,
+                                                      self.alt_in,
+                                                      self.code[ckey])
 
         np.testing.assert_equal(len(self.mlat), len(self.lat_in))
         np.testing.assert_almost_equal(self.mlat[0], self.lat_comp[ckey][0],
@@ -124,21 +128,27 @@ class TestCAACGMV2(object):
                                        decimal=4)
         np.testing.assert_almost_equal(self.rshell[0], self.r_comp[ckey][0],
                                        decimal=4)
-        np.testing.assert_equal(bad_ind[0], -1)
+        np.testing.assert_equal(self.bad_ind[0], -1)
 
     def test_forbidden(self):
         """Test convert failure."""
         self.lat_in[0] = 7
-        with pytest.raises(RuntimeError):
+        with pytest.raises(RuntimeError) as rerr:
             aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0], 0,
                                      aacgmv2._aacgmv2.G2A)
+
+        if str(rerr).find("AACGM_v2_Convert returned error code -1") < 0:
+            raise AssertionError('unknown error message: {:}'.format(str(rerr)))
 
     def test_convert_high_denied(self):
         """Test for failure when converting to high alt geod to mag coords."""
         aacgmv2._aacgmv2.set_datetime(*self.date_args[0])
-        with pytest.raises(RuntimeError):
+        with pytest.raises(RuntimeError) as rerr:
             aacgmv2._aacgmv2.convert(self.lat_in[0], self.lon_in[0], 5500,
                                      aacgmv2._aacgmv2.G2A)
+
+        if str(rerr).find("AACGM_v2_Convert returned error code -4") < 0:
+            raise AssertionError('unknown error message: {:}'.format(str(rerr)))
 
     @pytest.mark.parametrize('code,lat_comp,lon_comp,r_comp',
                              [(aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE,
@@ -229,6 +239,15 @@ class TestCAACGMV2(object):
         self.mlon = aacgmv2._aacgmv2.inv_mlt_convert(*self.long_date)
         np.testing.assert_almost_equal(self.mlon, mlt_comp, decimal=4)
 
+    def test_inv_mlt_convert_arr(self):
+        """Test array MLT inversion."""
+        self.date_args = [[ldate for j in range(3)] for ldate in self.long_date]
+        self.mlt = [12.0, 25.0, -1.0]
+        self.lon_in = [-153.6033, 41.3967, 11.3967]
+        self.mlon = aacgmv2._aacgmv2.inv_mlt_convert_arr(*self.date_args,
+                                                         self.mlt)
+        np.testing.assert_almost_equal(self.mlon, self.lon_in, decimal=4)
+
     @pytest.mark.parametrize('marg,mlt_comp',
                              [(12.0, -153.6033), (25.0, 41.3967),
                               (-1.0, 11.3967)])
@@ -272,6 +291,14 @@ class TestCAACGMV2(object):
         mlt_args.append(marg)
         self.mlt = aacgmv2._aacgmv2.mlt_convert(*mlt_args)
         np.testing.assert_almost_equal(self.mlt, mlt_comp, decimal=4)
+
+    def test_mlt_convert_arr(self):
+        """Test array MLT conversion."""
+        self.date_args = [[ldate for j in range(3)] for ldate in self.long_date]
+        self.mlon = [-153.6033, 41.3967, 11.3967]
+        self.lon_in = [12.0, 1.0, 23.0]
+        self.mlt = aacgmv2._aacgmv2.mlt_convert_arr(*self.date_args, self.mlon)
+        np.testing.assert_almost_equal(self.mlt, self.lon_in, decimal=4)
 
     @pytest.mark.parametrize('marg,mlt_comp',
                              [(270.0, 16.2402), (80.0, 3.5736),

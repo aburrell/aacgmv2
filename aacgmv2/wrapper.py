@@ -9,7 +9,6 @@
 import datetime as dt
 import numpy as np
 import os
-import sys
 
 import aacgmv2
 import aacgmv2._aacgmv2 as c_aacgmv2
@@ -240,11 +239,11 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
     try:
         lat_out, lon_out, r_out = c_aacgmv2.convert(in_lat, in_lon, height,
                                                     bit_code)
-    except Exception:
-        err = sys.exc_info()[0]
-        estr = "unable to perform conversion at {:.1f},".format(in_lat)
-        estr = "{:s}{:.1f} {:.1f} km, {:} ".format(estr, in_lon, height, dtime)
-        estr = "{:s}using method {:}: {:}".format(estr, bit_code, err)
+    except Exception as err:
+        estr = "".join(["unable to perform conversion at {:.1f}".format(in_lat),
+                        ", {:.1f} {:.1f} km, {:}".format(in_lon, height, dtime),
+                        " using method {:} <{:}>. Recall".format(bit_code, err),
+                        " that AACGMV2 is undefined near the equator."])
         aacgmv2.logger.warning(estr)
         pass
 
