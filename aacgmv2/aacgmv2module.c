@@ -107,10 +107,7 @@ static PyObject *aacgm_v2_convert_arr(PyObject *self, PyObject *args)
   /* Set the output tuple */
   allOut = PyTuple_Pack(4, latOut, lonOut, rOut, badOut);
 
-  /* Free memory */
-  Py_DECREF(latIn);
-  Py_DECREF(lonIn);
-  Py_DECREF(hIn);
+  /* Free memory for the local-only (not input) variables */
   Py_DECREF(latOut);
   Py_DECREF(lonOut);
   Py_DECREF(rOut);
@@ -182,15 +179,6 @@ static PyObject *mltconvert_v2_arr(PyObject *self, PyObject *args)
       
       PyList_SetItem(mltOut, i, PyFloat_FromDouble(out_mlt));
     }
-
-  /* Free memory */
-  Py_DECREF(yrIn);
-  Py_DECREF(moIn);
-  Py_DECREF(dyIn);
-  Py_DECREF(hrIn);
-  Py_DECREF(mtIn);
-  Py_DECREF(scIn);
-  Py_DECREF(lonIn);
 
   return mltOut;
 }
@@ -266,15 +254,6 @@ static PyObject *inv_mltconvert_v2_arr(PyObject *self, PyObject *args)
       
       PyList_SetItem(lonOut, i, PyFloat_FromDouble(out_lon));
     }
-
-  /* Free memory */
-  Py_DECREF(yrIn);
-  Py_DECREF(moIn);
-  Py_DECREF(dyIn);
-  Py_DECREF(hrIn);
-  Py_DECREF(mtIn);
-  Py_DECREF(scIn);
-  Py_DECREF(mltIn);
 
   return lonOut;
 }
