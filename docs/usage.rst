@@ -18,10 +18,10 @@ Command-line interface
 
 The Python package also installs a command called ``aacgmv2`` with several
 sub-commands that allow conversion between geographic/geodetic and AACGM-v2
-magnetic coordinates (mlat, mlon, and mlt). The command-line interface allows
-you to make use of the Python library even if you don't know or use Python. See
-:doc:`Reference → Command-line interface <reference/cli>` for a list of
-arguments to the commands. Below are some simple usage examples.
+magnetic coordinates (mlat, mlon, and mlt). The Command-Line Interface (CLI)
+allows you to make use of the Python library even if you don't know or use
+Python. See :doc:`Reference → Command-line interface <reference/cli>` for a
+list of arguments to the commands. Below are some simple usage examples.
 
 
 Convert geographic/magnetic coordinates
@@ -53,7 +53,7 @@ Alternatively, you can skip the files and just use command-line piping::
 Convert MLT
 -----------
 
-This works in much the same way as :py:mod:`~aacgmv2.wrapper.convert_latlon`.
+This works in much the same way as calling the CLI with the ``convert`` flag.
 The file should only contain a single column of numbers (MLTs or magnetic
 longitudes, depending on which way you're converting)::
 
@@ -70,7 +70,8 @@ look like this::
     44.65645875
     -150.34354125
 
-Like with ``convert``, you can use stdin/stdout instead of input/output files::
+As with the ``convert`` flag, you can use stdin/stdout instead of input and
+output files::
 
     $ echo 12 | python -m aacgmv2 convert_mlt 20150224140015 -v
     44.65645875
