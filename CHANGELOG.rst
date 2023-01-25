@@ -2,7 +2,7 @@
 Changelog
 =========
 
-2.7.0 (2023-XX-XX)
+2.6.3 (2023-XX-XX)
 ------------------
 
 * Moved CI support to GitHub actions
@@ -11,6 +11,8 @@ Changelog
 * Updated links in the documentation
 * Improved the documentation style and added docstring tests
 * Fixed memory leak in the array C wrappers
+* Fixed longitude output format for `convert_mlt`
+* Added more examples to the documentation
 
 2.6.2 (2020-01-13)
 ------------------
