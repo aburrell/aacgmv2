@@ -24,8 +24,8 @@ you to make use of the Python library even if you don't know or use Python. See
 arguments to the commands. Below are some simple usage examples.
 
 
-Convert geographical/magnetic coordinates
------------------------------------------
+Convert geographic/magnetic coordinates
+---------------------------------------
 
 Produce a file called e.g. ``input.txt`` with the input latitudes, longitudes
 and altitudes on each row separated by whitespace::
@@ -53,9 +53,9 @@ Alternatively, you can skip the files and just use command-line piping::
 Convert MLT
 -----------
 
-This works in much the same way as ``convert``. The file should only contain a
-single column of numbers (MLTs or magnetic longitudes, depending on which way
-you're converting)::
+This works in much the same way as :py:mod:`~aacgmv2.wrapper.convert_latlon`.
+The file should only contain a single column of numbers (MLTs or magnetic
+longitudes, depending on which way you're converting)::
 
     1
     12
@@ -89,11 +89,11 @@ Convert coordinates
 
 There are several functions that convert between geographic/detic and magnetic
 coordinates. Which one to use on what you want.  To convert latitude and
-longitude for a single value, use :py:mod:`aacgmv2.convert_latlon`. For
-multiple values at the same time, use :py:mod:`aacgmv2.convert_latlon_arr`.
-The times can't be vectorized because the C code needs to be re-initialized
-for every new time.  You can see how these two functions perform differently
-using the :py:mod:`timeit` package::
+longitude for a single value, use :py:func:`~aacgmv2.wrapper.convert_latlon`.
+For multiple values at the same time, use
+:py:func:`~aacgmv2.wrapper.convert_latlon_arr`. The times can't be vectorized
+because the C code needs to be re-initialized for every new time. You can see
+how these two functions perform differently using the :py:mod:`timeit` package::
 
   import timeit
 
@@ -118,10 +118,11 @@ using the :py:mod:`timeit` package::
                            "lon, 300.0, dt.datetime(2015, 5, 5), ",
                            "method_code='G2A') for i, lon in ",
                            "enumerate(rando_lon)]"])
+  timeit.timeit(list_command, number=1000)
 
 To convert between magnetic longitude and local time, use
-:py:mod:`aacgmv2.convert_mlt`. This function examines the data and uses
-different C wrappers for array or single valued inputs.::
+:py:func:`~aacgmv2.wrapper.convert_mlt`. This function examines the data and
+uses different C wrappers for array or single valued inputs.::
 
   import aacgmv2
   import datetime as dt
@@ -135,9 +136,9 @@ different C wrappers for array or single valued inputs.::
   print("{:.3f} E = {:.3f} h".format(mlon[0], mlt[0]))
 
 If you want magnetic latitude, longitude, and local time at a given location,
-you can use :py:mod:`aacgmv2.get_aacgm_coord` for a single location or
-:py:mod:`aacgmv2.get_aacgm_coord_arr` for several locations at a given time.
-These functions combine the latitude, longitude, and local time conversion
+you can use :py:func:`~aacgmv2.wrapper.get_aacgm_coord` for a single location or
+:py:func:`~aacgmv2.wrapper.get_aacgm_coord_arr` for several locations at a given
+time. These functions combine the latitude, longitude, and local time conversion
 functions to allow the user to access all magnetic coordinates in a single call.
 However, they do not allow the user to convert from magnetic to geodetic
 coordinates.::
