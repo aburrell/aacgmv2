@@ -655,6 +655,7 @@ def convert_mlt(arr, dtime, m2a=False):
             out = c_aacgmv2.inv_mlt_convert(years[0], months[0], days[0],
                                             hours[0], minutes[0], seconds[0],
                                             arr[0])
+            out = np.array([out])
         else:
             out = c_aacgmv2.inv_mlt_convert_arr(years, months, days, hours,
                                                 minutes, seconds, arr)
