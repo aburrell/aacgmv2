@@ -95,5 +95,5 @@ For merging, you should:
 
 .. [1] If you don't have all the necessary Python versions available locally or
        have trouble building all the testing environments, you can rely on
-       Travis and AppVeyor - they will run the tests for each change you add in
+       GitHub Actions - it will run the tests for each change you add in
        the pull request.
