@@ -12,10 +12,10 @@ extensions = ['sphinx.ext.autodoc',
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'AACGM-v2 Python library'
-year = '2020'
+year = '2023'
 author = 'Angeline G. Burrell, et al.'
 copyright = '{0}, {1}'.format(year, author)
-version = release = '2.6.2'
+version = release = '2.6.3'
 
 # `on_rtd` is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'

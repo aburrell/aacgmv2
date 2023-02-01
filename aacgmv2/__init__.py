@@ -37,7 +37,7 @@ from aacgmv2 import deprecated  # noqa F401
 from aacgmv2 import utils  # noqa F401
 
 # Define global variables
-__version__ = "2.6.2"
+__version__ = "2.6.3"
 
 # Define a logger object to allow easier log handling
 logger = logging.getLogger('aacgmv2_logger')
