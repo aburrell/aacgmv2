@@ -2,7 +2,7 @@
 Changelog
 =========
 
-2.6.3 (2023-XX-XX)
+2.6.3 (2023-02-08)
 ------------------
 
 * Moved CI support to GitHub actions
