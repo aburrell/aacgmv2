@@ -1,5 +1,4 @@
 graft docs
-graft ci
 graft aacgmv2/tests
 graft c_aacgmv2
 
@@ -17,7 +16,6 @@ include LICENSE-AstAlg.txt
 include README.rst
 include CODE_OF_CONDUCT.md
 
-include tox.ini
 include *.yml
 include .*.yml
 include .zenodo.json

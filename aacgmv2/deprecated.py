@@ -18,8 +18,7 @@ dep_str = "".join(["Routine no longer deprecated, and so has been moved to ",
 
 
 def subsol(year, doy, utime):
-    """Deprecated call to aacgmv2.utils.subsol
-    """
+    """Deprecated call to aacgmv2.utils.subsol."""
     warnings.warn(dep_str, category=FutureWarning)
 
     sbsllon, sbsllat = aacgmv2.utils.subsol(year, doy, utime)
@@ -28,8 +27,7 @@ def subsol(year, doy, utime):
 
 
 def gc2gd_lat(gc_lat):
-    """Deprecated call to aacgmv2.utils.gc2gd_lat
-    """
+    """Deprecated call to aacgmv2.utils.gc2gd_lat."""
     warnings.warn(dep_str, category=FutureWarning)
 
     gd_lat = aacgmv2.utils.gc2gd_lat(gc_lat)
@@ -38,8 +36,7 @@ def gc2gd_lat(gc_lat):
 
 
 def igrf_dipole_axis(date):
-    """Deprecated call to aacgmv2.utils.igrf_dipole_axis
-    """
+    """Deprecated call to aacgmv2.utils.igrf_dipole_axis."""
     warnings.warn(dep_str, category=FutureWarning)
 
     m_0 = aacgmv2.utils.igrf_dipole_axis(date)

@@ -2,6 +2,18 @@
 Changelog
 =========
 
+2.6.3 (2023-02-08)
+------------------
+
+* Moved CI support to GitHub actions
+* Added a pyproject.toml for PyPi support
+* Updated unit tests to current pytest standards
+* Updated links in the documentation
+* Improved the documentation style and added docstring tests
+* Fixed memory leak in the array C wrappers
+* Fixed longitude output format for `convert_mlt`
+* Added more examples to the documentation
+
 2.6.2 (2020-01-13)
 ------------------
 

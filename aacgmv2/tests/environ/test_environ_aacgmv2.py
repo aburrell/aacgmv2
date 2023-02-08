@@ -4,18 +4,22 @@ import pytest
 
 
 @pytest.mark.xfail
-class TestPyEnviron:
-    def setup(self):
+class TestPyEnviron(object):
+    """Unit tests for the AACGMV2 environment variables."""
+
+    def setup_method(self):
+        """Create a clean test environment."""
         self.igrf_path = os.path.join("aacgmv2", "aacgmv2",
                                       "magmodel_1590-2020.txt")
         self.aacgm_path = os.path.join("aacgmv2", "aacgmv2", "aacgm_coeffs",
                                        "aacgm_coeffs-13-")
 
-    def teardown(self):
+    def teardown_method(self):
+        """Clean up the test environment."""
         del self.igrf_path, self.aacgm_path
 
     def reset_evar(self, evar):
-        """ Reset the environment variables """
+        """Reset the environment variables."""
 
         for coeff_key in evar:
             if coeff_key in os.environ.keys():
@@ -25,7 +29,7 @@ class TestPyEnviron:
             assert coeff_key not in os.environ.keys()
 
     def test_good_coeff(self, aacgm_test=None, igrf_test=None):
-        """ Test the coefficient path/prefixes """
+        """Test the coefficient path/prefixes."""
 
         # Set the defaults
         if aacgm_test is None:
@@ -42,12 +46,19 @@ class TestPyEnviron:
 
     @pytest.mark.parametrize("coeff", [("aacgm_test"), ("igrf_test")])
     def test_bad_coeff(self, coeff):
-        """ Test the failure of the class routine 'test_good_coeff'"""
+        """Test the failure of the class routine 'test_good_coeff'.
+
+        Parameters
+        ----------
+        coeff : str
+            Coefficient name
+
+        """
         with pytest.raises(AssertionError, match="BAD"):
             self.test_good_coeff(**{coeff: "bad path"})
 
     def test_top_parameters_default(self):
-        """Test default module coefficients"""
+        """Test default module coefficients."""
 
         # Import AACGMV2 after removing any possible preset env variables
         self.reset_evar(evar=['AACGM_v2_DAT_PREFIX', 'IGRF_COEFFS'])
@@ -63,8 +74,14 @@ class TestPyEnviron:
                                        (["AACGM_v2_DAT_PREFIX", "IGRF_COEFFS"]),
                                        (["IGRF_COEFFS"])])
     def test_top_parameters_reset_evar_to_specified(self, evars):
-        """Test module reset of AACGM environment variables"""
+        """Test module reset of AACGM environment variables.
 
+        Parameters
+        ----------
+        evars : str
+            Environmental variable name
+
+        """
         self.reset_evar(evar=evars)
         for i, evar in enumerate(evars):
             os.environ[evar] = 'test_prefix{:d}'.format(i)
@@ -78,7 +95,7 @@ class TestPyEnviron:
         del aacgmv2
 
     def test_top_parameters_set_same(self):
-        """Test module non-reset with outside def of both coefficient paths"""
+        """Test module non-reset with outside def of both coefficient paths."""
 
         from aacgmv2 import __file__ as file_path
 

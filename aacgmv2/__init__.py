@@ -4,11 +4,10 @@
 # the root in the LICENSE file
 #
 # -*- coding: utf-8 -*-
-""" Functions to convert between geographic/geodetic and AACGM-V2 magnetic
-coordinates
+"""Conversion functions between geo-graphic/detic and AACGM-V2 magnetic coords.
 
 Attributes
----------------------------------------------------------------------------
+----------
 logger : (logger)
     Logger handle
 high_alt_coeff : (float)
@@ -26,15 +25,19 @@ import logging
 import os as _os
 from sys import stderr
 
-from aacgmv2.wrapper import (convert_latlon, convert_mlt, get_aacgm_coord)
-from aacgmv2.wrapper import (convert_latlon_arr, get_aacgm_coord_arr)
-from aacgmv2.wrapper import (convert_bool_to_bit, convert_str_to_bit)
-from aacgmv2 import (utils)
-from aacgmv2 import (deprecated)
-from aacgmv2 import (_aacgmv2)
+from aacgmv2.wrapper import convert_bool_to_bit  # noqa F401
+from aacgmv2.wrapper import convert_latlon  # noqa F401
+from aacgmv2.wrapper import convert_latlon_arr  # noqa F401
+from aacgmv2.wrapper import convert_mlt  # noqa F401
+from aacgmv2.wrapper import convert_str_to_bit  # noqa F401
+from aacgmv2.wrapper import get_aacgm_coord  # noqa F401
+from aacgmv2.wrapper import get_aacgm_coord_arr  # noqa F401
+from aacgmv2 import _aacgmv2  # noqa F401
+from aacgmv2 import deprecated  # noqa F401
+from aacgmv2 import utils  # noqa F401
 
 # Define global variables
-__version__ = "2.6.2"
+__version__ = "2.6.3"
 
 # Define a logger object to allow easier log handling
 logger = logging.getLogger('aacgmv2_logger')
@@ -43,7 +46,7 @@ logger = logging.getLogger('aacgmv2_logger')
 high_alt_coeff = 2000.0  # Tested and published in Shepherd (2014)
 high_alt_trace = 6378.0  # 1 RE, these are ionospheric coordinates
 
-# path and filename prefix for the IGRF coefficients
+# Path and filename prefix for the IGRF coefficients
 AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath(
     _os.path.dirname(__file__)), 'aacgm_coeffs', 'aacgm_coeffs-13-')
 IGRF_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)),

@@ -4,7 +4,7 @@
 # the root in the LICENSE file
 #
 # -*- coding: utf-8 -*-
-"""Executed when aacgmv2 is invoked with python -m aacgmv2"""
+"""Executed when aacgmv2 is invoked with python -m aacgmv2."""
 
 
 import argparse
@@ -16,7 +16,7 @@ import aacgmv2
 
 
 def main():
-    """Entry point for the script"""
+    """Entry point for the script."""
 
     desc = 'Converts between geographical coordinates, AACGM-v2, and MLT'
     parser = argparse.ArgumentParser(description=desc)
@@ -40,7 +40,7 @@ def main():
                         type=argparse.FileType('r'), default=sys.stdin.buffer,
                         help=desc)
         pp.add_argument('-o', '--output', dest='file_out', metavar='FILE_OUT',
-                        type=argparse.FileType('wb'), default=sys.stdout.buffer,
+                        type=argparse.FileType('w'), default=sys.stdout.buffer,
                         help='output file (stdout if none specified)')
 
     desc = 'date for magnetic field model (1900-2020, default: today)'
@@ -84,6 +84,7 @@ def main():
             date = dt.date.today()
         else:
             date = dt.datetime.strptime(args.date, '%Y%m%d')
+
         code = aacgmv2.convert_bool_to_bit(a2g=args.a2g, trace=args.trace,
                                            allowtrace=args.allowtrace,
                                            badidea=args.badidea,
@@ -102,6 +103,12 @@ def main():
             out = np.array([out])
 
         np.savetxt(args.file_out, out, fmt='%.8f')
+
+    # If not a pipe to STDOUT or STDERR, ensure the file is closed
+    not_pipe = ((args.file_out.name.find('stdout') < 0)
+                & (args.file_out.name.find('stderr') < 0))
+    if not_pipe:
+        args.file_out.close()
 
 
 if __name__ == '__main__':
