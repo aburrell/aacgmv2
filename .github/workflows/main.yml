@@ -26,7 +26,7 @@ jobs:
         architecture: 'x64'
 
     - name: Install standard and test dependencies
-      run: pip install build coverage coveralls flake8 numpy pytest
+      run: pip install .[test]
 
     - name: Install on Linux/Windows
       if: ${{ matrix.os != 'macos-latest' }}

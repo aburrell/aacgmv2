@@ -54,9 +54,12 @@ aacgmv2 = {reference = 'aacgmv2.__main__:main', type = 'console'}
 
 [project.optional-dependencies]
 test = [
+  "build",
+  "coverage",
+  "coveralls",
+  "flake8",
+  "numpy",
   "pytest",
-  "pytest-cov",
-  "pytest-xdist",
   ]
 doc = [
     "sphinx>=1.3",
