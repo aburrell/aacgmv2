@@ -1,5 +1,0 @@
-sphinx
-sphinxcontrib-napoleon
-numpydoc
-sphinx_rtd_theme
--e .
