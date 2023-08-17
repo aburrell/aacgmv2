@@ -2,6 +2,11 @@
 Changelog
 =========
 
+2.6.4 (2023-XX-XX)
+------------------
+
+* Added yaml for ReadTheDocs and moved requirements to pyproject.toml
+
 2.6.3 (2023-02-08)
 ------------------
 
