@@ -14,7 +14,7 @@ jobs:
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
         python-version: ["3.9", "3.10", "3.11", "3.12"]
-        numpy_ver: ["latest"]
+        numpy-ver: ["latest"]
         test_config: ["latest"]
         include:
           # Support different GA Mac environmnets
@@ -28,7 +28,7 @@ jobs:
             os: "macos-latest"
           # NEP29 compliance settings
           - python-version: "3.10"
-            numpy_ver: "1.25"
+            numpy-ver: "1.25"
             os: "ubuntu-latest"
             test_config: "NEP29"
 
@@ -45,7 +45,7 @@ jobs:
     - name: Install NEP29 dependencies
       if: ${{ matrix.test_config == 'NEP29'}}
       run: |
-        pip install numpy==${{ matrix.numpy_ver }}
+        pip install numpy==${{ matrix.numpy-ver }}
 
     - name: Install standard and test dependencies
       run: pip install --upgrade-strategy only-if-needed .[test]
