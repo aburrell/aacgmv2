@@ -54,6 +54,7 @@ is called, the updating process is simple:
    C. ``test_cmd_aacgmv2.py::TestCmdAACGMV2::test_convert_mlt_stdin_stdout``
    D. ``test_struct_aacgmv2.py::TestTopVariables::test_top_parameters``
    E. ``test_utils_aacgmv2.py::TestUtilsAACGMV2::test_igrf_dipole_axis``
+   F. ``environ/test_environ_aacgmv2.py::TestPyEnviron``
 10. Commit all changes and create a pull request on GitHub to integrate your 
     branch with updated IGRF into the main repository.
 
