@@ -5,7 +5,7 @@ Overview
 |docs| |version| |doi|
 
 This is a Python wrapper for the `AACGM-v2 C library
-<http://superdarn.thayer.dartmouth.edu/aacgm.html>`_, which allows
+<https://superdarn.thayer.dartmouth.edu/aacgm.html>`_, which allows
 converting between geographic and magnetic coordinates. The currently included
 version of the C library is 2.7.  The package is free software
 (MIT license).  When referencing this package, please cite both the package DOI
@@ -55,7 +55,7 @@ Documentation
 
 https://aacgmv2.readthedocs.io/en/latest/
 
-http://superdarn.thayer.dartmouth.edu/aacgm.html
+https://superdarn.thayer.dartmouth.edu/aacgm.html
 
 Badges
 ======
@@ -93,7 +93,7 @@ Badges
     :target: https://app.codacy.com/gh/aburrell/aacgmv2?utm_source=github.com&utm_medium=referral&utm_content=aburrell/aacgmv2&utm_campaign=Badge_Grade
 
 .. |codeclimate| image:: https://api.codeclimate.com/v1/badges/91f5a91bf3d9ba90cb57/maintainability.svg
-   :target: https://codeclimate.com/github/aburrell/aacgmv2
+   :target: https://codeclimate.com/github/aburrell/aacgmv2/builds
    :alt: CodeClimate Quality Status
 
 .. |version| image:: https://img.shields.io/pypi/v/aacgmv2.svg?style=flat

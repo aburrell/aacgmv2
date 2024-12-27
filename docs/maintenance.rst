@@ -43,7 +43,7 @@ is called, the updating process is simple:
    info back in (needed for Windows). Also, fix the commenting style in
    ``test_aacgm.c`` to reduce compiler warnings.
 8. Rebuild and install AACGMV2 following the instructions in
-   :ref:`installation-build`.
+   :ref:`installation`.
 9. Update the unit tests in the ``aacgmv2/aacgmv2/tests/`` directory so that
    they check the functions are working correctly with dates after the IGRF
    epoch update. You will have to update the hard-coded confirmation values
@@ -73,4 +73,4 @@ be done within the ``aacgmv2/c_aacgmv2`` directory.
 5. If the modifications involved adding or removing C source files, modify
    the list of extension sources in ``setup.py``.
 6. Rebuild and install AACGMV2 following the instructions in
-   :ref:`installation-build`.
+   :ref:`installation`.

@@ -1,13 +1,15 @@
+.. _installation:
+
 ============
 Installation
 ============
 
 This package requires NumPy, which you can install alone or as a part of SciPy.
-`Some Python distributions <https://scipy.org/install/#distributions>`_ come
-with NumPy/SciPy pre-installed. For Python distributions without NumPy/SciPy,
-the operating system package managers can be used to install :py:mod:`numpy`.
-However, this step may be unnecessary, as PyPi should install :py:mod:`numpy`
-along with :py:mod:`aacgmv2` if it is missing.
+`Some Python distributions <https://scipy.org/install/>`_ come with NumPy/SciPy
+pre-installed. For Python distributions without NumPy/SciPy, the operating
+system package managers can be used to install :py:mod:`numpy`. However, this
+step may be unnecessary, as PyPi should install :py:mod:`numpy` along with
+:py:mod:`aacgmv2` if it is missing.
 
 We recommend installing this package at the command line using ``pip``::
 
