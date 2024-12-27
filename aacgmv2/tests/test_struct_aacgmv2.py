@@ -75,29 +75,6 @@ class TestModuleStructure(object):
             assert len(retrieved_list) == len(self.reference_list)
 
 
-class TestDepStructure(TestModuleStructure):
-    """Test the deprecated structure."""
-
-    def setup_method(self):
-        """Create a clean test environment."""
-        self.module_name = None
-        self.reference_list = ["subsol", "igrf_dipole_axis", "gc2gd_lat"]
-
-    def teardown_method(self):
-        """Clean up the test environment."""
-        del self.module_name, self.reference_list
-
-    def test_dep_existence(self):
-        """Test the deprecated functions."""
-        self.module_name = "deprecated"
-        self.test_module_existence()
-
-    def test_dep_functions(self):
-        """Test the deprecated functions."""
-        self.module_name = "deprecated"
-        self.test_module_functions()
-
-
 class TestUtilsStructure(TestModuleStructure):
     """Test the utility structure."""
 
@@ -110,13 +87,13 @@ class TestUtilsStructure(TestModuleStructure):
         """Clean up the test environment."""
         del self.module_name, self.reference_list
 
-    def test_dep_existence(self):
-        """Test the utility functions."""
+    def test_utils_existence(self):
+        """Test the utility existence."""
         self.module_name = "utils"
         self.test_module_existence()
 
-    def test_dep_functions(self):
-        """Test the utility functions."""
+    def test_utils_functions(self):
+        """Test the utils functions."""
         self.module_name = "utils"
         self.test_module_functions()
 
@@ -192,7 +169,7 @@ class TestTopStructure(TestModuleStructure):
         self.test_module_existence()
 
     def test_top_functions(self):
-        """Test the deprecated functions."""
+        """Test the top level functions."""
         self.module_name = "aacgmv2"
         self.reference_list = ["convert_bool_to_bit", "convert_str_to_bit",
                                "convert_mlt", "convert_latlon",
@@ -201,10 +178,10 @@ class TestTopStructure(TestModuleStructure):
         self.test_module_functions()
 
     def test_top_modules(self):
-        """Test the deprecated functions."""
+        """Test the top level modules."""
         self.module_name = "aacgmv2"
-        self.reference_list = ["_aacgmv2", "wrapper", "utils",
-                               "deprecated", "__main__", 'tests']
+        self.reference_list = ["_aacgmv2", "wrapper", "utils", "__main__",
+                               'tests']
         self.test_modules()
 
 
