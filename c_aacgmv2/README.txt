@@ -1,5 +1,11 @@
 AACGM-v2 Software
-v2.6 20191228
+v2.7 20241123
+
+How to cite:
+
+Shepherd, S. G. (2014), Altitude-adjusted corrected geomagnetic coordinates:
+Definition and functional approximations, J. Geophys. Res. Space Physics, 119,
+7501–7521, doi:10.1002/2014JA020264.
 
 C Instructions:
 
@@ -7,11 +13,11 @@ C Instructions:
 
 2. Set the environment variable AACGM_v2_DAT_PREFIX to the directory that
    you are storing the coefficients in AND include the prefix of the
-   coefficient files, i.e., aacgm_coeffs-13-
+   coefficient files, i.e., aacgm_coeffs-14-
 
    e.g.:
 
-   AACGM_v2_DAT_PREFIX=/mnt/thayerfs/shepherd/AACGM/idl/coeffs/aacgm_coeffs-13-
+   AACGM_v2_DAT_PREFIX=/mnt/thayerfs/shepherd/AACGM/idl/coeffs/aacgm_coeffs-14-
 
    Note that if you used the old AACGM software from JHU/APL you should have
    a similar variable already set.
@@ -19,15 +25,15 @@ C Instructions:
 3. Untar the contents of the .tar file into a directory
 
 4. Setup the magnetic field model by putting the GUFM1/IGRF coefficients file
-   (magmodel_1590-2020.txt) somewhere or leaving them in the current directory
+   (magmodel_1590-2025.txt) somewhere or leaving them in the current directory
    and setting the environment variable IGRF_COEFFS to the fully qualified
    path, i.e.,
 
-   IGRF_COEFFS=/directory_you_put_IGRF_coefs_in/magmodel_1590-2020.txt
+   IGRF_COEFFS=/directory_you_put_IGRF_coefs_in/magmodel_1590-2025.txt
 
 5. Build the test program by running:
 
-   gcc -o test_aacgm test_aacgm.c aacgmlib_v2.c igrflib.c genmag.c astalglib.c \
+   gcc -o test_aacgm test_aacgm.c aacgmlib_v2.c igrflib.c astalglib.c \
                          mlt_v2.c rtime.c -lm
 
 6. Run the test program by running:
@@ -62,25 +68,25 @@ TEST: no date/time (this will return an error.)
 * that was set, so update to the actual date and time that is desired.   *
 **************************************************************************
 
-TEST: Setting time to : 20240322 0311:00
+TEST: Setting time to : 20290322 0311:00
 
 TEST: geographic to AACGM-v2
      GLAT       GLON        HEIGHT       MLAT       MLON       R
-     45.500000  -23.500000  1135.000000  47.588773  56.761655  1.177533
+     45.500000  -23.500000  1135.000000  47.402897  56.602300  1.177533
 
 TEST: AACGM-v2 to geographic
      MLAT       MLON        HEIGHT       GLAT       GLON       HEIGHT
-     47.588773  56.761655  1131.097495  45.439106  -23.475908  1134.977273
+     47.402897  56.602300  1131.097495  45.439863  -23.477496  1134.977555
 
 Do the same thing but use field-line tracing
 
 TEST: geographic to AACGM-v2 (TRACE)
      GLAT       GLON        HEIGHT       MLAT       MLON       R
-     45.500000  -23.500000  1135.000000  47.594236  56.760096  1.177533
+     45.500000  -23.500000  1135.000000  47.408678  56.600154  1.177533
 
 TEST: AACGM-v2 to geographic (TRACE)
      MLAT       MLON        HEIGHT       GLAT       GLON       HEIGHT
-     47.594236  56.760096  1131.097495  45.500002  -23.500000  1135.000001
+     47.408678  56.600154  1131.097495  45.500000  -23.500000  1135.000000
 
 --------------------------------------------------------------------------------
 
@@ -164,21 +170,19 @@ This package include the following files:
 AACGM C software:
 
 README.txt            ; this file
-release_notes.txt     ; details of changes to v2.6
+release_notes.txt     ; details of changes to v2.7
 aacgmlib_v2.c         ; AACGM-v2 functions
 aacgmlib_v2.h         ; AACGM-v2 header file
-genmag.c              ; general purpose functions
-genmag.h              ; general purpose header file
 igrflib.c             ; internal IGRF functions
 igrflib.h             ; internal IGRF header file
 rtime.c               ; internal date/time functions
 rtime.h               ; internal date/time header file
-astalg.c              ; Astronomical algorithms functions
+astalglib.c           ; Astronomical algorithms functions
 astalg.h              ; Astronomical algorithms header file
 mlt_v2.c              ; MLT-v2 functions
 mlt_v2.h              ; MLT-v2 header file
-igrf13coeffs.txt      ; IGRF13 coefficients (1900-2020)
-magmodel_1590-2020.txt; magnetic field coefficients (1590-2020)
+igrf14coeffs.txt      ; IGRF14 coefficients (1900-2025)
+magmodel_1590-2025.txt; magnetic field coefficients (1590-2025)
 test_aacgm.c          ; testing and example program
 LICENSE-AstAlg.txt    ; license file for Astro algrorithms
 

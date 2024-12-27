@@ -1,20 +1,50 @@
 
-v2.6 Changes
+How to cite:
+
+Shepherd, S. G. (2014), Altitude-adjusted corrected geomagnetic coordinates: 
+Definition and functional approximations, J. Geophys. Res. Space Physics, 119, 
+7501–7521, doi:10.1002/2014JA020264.
+
+v2.7 Changes
 
 Features:
 
-+ 20191228 added AACGM-v2 coefficients derived using IGRF13 model. Note that
-                 
-                 Note that there are some small differences (less than 1 km)
++ 20220705 added a feature to 'lock' AACGM-v2 date and time in order to
+           significantly speed up calculations that constantly check to see if
+           the date/time has changed in order to load new coefficients. Adding
+           the HMB, for instance, does this check and the date function is
+           called several times for each check, causing it to run ~3x slower
+           than it did before AACGM-v2 introduced a date/time feature.
 
-           added file magmodel_1590-2020.txt which contains GUFM1 and IGRF13
+           A member was added to the AACGM-v2 date/time structure to indicate
+           the status of the 'lock' and is accessed by these three new
+           functions:
+
+           int AACGM_v2_Lock(void);   /* lock AACGM-v2 date/time so no check */
+           int AACGM_v2_Unlock(void); /* unlock AACGM-v2 date/time [default] */
+           int AACGM_v2_Locked(void); /* query status locked flag */
+
++ 20230807 added functions to igrflib.c in order to perform conversions to and
+           and from eccentric dipole coordinates, with corresponding MLT
+           functions.
+
+           geod2ecdip    - convert from geodetic to eccentric dipole coordinates
+           ecdip2geod    - convert from eccentric dipole to geodetic coordinates
+           ecdip_mlt     - compute MLT of eccentric dipole longitude
+           inv_ecdip_mlt - compute eccentric dipole longitude of MLT
+           ecdip_mlt_ref - reference eccentric dipole longitude for MLT
+
++ 20230807 moved the single function dayno() from genmag.c to rtime.c in order
+           to remove dependency on aacgm library. The files genmag.c and
+           genmag.h have been removed.
+
++ 20241122 added AACGM-v2 coefficients derived using IGRF14 model.
+           added file magmodel_1590-2025.txt which contains GUFM1 and IGRF14
                  coefficients
-
-           added additional checks in igrflib.c for reading new coefficients.
-                 Note: igrf13coeffs.txt had an additional space at the end of
-                       each line that required these additional checks.
-
            changed error message in aacgmlib_v2.c for date/time out of bounds
 
 Bug fixes:
+
+  Fixed integer division in rtime.c for function TimeYMDHMSToJulian resulting
+    in times being set to start of the day.
 
