@@ -204,7 +204,7 @@ class TestTopStructure(TestModuleStructure):
         """Test the deprecated functions."""
         self.module_name = "aacgmv2"
         self.reference_list = ["_aacgmv2", "wrapper", "utils",
-                               "deprecated", "__main__"]
+                               "deprecated", "__main__", 'tests']
         self.test_modules()
 
 
