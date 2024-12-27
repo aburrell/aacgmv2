@@ -21,6 +21,8 @@ IGRF_COEFFS : (str)
 
 """
 # Imports
+from importlib import metadata
+from importlib import resources
 import logging
 import os as _os
 from sys import stderr
@@ -37,7 +39,7 @@ from aacgmv2 import deprecated  # noqa F401
 from aacgmv2 import utils  # noqa F401
 
 # Define global variables
-__version__ = "2.6.3"
+__version__ = metadata.version('aacgmv2')
 
 # Define a logger object to allow easier log handling
 logger = logging.getLogger('aacgmv2_logger')
@@ -47,10 +49,14 @@ high_alt_coeff = 2000.0  # Tested and published in Shepherd (2014)
 high_alt_trace = 6378.0  # 1 RE, these are ionospheric coordinates
 
 # Path and filename prefix for the IGRF coefficients
-AACGM_v2_DAT_PREFIX = _os.path.join(_os.path.realpath(
-    _os.path.dirname(__file__)), 'aacgm_coeffs', 'aacgm_coeffs-13-')
-IGRF_COEFFS = _os.path.join(_os.path.realpath(_os.path.dirname(__file__)),
-                            'magmodel_1590-2020.txt')
+AACGM_v2_DAT_PREFIX = _os.path.join(
+    _os.path.split(str(resources.path(__package__,
+                                      '__init__.py').__enter__()))[0],
+    'aacgm_coeffs', 'aacgm_coeffs-14-')
+IGRF_COEFFS = _os.path.join(
+    _os.path.split(str(resources.path(__package__,
+                                      '__init__.py').__enter__()))[0],
+    'magmodel_1590-2025.txt')
 
 # If not defined, set the IGRF and AACGM environment variables
 __reset_warn__ = False

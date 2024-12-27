@@ -6,8 +6,8 @@
 
 /*
  (c) 2010 JHU/APL & Others - Please Consult
-  LICENSE.superdarn-rst.3.2-beta-4-g32f7302.txt for more information.
- Also LICENSE
+     LICENSE.superdarn-rst.3.2-beta-4-g32f7302.txt for more information.
+ 
 */
 
 #include <stdio.h>
@@ -170,7 +170,7 @@ double TimeYMDHMSToEpoch(int yr,int mo,int dy,int hr,int mn,double sc) {
   if (tz) setenv("TZ", tz, 1);
   else unsetenv("TZ");
   tzset();
-
+               
   return clock+(sc-floor(sc));
 }
 
@@ -205,8 +205,8 @@ double TimeYMDHMSToJulian(int yr,int mo,int dy,int hr,int mt,double sc) {
   jdoy=i+1720994.5+B;
 
   
-  dfrac=1+TimeYMDHMSToYrsec(yr+1,mo,dy,hr,mt,sc)/DAY_SEC;
-   
+  dfrac=1+(double)TimeYMDHMSToYrsec(yr+1,mo,dy,hr,mt,sc)/DAY_SEC;
+
   return jdoy+dfrac; 
 
 }
@@ -264,5 +264,50 @@ int TimeJulianToYMDHMS(double jd,int *yr,int *mo,
   *mt=minute;
   *sc=second;
   return 0;
+}
+
+
+/*-----------------------------------------------------------------------------
+;
+; NAME:
+;       dayno
+;
+; PURPOSE:
+;       Function to compute the day of the year and the number of days in the
+;       year.
+;
+; CALLING SEQUENCE:
+;       doy = dayno(year, month, day, diy);
+;     
+;     Input Arguments:
+;       year          - year [1965-2014]
+;       month         - month of year [01-12]
+;       day           - day of month [01-31]
+;
+;     Output Arguments (integer pointers):  
+;       diy           - number of days in the given year
+;
+;     Return Value:
+;       error code
+;
+;+-----------------------------------------------------------------------------
+*/
+
+int dayno(int year, int month, int day, int *diy)
+{
+  int k,tot;
+  int ndays[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+
+  *diy = 365;
+  if(((year%4==0)&&(year%100!=0))||(year%400==0)) {
+    ndays[1]++;
+    *diy = 366;
+  }
+
+  tot = 0;
+  for (k=0; k<month-1; k++) tot += ndays[k];
+  tot += day;
+
+  return tot;
 }
 

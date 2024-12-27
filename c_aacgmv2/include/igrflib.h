@@ -2,7 +2,7 @@
 #define _IGRFLIB_
 
 #define IGRF_FIRST_EPOCH 1590
-#define IGRF_LAST_EPOCH 2020
+#define IGRF_LAST_EPOCH 2025
 /* SGS using IGRF_COEFFS environment variable */
 /*#define IGRF_FILE "igrf12coeffs.txt"*/  /* current IGRF model */
 
@@ -21,6 +21,8 @@
 
 #define DTOR (M_PI/180.)
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
+#define SIGN(x) ( ((x) > 0) ? 1 : (((x) < 0) ? -1 : 0) )
+#define MOD(a,b) ( (a) - floor((a)/(b))*(b) )
 
 /* function prototypes */
 
@@ -38,6 +40,13 @@ int IGRF_GetDateTime(int *year, int *month, int *day,
 int IGRF_SetDateTime(int year, int month, int day,
                       int hour, int minute, int second);
 double IGRF_Tilt(int yr, int mo, int dy, int hr, int mt, int sc);
+
+/* eccentric dipole functions */
+int geod2ecdip(double lat, double lon, double alt, double out[]);
+int ecdip2geod(double elat, double elon, double r, double out[]);
+double ecdip_mlt(int yr, int mo, int dy, int hr, int mt, int sc, double elon);
+double inv_ecdip_mlt(int yr,int mo,int dy, int hr,int mt,int sc, double mlt);
+double ecdip_mlt_ref(int yr, int mo, int dy, int hr, int mt, int sc);
 
 /* some geopack functionality */
 int geo2mag(const double xyzg[], double xyzm[]);

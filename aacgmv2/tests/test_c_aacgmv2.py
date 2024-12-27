@@ -1,3 +1,4 @@
+"""Unit tests for the AACGMV2 wrapped C code."""
 import datetime as dt
 import numpy as np
 import pytest
@@ -7,6 +8,7 @@ import aacgmv2
 
 class TestCAACGMV2(object):
     """Unit tests for the AACGMV2 wrapped C code."""
+
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.date_args = [(2014, 3, 22, 3, 11, 0), (2018, 1, 1, 0, 0, 0)]
@@ -22,13 +24,13 @@ class TestCAACGMV2(object):
         self.code = {'G2A': aacgmv2._aacgmv2.G2A, 'A2G': aacgmv2._aacgmv2.A2G,
                      'TG2A': aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE,
                      'TA2G': aacgmv2._aacgmv2.A2G + aacgmv2._aacgmv2.TRACE}
-        self.lat_comp = {'G2A': [48.1902, 58.2194], 'A2G': [30.7550, 50.4371],
-                         'TG2A': [48.1954, 58.2189], 'TA2G': [30.7661, 50.4410]}
-        self.lon_comp = {'G2A': [57.7505, 80.7282], 'A2G': [-94.1724, -77.5323],
-                         'TG2A': [57.7456, 80.7362],
-                         'TA2G': [-94.1727, -77.5440]}
-        self.r_comp = {'G2A': [1.1775, 1.0457], 'A2G': [1133.6246, 305.7308],
-                       'TG2A': [1.1775, 1.0457], 'TA2G': [1133.6282, 305.7322]}
+        self.lat_comp = {'G2A': [48.1902, 58.2199], 'A2G': [30.7550, 50.4364],
+                         'TG2A': [48.1954, 58.2194], 'TA2G': [30.7661, 50.4403]}
+        self.lon_comp = {'G2A': [57.7505, 80.7290], 'A2G': [-94.1724, -77.5309],
+                         'TG2A': [57.7456, 80.7371],
+                         'TA2G': [-94.1727, -77.5426]}
+        self.r_comp = {'G2A': [1.1775, 1.0457], 'A2G': [1133.6246, 305.7305],
+                       'TG2A': [1.1775, 1.0457], 'TA2G': [1133.6282, 305.7319]}
 
     def teardown_method(self):
         """Run after every method to clean up previous testing."""
@@ -66,7 +68,7 @@ class TestCAACGMV2(object):
 
         """
         self.mlt = aacgmv2._aacgmv2.set_datetime(*self.date_args[idate])
-        assert self.mlt is None
+        assert self.mlt is None, "MLT is {:}, not None".format(self.mlt)
 
     def test_fail_set_datetime(self):
         """Test unsuccessful set_datetime."""

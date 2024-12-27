@@ -118,7 +118,6 @@ def set_coeff_path(igrf_file=False, coeff_prefix=False):
         aacgmv2.AACGM_V2_DAT_PREFIX, or False to leave as is. (default=False)
 
     """
-
     # Define coefficient file prefix if requested
     if coeff_prefix is not False:
         # Use the default value, if one was not supplied (allow None to
@@ -536,7 +535,6 @@ def convert_str_to_bit(method_code):
     are ignored and no code defaults to 'G2A'.
 
     """
-
     convert_code = {"G2A": c_aacgmv2.G2A, "A2G": c_aacgmv2.A2G,
                     "TRACE": c_aacgmv2.TRACE, "BADIDEA": c_aacgmv2.BADIDEA,
                     "GEOCENTRIC": c_aacgmv2.GEOCENTRIC,
@@ -576,7 +574,6 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
         code specification in bits
 
     """
-
     bit_code = c_aacgmv2.A2G if a2g else c_aacgmv2.G2A
 
     if trace:
@@ -592,7 +589,7 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
 
 
 def convert_mlt(arr, dtime, m2a=False):
-    """Converts between magnetic local time (MLT) and AACGM-v2 longitude.
+    """Convert between magnetic local time (MLT) and AACGM-v2 longitude.
 
     Parameters
     ----------
@@ -615,7 +612,6 @@ def convert_mlt(arr, dtime, m2a=False):
     improved calculation available in AACGM-V2.4.
 
     """
-
     arr = np.asarray(arr)
     if arr.shape == ():
         arr = np.array([arr])
