@@ -49,12 +49,16 @@ is called, the updating process is simple:
    epoch update. You will have to update the hard-coded confirmation values
    used by these tests, but the values should not change by more than a
    hundredth of a degree.  Tests that may need to be updated include:
+
+   
    A. ``test_c_aacgmv2.py::TestCAACGMV2.test_convert``
    B. ``test_cmd_aacgmv2.py::TestCmdAACGMV2::test_convert_stdin_stdout``
    C. ``test_cmd_aacgmv2.py::TestCmdAACGMV2::test_convert_mlt_stdin_stdout``
    D. ``test_struct_aacgmv2.py::TestTopVariables::test_top_parameters``
    E. ``test_utils_aacgmv2.py::TestUtilsAACGMV2::test_igrf_dipole_axis``
    F. ``environ/test_environ_aacgmv2.py::TestPyEnviron``
+
+      
 10. Commit all changes and create a pull request on GitHub to integrate your 
     branch with updated IGRF into the main repository.
 
