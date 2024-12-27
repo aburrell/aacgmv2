@@ -1,3 +1,4 @@
+"""Unit tests for the command line interface."""
 import subprocess
 import numpy as np
 import os
@@ -8,6 +9,7 @@ import aacgmv2
 
 class TestCmdAACGMV2(object):
     """Unit tests for the command line interface."""
+
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.test_dir = os.path.join(aacgmv2.__path__[0], 'tests', 'test_data')

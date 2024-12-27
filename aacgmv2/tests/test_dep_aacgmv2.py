@@ -1,3 +1,4 @@
+"""Unit tests for deprecation warnings."""
 import datetime as dt
 import warnings
 
@@ -6,6 +7,7 @@ import aacgmv2
 
 class TestFutureDepWarning(object):
     """Unit tests for deprecation warnings."""
+
     def setup_method(self):
         """Create a clean test environment."""
         # Initialize the routine to be tested
@@ -37,6 +39,7 @@ class TestFutureDepWarning(object):
 
 class TestDepAACGMV2Warning(TestFutureDepWarning):
     """Unit tests for AACGMV2 deprecation warnings."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
@@ -50,21 +53,18 @@ class TestDepAACGMV2Warning(TestFutureDepWarning):
 
     def test_igrf_dipole_axis_warning(self):
         """Test future deprecation warning for igrf_dipole_axis."""
-
         self.test_routine = aacgmv2.deprecated.igrf_dipole_axis
         self.test_args = [self.dtime]
         self.test_future_dep_warning()
 
     def test_subsol_warning(self):
         """Test future deprecation warning for subsol."""
-
         self.test_routine = aacgmv2.deprecated.subsol
         self.test_args = [self.dtime.year, 1, 1.0]
         self.test_future_dep_warning()
 
     def test_gc2gd_lat(self):
         """Test future deprecation warning for gc2gd_lat."""
-
         self.test_routine = aacgmv2.deprecated.gc2gd_lat
         self.test_args = [45.0]
         self.test_future_dep_warning()

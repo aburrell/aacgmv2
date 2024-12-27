@@ -1,3 +1,4 @@
+"""Unit tests for primary Python functions."""
 import datetime as dt
 import logging
 import numpy as np
@@ -10,6 +11,7 @@ import aacgmv2
 
 class TestConvertArray(object):
     """Unit tests for array conversion."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
@@ -270,7 +272,6 @@ class TestConvertLatLonArr(TestConvertArray):
 
     def test_convert_latlon_arr_location_failure(self):
         """Test array latlon conversion with a bad location."""
-
         with warnings.catch_warnings():
             # Causes all warnings to be surpressed
             warnings.simplefilter("ignore")
@@ -317,6 +318,7 @@ class TestConvertLatLonArr(TestConvertArray):
                                "unrealistic latitude"),
                               (None, 4, "unknown method code")])
     def test_convert_latlon_arr_failure(self, in_rep, in_irep, msg):
+        """Test failure of convert_lonlat_arr for various bad inputs."""
         in_args = np.array([self.lat_in, self.lon_in, self.alt_in, self.dtime,
                             "G2A"], dtype=object)
         in_args[in_irep] = in_rep
@@ -326,6 +328,7 @@ class TestConvertLatLonArr(TestConvertArray):
 
 class TestGetAACGMCoord(object):
     """Unit tests for AACGM coordinate conversion."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.dtime = dt.datetime(2015, 1, 1, 0, 0, 0)
@@ -508,7 +511,6 @@ class TestGetAACGMCoordArr(TestConvertArray):
 
     def test_get_aacgm_coord_arr_mlat_failure(self):
         """Test error return for co-latitudes above 90 for an array."""
-
         self.lat_in = [91, 60, -91]
         with pytest.raises(ValueError):
             self.out = aacgmv2.get_aacgm_coord_arr(self.lat_in, self.lon_in[0],
@@ -541,6 +543,7 @@ class TestGetAACGMCoordArr(TestConvertArray):
 
 class TestConvertCode(object):
     """Unit tests for the conversion codes."""
+
     def setup_method(self):
         """Create a clean test environment."""
         self.c_method_code = None
@@ -809,18 +812,15 @@ class TestHeightReturns(object):
 
     def test_low_height_good(self):
         """Test to see that a very low height is still accepted."""
-
         assert aacgmv2.wrapper.test_height(-1, self.code)
 
     def test_high_coeff_bad(self):
         """Test to see that a high altitude for coefficent use fails."""
-
         assert not aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff + 10.0,
                                                self.code)
 
     def test_high_coeff_good(self):
         """Test a high altitude for coefficent use with badidea."""
-
         assert aacgmv2.wrapper.test_height(aacgmv2.high_alt_coeff + 10.0,
                                            self.bad_code)
 

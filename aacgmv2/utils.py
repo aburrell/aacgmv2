@@ -33,7 +33,6 @@ def gc2gd_lat(gc_lat):
         Geodetic latitude in degrees N, same type as input `gc_lat`
 
     """
-
     wgs84_e2 = 0.006694379990141317 - 1.0
     gd_lat = np.rad2deg(-np.arctan(np.tan(np.deg2rad(gc_lat)) / wgs84_e2))
 
@@ -81,7 +80,6 @@ def subsol(year, doy, utime):
     by K. Laundal.
 
     """
-
     # Convert from 4 digit year to 2 digit year
     yr2 = year - 2000
 
@@ -161,7 +159,6 @@ def igrf_dipole_axis(date):
     date, or extrapolated if date > latest IGRF model
 
     """
-
     # Get time in years, as float
     year = date.year
     doy = date.timetuple().tm_yday

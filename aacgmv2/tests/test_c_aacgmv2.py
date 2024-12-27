@@ -1,3 +1,4 @@
+"""Unit tests for the AACGMV2 wrapped C code."""
 import datetime as dt
 import numpy as np
 import pytest
@@ -7,6 +8,7 @@ import aacgmv2
 
 class TestCAACGMV2(object):
     """Unit tests for the AACGMV2 wrapped C code."""
+
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.date_args = [(2014, 3, 22, 3, 11, 0), (2018, 1, 1, 0, 0, 0)]

@@ -1,3 +1,4 @@
+"""Configuration file for documetation."""
 import os
 from pyproject_parser import PyProject
 
