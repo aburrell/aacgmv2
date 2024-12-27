@@ -44,11 +44,16 @@ is called, the updating process is simple:
    ``test_aacgm.c`` to reduce compiler warnings.
 8. Rebuild and install AACGMV2 following the instructions in
    :ref:`installation-build`.
-9. Update the unit tests in the class ```` in 
-   ``aacgmv2/aacgmv2/tests/.py`` so that they check the methods are
-   working correctly with dates after the latest IGRF epoch (i.e., if the
-   latest epoch is 2025, set the test to initialize with the year 2030).  You
-   will have to update the hard-coded confirmation values used by these tests.
+9. Update the unit tests in the ``aacgmv2/aacgmv2/tests/`` directory so that
+   they check the functions are working correctly with dates after the IGRF
+   epoch update. You will have to update the hard-coded confirmation values
+   used by these tests, but the values should not change by more than a
+   hundredth of a degree.  Tests that may need to be updated include:
+   A. ``test_c_aacgmv2.py::TestCAACGMV2.test_convert``
+   B. ``test_cmd_aacgmv2.py::TestCmdAACGMV2::test_convert_stdin_stdout``
+   C. ``test_cmd_aacgmv2.py::TestCmdAACGMV2::test_convert_mlt_stdin_stdout``
+   D. ``test_struct_aacgmv2.py::TestTopVariables::test_top_parameters``
+   E. ``test_utils_aacgmv2.py::TestUtilsAACGMV2::test_igrf_dipole_axis``
 10. Commit all changes and create a pull request on GitHub to integrate your 
     branch with updated IGRF into the main repository.
 
