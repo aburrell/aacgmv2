@@ -32,7 +32,7 @@ jobs:
             os: "ubuntu-latest"
             test_config: "NEP29"
 
-    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }} with Numpy ${{ matrix.numpy-ver }}
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
