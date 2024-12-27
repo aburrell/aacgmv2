@@ -2,10 +2,15 @@
 Changelog
 =========
 
-2.6.4 (2023-XX-XX)
+2.7.0 (2024-12-31)
 ------------------
 
+* Updated C source code to version 2.7
+* Updated coefficients for IGRF-14
 * Added yaml for ReadTheDocs and moved requirements to pyproject.toml
+* Cycled supported Python versions
+* Updated GitHub Actions CI to use new Coveralls integration
+* Updated documentation to include instructions for future IGRF and C updates
 
 2.6.3 (2023-02-08)
 ------------------
