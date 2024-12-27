@@ -589,7 +589,7 @@ def convert_bool_to_bit(a2g=False, trace=False, allowtrace=False,
 
 
 def convert_mlt(arr, dtime, m2a=False):
-    """Converts between magnetic local time (MLT) and AACGM-v2 longitude.
+    """Convert between magnetic local time (MLT) and AACGM-v2 longitude.
 
     Parameters
     ----------

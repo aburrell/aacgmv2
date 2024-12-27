@@ -122,7 +122,7 @@ class TestConvertLatLon(object):
         assert np.all(np.isnan(np.array(self.out)))
 
     def test_convert_latlon_maxalt_failure(self):
-        """test convert_latlon failure for an altitude too high for coeffs."""
+        """Test convert_latlon failure for an altitude too high for coeffs."""
         self.in_args.extend([2001, self.dtime, ""])
         self.out = aacgmv2.convert_latlon(*self.in_args)
         assert np.all(np.isnan(np.array(self.out)))
@@ -497,7 +497,6 @@ class TestGetAACGMCoordArr(TestConvertArray):
 
     def test_get_aacgm_coord_arr_mult_failure(self):
         """Test aacgm_coord_arr failure with multi-dim array input."""
-
         with pytest.raises(ValueError):
             (self.mlat_out, self.mlon_out,
              self.mlt_out) = aacgmv2.get_aacgm_coord_arr(

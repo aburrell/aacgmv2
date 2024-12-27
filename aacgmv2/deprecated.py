@@ -4,10 +4,7 @@
 # the root in the LICENSE file
 #
 # -*- coding: utf-8 -*-
-"""Pythonic wrappers for deprecated AACGM-V2 C functions, now in the wrapper.
-
-"""
-
+"""Python wrappers for deprecated AACGM-V2 C functions, now in the wrapper."""
 import warnings
 import aacgmv2
 
