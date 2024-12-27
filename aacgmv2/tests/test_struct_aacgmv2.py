@@ -217,9 +217,9 @@ class TestTopVariables(object):
         self.alt_limits = {"coeff": 2000.0, "trace": 6378.0}
         self.coeff_file = {"coeff": os.path.join("aacgmv2", "aacgmv2",
                                                  "aacgm_coeffs",
-                                                 "aacgm_coeffs-13-"),
+                                                 "aacgm_coeffs-14-"),
                            "igrf": os.path.join("aacgmv2", "aacgmv2",
-                                                "magmodel_1590-2020.txt")}
+                                                "magmodel_1590-2025.txt")}
 
     def teardown_method(self):
         """Clean up the test environment."""

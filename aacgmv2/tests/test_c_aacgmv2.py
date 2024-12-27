@@ -22,13 +22,13 @@ class TestCAACGMV2(object):
         self.code = {'G2A': aacgmv2._aacgmv2.G2A, 'A2G': aacgmv2._aacgmv2.A2G,
                      'TG2A': aacgmv2._aacgmv2.G2A + aacgmv2._aacgmv2.TRACE,
                      'TA2G': aacgmv2._aacgmv2.A2G + aacgmv2._aacgmv2.TRACE}
-        self.lat_comp = {'G2A': [48.1902, 58.2194], 'A2G': [30.7550, 50.4371],
-                         'TG2A': [48.1954, 58.2189], 'TA2G': [30.7661, 50.4410]}
-        self.lon_comp = {'G2A': [57.7505, 80.7282], 'A2G': [-94.1724, -77.5323],
-                         'TG2A': [57.7456, 80.7362],
-                         'TA2G': [-94.1727, -77.5440]}
-        self.r_comp = {'G2A': [1.1775, 1.0457], 'A2G': [1133.6246, 305.7308],
-                       'TG2A': [1.1775, 1.0457], 'TA2G': [1133.6282, 305.7322]}
+        self.lat_comp = {'G2A': [48.1902, 58.2199], 'A2G': [30.7550, 50.4364],
+                         'TG2A': [48.1954, 58.2194], 'TA2G': [30.7661, 50.4403]}
+        self.lon_comp = {'G2A': [57.7505, 80.7290], 'A2G': [-94.1724, -77.5309],
+                         'TG2A': [57.7456, 80.7371],
+                         'TA2G': [-94.1727, -77.5426]}
+        self.r_comp = {'G2A': [1.1775, 1.0457], 'A2G': [1133.6246, 305.7305],
+                       'TG2A': [1.1775, 1.0457], 'TA2G': [1133.6282, 305.7319]}
 
     def teardown_method(self):
         """Run after every method to clean up previous testing."""
