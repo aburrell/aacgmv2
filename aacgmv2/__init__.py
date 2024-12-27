@@ -35,7 +35,6 @@ from aacgmv2.wrapper import convert_str_to_bit  # noqa F401
 from aacgmv2.wrapper import get_aacgm_coord  # noqa F401
 from aacgmv2.wrapper import get_aacgm_coord_arr  # noqa F401
 from aacgmv2 import _aacgmv2  # noqa F401
-from aacgmv2 import deprecated  # noqa F401
 from aacgmv2 import utils  # noqa F401
 
 # Define global variables
