@@ -11,6 +11,7 @@ Changelog
 * Cycled supported Python versions
 * Updated GitHub Actions CI to use new Coveralls integration
 * Updated documentation to include instructions for future IGRF and C updates
+* Removed the deprecated function module
 
 2.6.3 (2023-02-08)
 ------------------
