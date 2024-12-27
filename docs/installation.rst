@@ -19,7 +19,7 @@ Tested Setups
 The package has been tested with the following setups (others might work, too):
 
 * Mac (64 bit), Windows (64 bit), and Linux (64 bit)
-* Python 3.7, 3.8, 3.9, and 3.10
+* Python 3.9, 3.10, 3.11, and 3.12
 
 Known Problems and Solutions
 ============================
