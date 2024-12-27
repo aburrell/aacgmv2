@@ -50,7 +50,7 @@ classifiers = [
 ]
 
 [project.scripts]
-aacgmv2 = {reference = 'aacgmv2.__main__:main', type = 'console'}
+aacgmv2 = 'aacgmv2.__main__:main'
 
 [project.optional-dependencies]
 test = [
@@ -118,8 +118,6 @@ addopts = [
   "--ignore=docs/conf.py",
   "--ignore=setup.py",
   "--ignore=.eggs",
-  "--doctest-modules",
-  "--doctest-glob=\*.rst",
   "--tb=short"
 ]
 
