@@ -47,12 +47,14 @@ printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d\n", 2020,1,22,0,0,0);
 AACGM_v2_SetDateTime(2020, 1, 22, 0,0,0); /* this is now valid */
 printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d\n", 2019,1,22,0,0,0);
 AACGM_v2_SetDateTime(2019, 1, 22, 0,0,0); /* this is valid */
-printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d  (will fail)\n", 2025,1,22,0,0,0);
-AACGM_v2_SetDateTime(2025, 1, 22, 0,0,0); /* should fail*/
+printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d\n", 2025,1,22,0,0,0);
+AACGM_v2_SetDateTime(2025, 1, 22, 0,0,0); /* this is valid */
+printf("TEST: Setting time to : %04d%02d%02d %02d%02d:%02d  (will fail)\n", 2030,1,22,0,0,0);
+AACGM_v2_SetDateTime(2030, 1, 22, 0,0,0); /* should fail*/
 next();
 #endif
 
-yr = 2024;
+yr = 2029;
 mo = 3;
 dy = 22;
 hr = 3;
@@ -127,7 +129,7 @@ lon = -23.5;
 hgt = 150.;
 
 /* set date and time */
-AACGM_v2_SetDateTime(2018,1,1,0,0,0);
+AACGM_v2_SetDateTime(2023,1,1,0,0,0);
 
 #if (DEBUG >1)
 printf("TEST: geographic to AACGM-v2; coefficients\n");

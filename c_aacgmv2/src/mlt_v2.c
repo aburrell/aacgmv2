@@ -109,7 +109,7 @@ double MLTConvert_v2(int yr, int mo, int dy, int hr, int mt ,int sc,
     /* AACGM date/time not set so set it to the date/time passed in */
     err = AACGM_v2_SetDateTime(yr,mo,dy,hr,mt,sc);
     if (err != 0) return (err);
-  } else {
+  } else if (!AACGM_v2_Locked()) {
     /* If date/time passed into function differs from AACGM data/time by more
      * than 30 days, recompute the AACGM-v2 coefficients */
     ajd = TimeYMDHMSToJulian(ayr,amo,ady,ahr,amt,asc);

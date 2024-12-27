@@ -37,6 +37,9 @@
 ; AACGM_v2_SetDateTime
 ; AACGM_v2_GetDateTime
 ; AACGM_v2_SetNow
+; AACGM_v2_Lock
+; AACGM_v2_Unlock
+; AACGM_v2_Locked
 ; AACGM_v2_errmsg
 ;
 
@@ -53,9 +56,9 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include "rtime.h"
 #include "aacgmlib_v2.h"
 #include "igrflib.h"
-#include "genmag.h"
 
 #define DEBUG 0
 
@@ -69,7 +72,8 @@ static struct {
   int second;
   int dayno;
   int daysinyear;
-} aacgm_date = {-1,-1,-1,-1,-1,-1,-1,-1};
+  int locked;
+} aacgm_date = {-1,-1,-1,-1,-1,-1,-1,-1,0};
 
 static int myear = 0;       /* model year: 5-year epoch */
 static double fyear = 0.;   /* floating point year */
@@ -870,7 +874,7 @@ int AACGM_v2_LoadCoefs(int year)
 {
   char fname[256];
   char root[256];
-  char yrstr[5];  
+  char yrstr[11];
   int ret=0;
 
   #if DEBUG > 0
@@ -1016,7 +1020,7 @@ int AACGM_v2_Convert(double in_lat, double in_lon, double height,
 
   /* height > 2000 km not allowed for coefficients */
   if (height > MAXALT && !(code & (TRACE|ALLOWTRACE|BADIDEA))) {
-    fprintf(stderr, "ERROR: coefficients are not valid for altitudes "
+    fprintf(stderr, "AACGM-v2 ERROR: coefficients are not valid for altitudes "
                     "above %d km: %lf.\n", MAXALT, height);
     fprintf(stderr, "       You must either use field-line tracing "
                     "(TRACE or ALLOWTRACE) or\n"
@@ -1057,7 +1061,7 @@ int AACGM_v2_Convert(double in_lat, double in_lon, double height,
 ;       err = AACGM_v2_SetDateTime(year, month, day, hour, minute, second);
 ;     
 ;     Input Arguments:  
-;       year          - year [1900-2025)
+;       year          - year [1900-2030)
 ;       month         - month of year [01-12]
 ;       day           - day of month [01-31]
 ;       hour          - hour of day [00-24]
@@ -1210,6 +1214,79 @@ int AACGM_v2_SetNow(void)
 /*-----------------------------------------------------------------------------
 ;
 ; NAME:
+;       AACGM_v2_Lock
+;
+; PURPOSE:
+;       Function to set lock, which will prevent extra date and time checks
+;       when performing MLT_v2 conversions.
+;
+; CALLING SEQUENCE:
+;       err = AACGM_v2_Lock();
+;
+;     Return Value:
+;       error code
+;
+;+-----------------------------------------------------------------------------
+*/
+
+int AACGM_v2_Lock(void)
+{
+  aacgm_date.locked = 1;
+
+  return 0;
+}
+
+/*-----------------------------------------------------------------------------
+;
+; NAME:
+;       AACGM_v2_Unlock
+;
+; PURPOSE:
+;       Function to remove lock, which will enforce date and time checks when
+;       performing MLT_v2 conversions (default behavior).
+;
+; CALLING SEQUENCE:
+;       err = AACGM_v2_Unlock();
+;
+;     Return Value:
+;       error code
+;
+;+-----------------------------------------------------------------------------
+*/
+
+int AACGM_v2_Unlock(void)
+{
+  aacgm_date.locked = 0;
+
+  return 0;
+}
+
+/*-----------------------------------------------------------------------------
+;
+; NAME:
+;       AACGM_v2_Locked
+;
+; PURPOSE:
+;       Function to get lock status, which can be used to either enforce or
+;       prevent extra date and time checks when performing MLT_v2 conversions.
+;
+; CALLING SEQUENCE:
+;       locked = AACGM_v2_Locked();
+;
+;     Return Value:
+;       lock status
+;
+;+-----------------------------------------------------------------------------
+*/
+
+int AACGM_v2_Locked(void)
+{
+  return (aacgm_date.locked);
+}
+
+/*-----------------------------------------------------------------------------
+;
+; NAME:
 ;       AACGM_v2_errmsg
 ;
 ; PURPOSE:
@@ -1253,8 +1330,8 @@ void AACGM_v2_errmsg(int ecode)
   fprintf(stderr,
   "* AACGM-v2 ERROR: Date out of bounds                                     *\n"
   "*                                                                        *\n"
-  "* The current date range for AACGM-v2 coordinates is [1990-2025), which  *\n"
-  "* corresponds to the date range for the IGRF12 model, including the      *\n"
+  "* The current date range for AACGM-v2 coordinates is [1990-2030), which  *\n"
+  "* corresponds to the date range for the IGRF14 model, including the      *\n"
   "* 5-year secular variation.                                              *"
   "\n");
     break;

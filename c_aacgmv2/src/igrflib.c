@@ -4,8 +4,8 @@
 #include <time.h>
 #include <string.h>
 #include "igrflib.h"
-#include "genmag.h"
 #include "astalg.h"
+#include "rtime.h"
 
 /*#define DEBUG 1*/
 /* TO DO: should these go in igrflib.h? */
@@ -31,6 +31,14 @@ static struct {
   double cl0;
   double sl0;
 } geopack = {0.,0.,0.,0.,0.,0.,0.,0.};
+
+struct {    /* eccentric dipole structure */
+  double B02, B0;
+  double latref, lonref;
+  double g2m[3][3];
+  double L0, L1, L2, E;
+  double pos[3];
+} ecdip;
 
 static double IGRF_coef_set[MAXNYR][IGRF_MAXK]; /* all the coefficients */
 static double IGRF_svs[IGRF_MAXK];              /* secular variations */
@@ -74,7 +82,7 @@ void igrf_pause(void)
 ;     
 ;     Input Arguments:  
 ;       filename      - name of file which contains IGRF coefficients; default
-;                       is current IGRF model: igrf12coeffs.txt
+;                       is current IGRF model: igrf14coeffs.txt
 ;
 ;     Return Value:
 ;       error code
@@ -554,9 +562,11 @@ int IGRF_compute(const double rtp[], double brtp[]) {
 */
 int IGRF_interpolate_coefs(void) {
 
-  int i,k,l,m, myear;
+  int i,k,l,m,n, myear;
   double fyear;
   double g10,g11,h11,sq,sqq,sqr;
+  double fac, ca,cb,sa,sb;
+  double Slm[IGRF_MAXK], fctrl[2*IGRF_ORDER+1];
 
   #if DEBUG > 0
   printf("** TIME INTERPOLATION **\n");
@@ -637,6 +647,76 @@ int IGRF_interpolate_coefs(void) {
   printf("ctsl = %lf\n", geopack.ctsl);
   printf("ctcl = %lf\n", geopack.ctcl);
   #endif
+
+  /* for eccentric dipole coordinates */
+
+  /* factorial for un-normalization */
+  fctrl[0] = fctrl[1] = 1.;
+  for (k=2; k<= 2*IGRF_ORDER; k++) fctrl[k] = k*fctrl[k-1];
+
+  for (l=0; l<=IGRF_ORDER; l++) {
+    for (m=0; m<=l; m++) {
+      k = l * (l+1) + m;      /* 1D index for l,m */
+      n = l * (l+1) - m;      /* 1D index for l,m */
+
+      fac = (m) ? 2 : 1;
+      /* Davis 2004; Wertz 1978 recursion
+      Slm[k] = Slm[n] = sqrt(fac*fctrl[l-m]/fctrl[l+m])*dfc[2*l-1]/fctrl[l-m];
+      */
+      /* Winch 2004 */
+      Slm[k] = Slm[n] = sqrt(fac*fctrl[l-m]/fctrl[l+m]);
+    }
+  }
+
+              /* S_(1,-1)^2 + S_(1,0)^2 + S_(1,1)^2 */
+  ecdip.B02 = IGRF_coefs[1]*IGRF_coefs[1]/(Slm[1]*Slm[1]) +
+              IGRF_coefs[2]*IGRF_coefs[2]/(Slm[2]*Slm[2]) +
+              IGRF_coefs[3]*IGRF_coefs[3]/(Slm[3]*Slm[3]);
+  ecdip.B0  = sqrt(ecdip.B02);
+
+  ecdip.latref = asin(-IGRF_coefs[2]/Slm[2]/ecdip.B0)/DTOR;
+  ecdip.lonref = 180 + atan2(IGRF_coefs[1]/Slm[1],IGRF_coefs[3]/Slm[3])/DTOR;
+
+  ca = cos(ecdip.latref*DTOR);
+  sa = sin(ecdip.latref*DTOR);
+  cb = cos(ecdip.lonref*DTOR);
+  sb = sin(ecdip.lonref*DTOR);
+
+  ecdip.g2m[0][0] = sa*cb;
+  ecdip.g2m[0][1] = sa*sb;
+  ecdip.g2m[0][2] =   -ca;
+  ecdip.g2m[1][0] =   -sb;
+  ecdip.g2m[1][1] =    cb;
+  ecdip.g2m[1][2] =    0.;
+  ecdip.g2m[2][0] = cb*ca;
+  ecdip.g2m[2][1] = ca*sb;
+  ecdip.g2m[2][2] =    sa;
+
+             /*  2*S10*S20 + sqrt(3)*(S11*S21 + S1-1*S2-1)  */
+  ecdip.L0 = 2 * IGRF_coefs[2]/Slm[2] * IGRF_coefs[6]/Slm[6] +
+             sqrt(3) * (IGRF_coefs[3]/Slm[3] * IGRF_coefs[7]/Slm[7] +
+                        IGRF_coefs[1]/Slm[1] * IGRF_coefs[5]/Slm[5]);
+
+            /* -S11*S20 + sqrt(3)*(S10*S21 + S11*S30 + S1-1*S2-2) */
+  ecdip.L1 = - IGRF_coefs[3]/Slm[3] * IGRF_coefs[6]/Slm[6] +
+             sqrt(3) * (IGRF_coefs[2]/Slm[2] * IGRF_coefs[7]/Slm[7] +
+                        IGRF_coefs[3]/Slm[3] * IGRF_coefs[12]/Slm[12] +
+                        IGRF_coefs[1]/Slm[1] * IGRF_coefs[4]/Slm[4]);
+
+            /* -S1-1*S20 + sqrt(3)*(S10*S2-1 - S1-1*S30 + S11*S2-2) */
+  ecdip.L2 = - IGRF_coefs[1]/Slm[1] * IGRF_coefs[6]/Slm[6] +
+             sqrt(3) * (IGRF_coefs[2]/Slm[2] * IGRF_coefs[5]/Slm[5] -
+                        IGRF_coefs[1]/Slm[1] * IGRF_coefs[12]/Slm[12] +
+                        IGRF_coefs[3]/Slm[3] * IGRF_coefs[4]/Slm[4]);
+
+            /* (L0*S10 + L1*S11 + L2*S1-1)/4/B02 */
+  ecdip.E  = (ecdip.L0 * IGRF_coefs[2]/Slm[2] +
+              ecdip.L1 * IGRF_coefs[3]/Slm[3] +
+              ecdip.L2 * IGRF_coefs[1]/Slm[1])/4./ecdip.B02;
+
+  ecdip.pos[0] = RE * (ecdip.L1 - IGRF_coefs[3]/Slm[3]*ecdip.E) /3./ecdip.B02;
+  ecdip.pos[1] = RE * (ecdip.L2 - IGRF_coefs[1]/Slm[1]*ecdip.E) /3./ecdip.B02;
+  ecdip.pos[2] = RE * (ecdip.L0 - IGRF_coefs[2]/Slm[2]*ecdip.E) /3./ecdip.B02;
 
   return (0);
 }
@@ -1170,6 +1250,235 @@ int mag2geo(const double xyzm[], double xyzg[]) {
 /*-----------------------------------------------------------------------------
 ;
 ; NAME:
+;       geod2ecdip (translated from Pierre-Louis Blelly Matlab code)
+;
+; PURPOSE:
+;       Convert from geodetic coordinates (as specified by WGS84) to
+;       eccentric dipole coordinates.
+;
+; CALLING SEQUENCE:
+;       err = geod2ecdip(lat,lon,alt, out);
+;
+;     Input Arguments:
+;       lat,lon       - geodetic latitude and longitude [degrees N and E]
+;       alt           - distance above sea level [km]
+;
+;     Output Argument:
+;       out[3]        - eccentric dipole coordinates
+;
+;     Return Value:
+;       error code
+;
+;+-----------------------------------------------------------------------------
+*/
+int geod2ecdip(double lat, double lon, double alt, double out[])
+{
+  int i,k, err;
+  int yr,dy,mo, hr,mt,sc, dyno;
+  double d, r, rr, B0, latmag,lonmag;
+  double sd,cd, Rmag, L, B, dip, tmag;
+  double xyz[3], XYZ[3], coord[3];
+  double lonmag_ref;
+
+  #if DEBUG > 0
+  printf("geod2ecdip\n");
+  #endif
+
+  /* no date/time set so bail */
+  if (igrf_date.year < 0) {
+    IGRF_msg_notime();
+    return -128;
+  }
+
+  //err = IGRF_GetDateTime(&yr, &mo, &dy, &hr, &mt, &sc, &dyno);
+  //lonmag_ref = ecdip_mlt_ref(yr,mo,dy, hr,mt,sc);
+
+  //B0 = ecdip.B0*1e-5;
+  geod2geoc(lat,lon,alt, out);
+  out[0] *= RE;
+  sph2car(out, xyz);
+
+  for (k=0; k<3; k++) XYZ[k] = xyz[k] - ecdip.pos[k];
+
+  r = sqrt(XYZ[0]*XYZ[0] + XYZ[1]*XYZ[1] + XYZ[2]*XYZ[2]);
+  for (k=0; k<3; k++) XYZ[k] /= r;
+
+  /* coord=vec*g2m'; 1x3 * 3x3 = 1x3 */
+  for (k=0; k<3; k++) {
+    coord[k] = 0.;
+    for (i=0; i<3; i++) coord[k] += XYZ[i]*ecdip.g2m[k][i];
+  }
+
+  d = coord[0]*coord[0] + coord[1]*coord[1];
+  if (d == 0) {
+    latmag = SIGN(coord[2])*90;
+    lonmag = ecdip.lonref;
+  } else if (d > 0) {
+    latmag = asin(coord[2])/DTOR;
+    lonmag = atan2(coord[1],coord[0])/DTOR;
+  } else {
+    /* set to nans? */
+    latmag = NAN;
+    lonmag = NAN;
+  }
+
+  //rr   = RE/r;
+  //cd   = cos(latmag*DTOR);
+  //sd   = sin(latmag*DTOR);
+
+  //L    = r/RE/(cd*cd);
+  //B    = B0 * sqrt(3* sd*sd + 1)*rr*rr*rr;
+  //dip  = atan2(2*sd,cd)/DTOR;
+  //tmag = 48 + (lonmag-lonmag_ref)/15.;
+  //tmag -= floor(tmag/24)*24;
+
+  out[0] = latmag;
+  out[1] = lonmag;
+  out[2] = r;
+
+  return (0);
+}
+
+/*-----------------------------------------------------------------------------
+;
+; NAME:
+;       ecdip2geod (translated from Pierre-Louis Blelly Matlab code)
+;
+; PURPOSE:
+;       Convert from eccentric diople coordinates to geodetic coordinates
+;       (as specified by WGS84).
+;
+; CALLING SEQUENCE:
+;       err = ecdip2geod(lat,lon,r, out);
+;
+;     Input Arguments:
+;       lat,lon       - eccentric dipole latitude and longitude [degrees N & E]
+;       r             - radial distance [km]
+;
+;     Output Argument:
+;       out[3]        - geodetic latitude, longitude [deg] and altitude [km]
+;
+;     Return Value:
+;       error code
+;
+;+-----------------------------------------------------------------------------
+*/
+int ecdip2geod(double elat, double elon, double r, double out[])
+{
+  int i, k;
+  double XYZ[3], coord[3], rtp[3];
+  double lat,lon;
+
+  #if DEBUG > 0
+  printf("ecdip2geod\n");
+  #endif
+
+  /* no date/time set so bail */
+  if (igrf_date.year < 0) {
+    IGRF_msg_notime();
+    return -128;
+  }
+
+  //B0 = ecdip.B0*1e-5;
+
+  //rr   = RE/r;
+  //cd   = cos(elat*DTOR);
+  //sd   = sin(elat*DTOR);
+
+  //L    = r/RE/(cd*cd);
+  //B    = B0 * sqrt(3* sd*sd + 1)*rr*rr*rr;
+  //dip  = atan2(2*sd,cd)/DTOR;
+
+  XYZ[0] = r * cos(elon*DTOR) * cos(elat*DTOR);
+  XYZ[1] = r * sin(elon*DTOR) * cos(elat*DTOR);
+  XYZ[2] = r * sin(elat*DTOR);
+
+  /* coord=g2m'*vec; 3x3 * 3x1 = 3x1 */
+  for (k=0; k<3; k++) {
+    coord[k] = 0.;
+    for (i=0; i<3; i++) coord[k] += ecdip.g2m[i][k]*XYZ[i];
+  }
+
+  for (k=0; k<3; k++) XYZ[k] = coord[k] + ecdip.pos[k];
+
+  car2sph(XYZ, rtp);
+
+  lat = 90.-rtp[1]/DTOR;
+  lon = rtp[2]/DTOR;
+  if (lon >  180) lon -= 360;
+  if (lon < -180) lon += 360;
+  geoc2geod(lat,lon,rtp[0]/RE, out);
+
+  return (0);
+}
+
+/*-----------------------------------------------------------------------------
+;
+; NAME:
+;       ecdip_mlt
+;
+; PURPOSE:
+;       Determine MLT for given date/time and eccentric dipole longitude.
+;
+; CALLING SEQUENCE:
+;       mlt = ecdip_mlt(yr,mo,dy, hr,mt,sc, elon);
+;
+;     Input Arguments:
+;       yr,mo,dy      - date as integers
+;       hr,mt,sc      - time as integers
+;       elon          - eccentric dipole longitude [degrees N]
+;
+;     Return Value:
+;       MLT in floating point hour
+;
+;+-----------------------------------------------------------------------------
+*/
+double ecdip_mlt(int yr, int mo, int dy, int hr, int mt, int sc, double elon)
+{
+  double lonmag_ref, tmag;
+
+  lonmag_ref = ecdip_mlt_ref(yr,mo,dy, hr,mt,sc);
+  tmag = MOD(48 + (elon-lonmag_ref)/15., 24);
+
+  return (tmag);
+}
+
+/*-----------------------------------------------------------------------------
+;
+; NAME:
+;       inv_ecdip_mlt
+;
+; PURPOSE:
+;       Determine eccentric dipole longitude for given date/time and MLT (ecdip)
+;
+; CALLING SEQUENCE:
+;       elon = inv_ecdip_mlt(yr,mo,dy, hr,mt,sc, mlt);
+;
+;     Input Arguments:
+;       yr,mo,dy      - date as integers
+;       hr,mt,sc      - time as integers
+;       mlt           - eccentric dipole MLT
+;
+;     Return Value:
+;       eccentric dipole longitude of MLT [degrees E]
+;
+;+-----------------------------------------------------------------------------
+*/
+double inv_ecdip_mlt(int yr, int mo, int dy, int hr, int mt, int sc, double mlt)
+{
+  double lonmag_ref, elon;
+
+  lonmag_ref = ecdip_mlt_ref(yr,mo,dy, hr,mt,sc);
+  elon = MOD(360 + lonmag_ref + 15*mlt, 360);
+  if (elon >  180) elon -= 360;
+  if (elon < -180) elon += 360;
+
+  return (elon);
+}
+
+/*-----------------------------------------------------------------------------
+;
+; NAME:
 ;       geod2geoc
 ;
 ; PURPOSE:
@@ -1193,7 +1502,6 @@ int mag2geo(const double xyzm[], double xyzg[]) {
 ;
 ;+-----------------------------------------------------------------------------
 */
-
 int geod2geoc(double lat, double lon, double alt, double rtp[]) {
 
   double a,b,f,a2,b2,st,ct,one,two,three,rho,cd,sd;
@@ -1296,7 +1604,7 @@ int plh2xyz(double lat, double lon, double alt, double rtp[])
 ;       r             - radial distance from center of Earth [RE]
 ;
 ;     Output Argument:  
-;       llh[3]        - geodetic latitude and longitude using WGS84 [radians],
+;       llh[3]        - geodetic latitude and longitude using WGS84 [degrees],
 ;                       distance above sea level [km]
 ;     Return Value:  
 ;       err           - error code
@@ -1530,5 +1838,74 @@ int AACGM_v2_RK45(double xyz[], int idir, double *ds, double eps, int code) {
   }
 
   return (0);
+}
+
+/*-----------------------------------------------------------------------------
+;
+; NAME:
+;       ecdip_mlt_ref (translated from Pierre-Louis Blelly Matlab code)
+;
+; PURPOSE:
+;       Determine reference MLT location for given date/time. Used for
+;       eccentric dipole coordinates.
+;
+; CALLING SEQUENCE:
+;       mlt_ref = ecdip_mlt_ref(yr,mo,dy,hr,mt,sc);
+;
+;     Input Arguments:
+;       yr,mo,dy      - Date
+;       hr,mt,sc      - Time
+;
+;     Return Value:
+;       mlt           - mlt reference of given date/time
+;
+;+-----------------------------------------------------------------------------
+*/
+double ecdip_mlt_ref(int yr, int mo, int dy, int hr, int mt, int sc)
+{
+  int i,k;
+  double lonmag_ref, tilt;
+  double t,gst,M,L,R,obliq,slp;
+  double cgst,sgst,sob,cob,cslp,sslp;
+  double fday, julian;
+  double pos[3], coord[3];
+
+  fday = (hr + mt/60. + sc/3600.)/24.;
+  julian = TimeYMDHMSToJulian(yr,mo,dy,hr,mt,sc) -
+           TimeYMDHMSToJulian(1899,12,31,12,0,0);
+
+  lonmag_ref = tilt = 0.;
+
+  t     = julian/36525.;
+  L     = MOD(279.696678 + 0.9856473354*julian, 360);
+  gst   = MOD(279.690983 + 0.9856473354*julian + 360.*fday + 180., 360);
+  M     = MOD(358.475845 + 0.985600267*julian, 360);
+  L    += (1.91946 - 0.004789*t)*sin(M*DTOR) + 0.020094*sin(2*M*DTOR);
+  obliq =  23.45229 - 0.0130125*t;
+  slp   = L - (0.0055686 - 0.025e-4*t);
+
+  cgst = cos(gst*DTOR);
+  sgst = sin(gst*DTOR);
+  sob  = sin(obliq*DTOR);
+  cob  = cos(obliq*DTOR);
+  sslp = sin(slp*DTOR);
+  cslp = cos(slp*DTOR);
+
+  pos[0] = -( cslp*cgst + sslp*sgst*cob) * RE;
+  pos[1] = -(-cslp*sgst + sslp*cgst*cob) * RE;
+  pos[2] = -( sslp*sob ) * RE;
+
+  for (k=0; k<3; k++) pos[k] -= ecdip.pos[k];
+
+  for (k=0; k<3; k++) {
+    coord[k] = 0.;
+    for (i=0; i<3; i++) coord[k] += ecdip.g2m[k][i]*pos[i];
+  }
+
+  lonmag_ref = MOD(360 + atan2(coord[1],coord[0])/DTOR, 360);
+  R          = sqrt(coord[0]*coord[0] + coord[1]*coord[1] + coord[2]*coord[2]);
+  tilt       = -asin(coord[2]/R)/DTOR;
+
+  return (lonmag_ref);
 }
 
