@@ -68,7 +68,7 @@ class TestCAACGMV2(object):
 
         """
         self.mlt = aacgmv2._aacgmv2.set_datetime(*self.date_args[idate])
-        assert self.mlt is None
+        assert self.mlt is None, "MLT is {:}, not None".format(self.mlt)
 
     def test_fail_set_datetime(self):
         """Test unsuccessful set_datetime."""
