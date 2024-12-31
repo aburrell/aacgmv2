@@ -7,7 +7,7 @@ requires = [
 
 [project]
 name = "aacgmv2"
-version = "2.6.3"
+version = "2.7.0"
 license = {file = "LICENSE"}
 description = "A Python wrapper for AACGM-v2 magnetic coordinates"
 maintainers = [
