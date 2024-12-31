@@ -3,13 +3,14 @@ Contents
 ========
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    readme
    installation
    usage
    reference/index
    contributing
+   maintenance
    authors
    changelog
 

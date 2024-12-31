@@ -22,5 +22,7 @@ int    TimeJulianToYMDHMS(double jd,
 void   TimeReadClock(int *yr, int *mo, int *dy, int *hr, int *mn, int *sc,
                         int *usc);
 
+int    dayno(int year, int month, int day, int *diy);
+
 #endif
 

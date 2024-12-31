@@ -1,4 +1,6 @@
+"""Configuration file for documetation."""
 import os
+from pyproject_parser import PyProject
 
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
@@ -6,16 +8,20 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.coverage',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode',
-              'sphinxcontrib.napoleon',
+              'sphinx.ext.napoleon',
               'numpydoc']
 
+# General information about the project.
+info = PyProject.load("../pyproject.toml")
+
+# Set the basic variables
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'AACGM-v2 Python library'
-year = '2023'
+year = '2024'
 author = 'Angeline G. Burrell, et al.'
 copyright = '{0}, {1}'.format(year, author)
-version = release = '2.6.3'
+version = release = info.project['version'].base_version
 
 # `on_rtd` is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'

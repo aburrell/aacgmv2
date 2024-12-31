@@ -1,3 +1,4 @@
+"""Unit tests for the utility functions."""
 import datetime as dt
 import numpy as np
 import pytest
@@ -47,9 +48,9 @@ class TestUtilsAACGMV2(object):
             self.out = utils.subsol(year, 1, 0.0)
 
     @pytest.mark.parametrize('year,ref',
-                             [(1500, [0.141408, -0.48357, 0.86381]),
+                             [(1500, [0.167107, -0.397251, 0.902367]),
                               (2015, [0.050281, -0.16057, 0.98574]),
-                              (2110, [0.027069, -0.08006, 0.99642])])
+                              (2110, [0.019718, -0.095652, 0.99522])])
     def test_igrf_dipole_axis(self, year, ref):
         """Test the IGRF dipole axis calculation.
 

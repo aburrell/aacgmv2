@@ -1,3 +1,5 @@
+"""Unit tests for the AACGMV2 module structure."""
+
 import logging
 import numpy as np
 import os
@@ -24,7 +26,6 @@ class TestModuleStructure(object):
 
     def test_module_existence(self):
         """Test the module existence."""
-
         # Get the dictionary of functions for the specified module
         retrieved_dict = aacgmv2.__dict__
 
@@ -38,7 +39,6 @@ class TestModuleStructure(object):
 
     def test_module_functions(self):
         """Test module function structure."""
-
         # Get the dictionary of functions for the specified module
         retrieved_dict = aacgmv2.__dict__
 
@@ -62,7 +62,6 @@ class TestModuleStructure(object):
 
     def test_modules(self):
         """Test module submodule structure."""
-
         if self.module_name is None:
             assert True
         else:
@@ -74,29 +73,6 @@ class TestModuleStructure(object):
 
             # Test to see if all of the modules match
             assert len(retrieved_list) == len(self.reference_list)
-
-
-class TestDepStructure(TestModuleStructure):
-    """Test the deprecated structure."""
-
-    def setup_method(self):
-        """Create a clean test environment."""
-        self.module_name = None
-        self.reference_list = ["subsol", "igrf_dipole_axis", "gc2gd_lat"]
-
-    def teardown_method(self):
-        """Clean up the test environment."""
-        del self.module_name, self.reference_list
-
-    def test_dep_existence(self):
-        """Test the deprecated functions."""
-        self.module_name = "deprecated"
-        self.test_module_existence()
-
-    def test_dep_functions(self):
-        """Test the deprecated functions."""
-        self.module_name = "deprecated"
-        self.test_module_functions()
 
 
 class TestUtilsStructure(TestModuleStructure):
@@ -111,13 +87,13 @@ class TestUtilsStructure(TestModuleStructure):
         """Clean up the test environment."""
         del self.module_name, self.reference_list
 
-    def test_dep_existence(self):
-        """Test the utility functions."""
+    def test_utils_existence(self):
+        """Test the utility existence."""
         self.module_name = "utils"
         self.test_module_existence()
 
-    def test_dep_functions(self):
-        """Test the utility functions."""
+    def test_utils_functions(self):
+        """Test the utils functions."""
         self.module_name = "utils"
         self.test_module_functions()
 
@@ -193,7 +169,7 @@ class TestTopStructure(TestModuleStructure):
         self.test_module_existence()
 
     def test_top_functions(self):
-        """Test the deprecated functions."""
+        """Test the top level functions."""
         self.module_name = "aacgmv2"
         self.reference_list = ["convert_bool_to_bit", "convert_str_to_bit",
                                "convert_mlt", "convert_latlon",
@@ -202,10 +178,10 @@ class TestTopStructure(TestModuleStructure):
         self.test_module_functions()
 
     def test_top_modules(self):
-        """Test the deprecated functions."""
+        """Test the top level modules."""
         self.module_name = "aacgmv2"
-        self.reference_list = ["_aacgmv2", "wrapper", "utils",
-                               "deprecated", "__main__"]
+        self.reference_list = ["_aacgmv2", "wrapper", "utils", "__main__",
+                               'tests']
         self.test_modules()
 
 
@@ -217,9 +193,9 @@ class TestTopVariables(object):
         self.alt_limits = {"coeff": 2000.0, "trace": 6378.0}
         self.coeff_file = {"coeff": os.path.join("aacgmv2", "aacgmv2",
                                                  "aacgm_coeffs",
-                                                 "aacgm_coeffs-13-"),
+                                                 "aacgm_coeffs-14-"),
                            "igrf": os.path.join("aacgmv2", "aacgmv2",
-                                                "magmodel_1590-2020.txt")}
+                                                "magmodel_1590-2025.txt")}
 
     def teardown_method(self):
         """Clean up the test environment."""
@@ -239,7 +215,6 @@ class TestTopVariables(object):
             Corresponding dict key
 
         """
-
         if env_var.find(self.coeff_file[fkey]) < 0:
             raise AssertionError("Bad env variable: {:} not {:}".format(
                 self.coeff_file[fkey], env_var))
@@ -258,7 +233,6 @@ class TestTopVariables(object):
             Output dict key
 
         """
-
         if not isinstance(alt_var, type(self.alt_limits[alt_ref])):
             raise TypeError("Altitude limit variable isn't a float")
 
@@ -267,6 +241,5 @@ class TestTopVariables(object):
 
     def test_module_logger(self):
         """Test the module logger instance."""
-
         if not isinstance(aacgmv2.logger, logging.Logger):
             raise TypeError("Logger incorrect type")

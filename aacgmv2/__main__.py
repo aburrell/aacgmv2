@@ -17,7 +17,6 @@ import aacgmv2
 
 def main():
     """Entry point for the script."""
-
     desc = 'Converts between geographical coordinates, AACGM-v2, and MLT'
     parser = argparse.ArgumentParser(description=desc)
 

@@ -7,12 +7,13 @@ requires = [
 
 [project]
 name = "aacgmv2"
+version = "2.7.0"
 license = {file = "LICENSE"}
 description = "A Python wrapper for AACGM-v2 magnetic coordinates"
 maintainers = [
-    {name = "Angeline G. Burrell", email = "angeline.burrell@nrl.navy.mil"},
+    {name = "Angeline G. Burrell", email = "angeline.g.burrell.civ@us.navy.mil"},
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 dependencies = [
     "numpy",
 ]
@@ -38,30 +39,83 @@ classifiers = [
     'Operating System :: Microsoft :: Windows',
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Software Development :: Libraries",
     "Topic :: Scientific/Engineering :: Physics",
     "Topic :: Utilities",
 ]
-dynamic = ['version']
 
-[tool.project.scripts]
-aacgmv2 = {reference = 'aacgmv2.__main__:main', type = 'console'}
+[project.scripts]
+aacgmv2 = 'aacgmv2.__main__:main'
 
 [project.optional-dependencies]
 test = [
+  "build",
+  "flake8",
+  "flake8-docstrings",
   "pytest",
-  "pytest-cov",
-  "pytest-xdist",
-  ]
-doc = ["sphinx>=1.3", "sphinx-rtd-theme"]
+  "pytest-cov"
+]
+doc = [
+  "sphinx>=1.3",
+  "sphinxcontrib-napoleon",
+  "numpydoc",
+  "pyproject_parser",
+  "sphinx-rtd-theme>=1.2.2"
+]
 
 [project.urls]
 source = "https://github.com/aburrell/aacgmv2"
 documentation = "https://aacgmv2.readthedocs.io/en/latest/"
 tracker = "https://github.com/aburrell/aacgmv2/issues"
 download = "https://github.com/aburrell/aacgmv2/releases"
+
+[tool.coverage.paths]
+source = [
+  "aacgmv2",
+  "c_aacgmv2"
+]
+
+[tool.coverage.run]
+branch = true
+relative_files = true
+include = [
+  "*/aacgmv2/*",
+  "*/aacgmv2/tests/*"
+]
+source = [
+  "aacgmv2",
+  "c_aacgmv2"
+]
+parallel = true
+
+[tool.coverage.report]
+show_missing = true
+precision = 2
+
+[tool.pytest]
+norecursedirs = [
+  ".git",
+  ".tox",
+  ".env",
+  "dist",
+  "build",
+  "south_migrations",
+  "migrations"
+]
+python_files = [
+  "test_*.py",
+  "*_test.py",
+  "tests.py"
+]
+
+[tool.isort]
+line_length = 80
+known_first_party = "aacgmv2"
+forced_separate = "test_aacgmv2"
+length_sort = 1
+multi_line_output = 0

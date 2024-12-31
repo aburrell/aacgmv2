@@ -21,7 +21,6 @@ setup(packages=find_packages(), ext_modules=[
               sources=['aacgmv2/aacgmv2module.c',
                        'c_aacgmv2/src/aacgmlib_v2.c',
                        'c_aacgmv2/src/astalglib.c',
-                       'c_aacgmv2/src/genmag.c',
                        'c_aacgmv2/src/igrflib.c',
                        'c_aacgmv2/src/mlt_v2.c',
                        'c_aacgmv2/src/rtime.c'],
