@@ -5,12 +5,13 @@ Changelog
 2.7.1 (2026-XX-XX)
 ------------------
 
-* Updated CI action versions
+* Updated CI action versions and removed wheels upload
 * Added a makefile for the C source code to facilitate testing
 * Updated supported Python versions to 3.9-3.14
 * Updated badges
-* Removed wheels upload
+* Removed version from setup.cfg
 * Updated casting for floats to ensure zero-dimension numpy arrays are avoided
+* Updated resources call to use `files` instead of `path`
 
 2.7.0 (2024-12-31)
 ------------------
