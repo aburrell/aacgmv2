@@ -72,7 +72,7 @@ jobs:
       run: flake8 . --count --exit-zero --max-complexity=10 --statistics
 
     - name: Run unit and integration tests
-      run: pytest --cov=aacgmv2 --cov-report xml aacgmv2/tests/
+      run: pytest --cov --cov-report xml aacgmv2/tests/
 
     - name: Coveralls Parallel
       uses: coverallsapp/github-action@v2
