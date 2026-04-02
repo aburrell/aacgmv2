@@ -1,5 +1,4 @@
 """Configuration file for documetation."""
-import os
 from pyproject_parser import PyProject
 
 extensions = ['sphinx.ext.autodoc',
