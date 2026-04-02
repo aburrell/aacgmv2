@@ -19,7 +19,7 @@ jobs:
         include:
           # Support different GA Mac environmnets
           - python-version: "3.10"
-            os: "macos-latest"
+            os: "macos-14"
           - python-version: "3.11"
             os: "macos-latest"
           - python-version: "3.12"
@@ -28,6 +28,8 @@ jobs:
             os: "macos-latest"
           - python-version: "3.14"
             os: "macos-latest"
+          - python-version: "3.14"
+            os: "macos-26-intel"
           # NEP29 compliance settings
           - python-version: "3.11"
             numpy-ver: "2.0"
@@ -59,7 +61,7 @@ jobs:
           pip install -e .
 
     - name: Install on MacOS
-      if: ${{ matrix.os == 'macos-latest' || matrix.os == 'macos-13' }}
+      if: ${{ matrix.os == 'macos-latest' || matrix.os == 'macos-15' || 'macos-26-intel'}}
       run: |
           brew reinstall gcc
           python -m build .
