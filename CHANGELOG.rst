@@ -8,6 +8,8 @@ Changelog
 * Updated CI action versions
 * Added a makefile for the C source code to facilitate testing
 * Updated supported Python versions to 3.9-3.14
+* Updated badges
+* Removed wheels upload
 
 2.7.0 (2024-12-31)
 ------------------
