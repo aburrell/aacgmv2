@@ -236,11 +236,14 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
 
     # convert location
     try:
-        lat_out, lon_out, r_out = c_aacgmv2.convert(in_lat, in_lon, height,
-                                                    bit_code)
+        # One or all of the inputs may be a numpy array-like object, cast them
+        # all and extract the value to be sure
+        lat_out, lon_out, r_out = c_aacgmv2.convert(
+            np.asarray(in_lat).item(), np.asarray(in_lon.)item(),
+            np.asarray(height).item(), bit_code)
     except Exception as err:
-        estr = "".join(["unable to perform conversion at {:.1f}".format(in_lat),
-                        ", {:.1f} {:.1f} km, {:}".format(in_lon, height, dtime),
+        estr = "".join(["unable to perform conversion at {:}".format(in_lat),
+                        ", {:} {:} km, {:}".format(in_lon, height, dtime),
                         " using method {:} <{:}>. Recall".format(bit_code, err),
                         " that AACGMV2 is undefined near the equator."])
         aacgmv2.logger.warning(estr)
