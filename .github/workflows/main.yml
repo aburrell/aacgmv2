@@ -13,31 +13,33 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         numpy-ver: ["latest"]
         test_config: ["latest"]
         include:
           # Support different GA Mac environmnets
-          - python-version: "3.9"
-            os: "macos-13"
           - python-version: "3.10"
             os: "macos-13"
           - python-version: "3.11"
             os: "macos-latest"
           - python-version: "3.12"
             os: "macos-latest"
+          - python-version: "3.13"
+            os: "macos-latest"
+          - python-version: "3.14"
+            os: "macos-latest"
           # NEP29 compliance settings
-          - python-version: "3.10"
-            numpy-ver: "1.25"
+          - python-version: "3.11"
+            numpy-ver: "2.0"
             os: "ubuntu-latest"
             test_config: "NEP29"
 
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }} with Numpy ${{ matrix.numpy-ver }}
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
         architecture: 'x64'
