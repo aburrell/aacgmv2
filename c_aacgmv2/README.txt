@@ -31,10 +31,9 @@ C Instructions:
 
    IGRF_COEFFS=/directory_you_put_IGRF_coefs_in/magmodel_1590-2025.txt
 
-5. Build the test program by running:
+5. Build the test program by going into the source directory and running:
 
-   gcc -o test_aacgm test_aacgm.c aacgmlib_v2.c igrflib.c astalglib.c \
-                         mlt_v2.c rtime.c -lm
+   make CC=/path/to/gcc/compiler AAGCM_DIR=/path/to/current/directory
 
 6. Run the test program by running:
 

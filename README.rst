@@ -67,7 +67,7 @@ Badges
       - |docs| |links|
     * - tests
       - | |ga| |coveralls|
-        | |codeclimate| |scrutinizer| |codacy|
+        | |scrutinizer| |codacy|
     * - package
       - | |version| |supported-versions|
         | |wheel| |supported-implementations|
@@ -92,10 +92,6 @@ Badges
     :alt: Codacy Code Quality Status
     :target: https://app.codacy.com/gh/aburrell/aacgmv2?utm_source=github.com&utm_medium=referral&utm_content=aburrell/aacgmv2&utm_campaign=Badge_Grade
 
-.. |codeclimate| image:: https://api.codeclimate.com/v1/badges/91f5a91bf3d9ba90cb57/maintainability.svg
-   :target: https://codeclimate.com/github/aburrell/aacgmv2/builds
-   :alt: CodeClimate Quality Status
-
 .. |version| image:: https://img.shields.io/pypi/v/aacgmv2.svg?style=flat
     :alt: PyPI Package latest release
     :target: https://pypi.org/project/aacgmv2/
@@ -116,10 +112,10 @@ Badges
     :alt: Supported implementations
     :target: https://pypi.org/project/aacgmv2/
 
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/aburrell/aacgmv2/main.svg?style=flat
-    :alt: Scrutinizer Status
+.. |scrutinizer| image:: https://scrutinizer-ci.com/g/aburrell/aacgmv2/badges/quality-score.png?b=main
+    :alt: Scrutinizer quality status
     :target: https://scrutinizer-ci.com/g/aburrell/aacgmv2/
 
-.. |doi| image:: https://zenodo.org/badge/doi/10.5281/zenodo.3598705.svg
+.. |doi| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.14582758.svg
    :alt: DOI
-   :target: https://zenodo.org/record/3598705
+   :target: https://doi.org/10.5281/zenodo.1212694

@@ -21,7 +21,7 @@ Tested Setups
 The package has been tested with the following setups (others might work, too):
 
 * Mac (64 bit), Windows (64 bit), and Linux (64 bit)
-* Python 3.9, 3.10, 3.11, and 3.12
+* Python 3.10, 3.11, 3.12, 3.13, and 3.14
 
 Known Problems and Solutions
 ============================

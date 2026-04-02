@@ -2,6 +2,16 @@
 Changelog
 =========
 
+2.7.1 (2026-XX-XX)
+------------------
+
+* Updated CI action versions
+* Added a makefile for the C source code to facilitate testing
+* Updated supported Python versions to 3.9-3.14
+* Updated badges
+* Removed wheels upload
+* Updated casting for floats to ensure zero-dimension numpy arrays are avoided
+
 2.7.0 (2024-12-31)
 ------------------
 
