@@ -113,9 +113,9 @@ Badges
     :target: https://pypi.org/project/aacgmv2/
 
 .. |scrutinizer| image:: https://scrutinizer-ci.com/g/aburrell/aacgmv2/badges/quality-score.png?b=main
-    :alt: Scrutinizer Status
+    :alt: Scrutinizer quality status
     :target: https://scrutinizer-ci.com/g/aburrell/aacgmv2/
 
-.. |doi| image:: https://zenodo.org/badge/doi/10.5281/zenodo.3598705.svg
+.. |doi| image:: https://doi.org/10.5281/zenodo.14582758
    :alt: DOI
-   :target: https://zenodo.org/record/3598705
+   :target: https://doi.org/10.5281/zenodo.1212694
