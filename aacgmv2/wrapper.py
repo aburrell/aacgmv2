@@ -239,7 +239,7 @@ def convert_latlon(in_lat, in_lon, height, dtime, method_code="G2A"):
         # One or all of the inputs may be a numpy array-like object, cast them
         # all and extract the value to be sure
         lat_out, lon_out, r_out = c_aacgmv2.convert(
-            np.asarray(in_lat).item(), np.asarray(in_lon.)item(),
+            np.asarray(in_lat).item(), np.asarray(in_lon).item(),
             np.asarray(height).item(), bit_code)
     except Exception as err:
         estr = "".join(["unable to perform conversion at {:}".format(in_lat),
