@@ -18,19 +18,10 @@ info = PyProject.load("../pyproject.toml")
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'AACGM-v2 Python library'
-year = '2024'
+year = '2026'
 author = 'Angeline G. Burrell, et al.'
 copyright = '{0}, {1}'.format(year, author)
 version = release = info.project['version'].base_version
-
-# `on_rtd` is whether we are on readthedocs.org
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-
-# Only import and set the theme if we're building docs locally
-if not on_rtd:
-    import sphinx_rtd_theme
-    html_theme = 'sphinx_rtd_theme'
-    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 pygments_style = 'trac'
 templates_path = ['.']
