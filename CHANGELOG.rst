@@ -10,6 +10,7 @@ Changelog
 * Updated supported Python versions to 3.9-3.14
 * Updated badges
 * Removed wheels upload
+* Updated casting for floats to ensure zero-dimension numpy arrays are avoided
 
 2.7.0 (2024-12-31)
 ------------------
