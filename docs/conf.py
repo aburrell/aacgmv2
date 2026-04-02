@@ -32,4 +32,4 @@ html_short_title = '%s-%s' % (project, version)
 
 # Set up hyperlinks to not check in unit tests due to 403 errors
 linkcheck_ignore = [r'https://scrutinizer-ci.com:\d+/',
-                    r'https://zenodo.org:\d+/]
+                    r'https://zenodo.org:\d+/']
