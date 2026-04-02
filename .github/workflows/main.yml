@@ -83,12 +83,6 @@ jobs:
         format: cobertura
         debug: true
 
-    - name: Upload wheels
-      uses: actions/upload-artifact@v3
-      with:
-         path: dist/*.whl
-         if-no-files-found: warn
-
   finish:
     name: Finish Coverage Analysis
     needs: build
