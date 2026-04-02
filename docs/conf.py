@@ -29,3 +29,7 @@ html_last_updated_fmt = '%b %d, %Y'
 html_split_index = True
 html_sidebars = {'**': ['searchbox.html', 'globaltoc.html', 'sourcelink.html']}
 html_short_title = '%s-%s' % (project, version)
+
+# Set up hyperlinks to not check in unit tests due to 403 errors
+linkcheck_ignore = [r'https://scrutinizer-ci.com:\d+/',
+                    r'https://zenodo.org:\d+/]
