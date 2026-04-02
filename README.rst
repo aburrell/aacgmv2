@@ -116,6 +116,6 @@ Badges
     :alt: Scrutinizer quality status
     :target: https://scrutinizer-ci.com/g/aburrell/aacgmv2/
 
-.. |doi| image:: https://doi.org/10.5281/zenodo.14582758
+.. |doi| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.14582758.svg
    :alt: DOI
    :target: https://doi.org/10.5281/zenodo.1212694
