@@ -88,10 +88,6 @@ include = [
   "*/aacgmv2/*",
   "*/aacgmv2/tests/*"
 ]
-source = [
-  "aacgmv2",
-  "c_aacgmv2"
-]
 parallel = true
 
 [tool.coverage.report]
