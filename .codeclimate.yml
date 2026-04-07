@@ -1,8 +1,0 @@
-# Save as .codeclimate.yml (note leading .) in project root directory
-languages:
-  Python: true
-exclude_paths:
-  - "ci/"
-  - "aacgmv2/tests/"
-  - "docs/"
-  - "setup.py"
