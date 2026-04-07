@@ -1,5 +1,4 @@
 """Configuration file for documetation."""
-import os
 from pyproject_parser import PyProject
 
 extensions = ['sphinx.ext.autodoc',
@@ -18,19 +17,10 @@ info = PyProject.load("../pyproject.toml")
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'AACGM-v2 Python library'
-year = '2024'
+year = '2026'
 author = 'Angeline G. Burrell, et al.'
 copyright = '{0}, {1}'.format(year, author)
 version = release = info.project['version'].base_version
-
-# `on_rtd` is whether we are on readthedocs.org
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-
-# Only import and set the theme if we're building docs locally
-if not on_rtd:
-    import sphinx_rtd_theme
-    html_theme = 'sphinx_rtd_theme'
-    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 pygments_style = 'trac'
 templates_path = ['.']
@@ -39,3 +29,7 @@ html_last_updated_fmt = '%b %d, %Y'
 html_split_index = True
 html_sidebars = {'**': ['searchbox.html', 'globaltoc.html', 'sourcelink.html']}
 html_short_title = '%s-%s' % (project, version)
+
+# Set up hyperlinks to not check in unit tests due to 403 errors
+linkcheck_ignore = [r'https://scrutinizer-ci.com',
+                    r'https://zenodo.org']
