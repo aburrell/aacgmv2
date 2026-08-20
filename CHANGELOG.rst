@@ -2,7 +2,7 @@
 Changelog
 =========
 
-2.7.1 (2026-XX-XX)
+2.7.1 (2026-04-07)
 ------------------
 
 * Updated CI action versions and removed wheels upload
